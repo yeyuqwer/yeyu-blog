@@ -90,7 +90,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "next-sitemap": "^4.2.3",
-    "prisma": "^6.19.2",
+    "prisma": "^7.3.0",
     "tailwindcss": "^4.1.18",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
