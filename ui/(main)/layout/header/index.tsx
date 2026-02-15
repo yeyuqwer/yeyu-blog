@@ -12,6 +12,7 @@ import { MaxWidthWrapper } from '../../../components/shared/max-width-wrapper'
 import { type NavRoute, navigationConfig } from './constant'
 import { HoverBackground } from './hover-background'
 import { NavItem } from './nav-item'
+import { useScrollVisibility } from './use-scroll-visibility'
 
 const slideVariants = {
   enter: (direction: number) => ({
@@ -36,6 +37,7 @@ export default function Header() {
   const [hoveredPath, setHoveredPath] = useState<string | null>(null)
   const [direction, setDirection] = useState(0)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const isHeaderVisible = useScrollVisibility()
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <TEMP TODO>
   useEffect(() => {
@@ -127,8 +129,21 @@ export default function Header() {
     ) as (RouteItem & { group: NavGroup }) | undefined
   }, [hoveredPath])
 
+  const shouldShowHeader = isHeaderVisible || isSubmenuOpen
+
   return (
-    <header className="sticky top-3 z-20 mx-auto mb-4 flex h-9 w-3/4 items-center justify-center md:h-12 md:w-1/2 lg:w-5/12">
+    <motion.header
+      className={cn(
+        'sticky top-3 z-20 mx-auto mb-4 flex h-9 w-3/4 items-center justify-center will-change-transform md:h-12 md:w-1/2 lg:w-5/12',
+        !shouldShowHeader && 'pointer-events-none',
+      )}
+      initial={false}
+      animate={{
+        y: shouldShowHeader ? 0 : '-140%',
+        opacity: shouldShowHeader ? 1 : 0,
+      }}
+      transition={{ duration: 0.25, ease: 'easeOut' }}
+    >
       <AnimatePresence>
         {isSubmenuOpen && (
           <motion.div
@@ -304,6 +319,6 @@ export default function Header() {
           </AnimatePresence>
         </nav>
       </MaxWidthWrapper>
-    </header>
+    </motion.header>
   )
 }
