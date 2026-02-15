@@ -31,27 +31,66 @@ body::-webkit-scrollbar-thumb {
 }
 
 /* * markdown 渲染时的代码主题 */
-/* ! 这里的 data-theme='${ }' lib/markdown/index.ts 中的主题名 */
-code[data-theme*="github-light"],
-code[data-theme*="github-light"] span,
-pre[data-theme*="github-light"],
-figure[data-theme*="github-light"] {
+/* ! shiki 的双主题变量由 @shikijs/rehype 注入 */
+.markdown-content pre.shiki,
+.markdown-content pre.shiki span {
   color: var(--shiki-light);
   background-color: var(--shiki-light-bg);
 }
 
-html.dark [data-theme*="aurora-x"],
-html.dark code[data-theme*="aurora-x"],
-html.dark code[data-theme*="aurora-x"] span,
-html.dark pre[data-theme*="aurora-x"],
-html.dark figure[data-theme*="aurora-x"] {
+html.dark .markdown-content pre.shiki,
+html.dark .markdown-content pre.shiki span {
   color: var(--shiki-dark);
   background-color: var(--shiki-dark-bg);
 }
 
-/* ! markdown 中代码框的滚动条出现时，如果不适用下面这个代码会导致按扭不固定在右上角，而是随着滚动条滚动 */
-pre > code {
-  overflow-x: auto;
+/* * shiki transformers: line / word decorations */
+.markdown-content pre.shiki .line {
+  display: block;
+}
+
+.markdown-content pre.shiki .line.highlighted {
+  background-color: rgba(250, 204, 21, 0.15);
+}
+
+html.dark .markdown-content pre.shiki .line.highlighted {
+  background-color: rgba(250, 204, 21, 0.2);
+}
+
+.markdown-content pre.shiki .line.diff.add {
+  background-color: rgba(34, 197, 94, 0.14);
+}
+
+.markdown-content pre.shiki .line.diff.remove {
+  background-color: rgba(244, 63, 94, 0.14);
+}
+
+html.dark .markdown-content pre.shiki .line.diff.add {
+  background-color: rgba(34, 197, 94, 0.2);
+}
+
+html.dark .markdown-content pre.shiki .line.diff.remove {
+  background-color: rgba(244, 63, 94, 0.2);
+}
+
+.markdown-content pre.shiki .line.highlighted span,
+.markdown-content pre.shiki .line.diff span {
+  background-color: transparent !important;
+}
+
+.markdown-content pre.shiki.has-focused .line:not(.focused) {
+  opacity: 0.55;
+  filter: blur(0.08rem);
+  transition: opacity 0.2s ease;
+}
+
+.markdown-content pre.shiki span.highlighted-word {
+  border-radius: 0.25rem;
+  background-color: rgba(14, 165, 233, 0.2) !important;
+}
+
+html.dark .markdown-content pre.shiki span.highlighted-word {
+  background-color: rgba(56, 189, 248, 0.28) !important;
 }
 
 /* * 覆盖亮暗切换时默认的过渡的属性 */

@@ -1,5 +1,16 @@
-import { transformerCopyButton } from '@rehype-pretty/transformers'
-import rehypePrettyCode from 'rehype-pretty-code'
+import type { BuiltinTheme } from 'shiki'
+import rehypeShiki from '@shikijs/rehype'
+import {
+  transformerMetaHighlight,
+  transformerMetaWordHighlight,
+  transformerNotationDiff,
+  transformerNotationErrorLevel,
+  transformerNotationFocus,
+  transformerNotationHighlight,
+  transformerNotationWordHighlight,
+  transformerRemoveLineBreak,
+  transformerRemoveNotationEscape,
+} from '@shikijs/transformers'
 import rehypeSlug from 'rehype-slug'
 import rehypeStringify from 'rehype-stringify'
 import remarkGfm from 'remark-gfm'
@@ -12,17 +23,22 @@ export const processor = unified()
   .use(remarkGfm)
   .use(remarkRehype)
   .use(rehypeSlug)
-  .use(rehypePrettyCode, {
-    // ! 这里写没用，需要再去 globals.css 中去写一下名字，不然打包压缩会报错
-    theme: {
-      dark: 'aurora-x',
-      light: 'github-light',
-    },
+  .use(rehypeShiki, {
+    themes: {
+      dark: 'catppuccin-mocha',
+      light: 'catppuccin-latte',
+    } satisfies Record<'dark' | 'light', BuiltinTheme>,
+    defaultColor: false,
     transformers: [
-      transformerCopyButton({
-        visibility: 'hover',
-        feedbackDuration: 3_000,
-      }),
+      transformerRemoveNotationEscape(),
+      transformerNotationDiff(),
+      transformerNotationHighlight(),
+      transformerNotationFocus(),
+      transformerNotationWordHighlight(),
+      transformerNotationErrorLevel(),
+      transformerMetaHighlight(),
+      transformerMetaWordHighlight(),
+      transformerRemoveLineBreak(),
     ],
   })
   .use(rehypeStringify)
