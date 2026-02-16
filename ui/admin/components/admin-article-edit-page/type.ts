@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { ARTICLE_TITLE_MAX_LENGTH } from '../../constant'
 
 // * import from https://github.com/aifuxi/fuxiaochen/blob/master/constants/regex.ts
 
@@ -13,7 +12,7 @@ export const ArticleSchema = z.object({
     .string()
     .trim()
     .min(1, { message: '长度不能少于1个字符' })
-    .max(ARTICLE_TITLE_MAX_LENGTH, { message: '标题超出大小限制' }),
+    .max(50, { message: '标题超出大小限制' }),
   slug: z
     .string()
     .trim()

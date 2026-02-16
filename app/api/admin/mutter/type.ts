@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { MUTTER_CONTENT_MAX_LENGTH } from '@/ui/admin/constant'
 
 export const getMuttersQuerySchema = z.object({
   q: z.string().trim().optional(),
@@ -9,13 +8,9 @@ export const getMuttersQuerySchema = z.object({
 })
 
 export const createMutterSchema = z.object({
-  content: z
-    .string()
-    .trim()
-    .min(1, { message: 'Mutter content cannot be empty.' })
-    .max(MUTTER_CONTENT_MAX_LENGTH, {
-      message: `Mutter content cannot exceed ${MUTTER_CONTENT_MAX_LENGTH} characters.`,
-    }),
+  content: z.string().trim().min(1, { message: 'Mutter content cannot be empty.' }).max(300, {
+    message: 'Mutter content cannot exceed 300 characters.',
+  }),
   isPublished: z.boolean().default(true),
 })
 
@@ -26,8 +21,8 @@ export const updateMutterSchema = z
       .string()
       .trim()
       .min(1, { message: 'Mutter content cannot be empty.' })
-      .max(MUTTER_CONTENT_MAX_LENGTH, {
-        message: `Mutter content cannot exceed ${MUTTER_CONTENT_MAX_LENGTH} characters.`,
+      .max(300, {
+        message: 'Mutter content cannot exceed 300 characters.',
       })
       .optional(),
     isPublished: z.boolean().optional(),

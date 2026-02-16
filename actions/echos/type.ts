@@ -1,16 +1,12 @@
 import { z } from 'zod'
-import { ECHO_CONTENT_MAX_LENGTH, ECHO_REFERENCE_MAX_LENGTH } from '@/ui/admin/constant'
 
 export const CreateEchoSchema = z.object({
   content: z
     .string()
     .trim()
     .min(1, { message: '引用不能为空' })
-    .max(ECHO_CONTENT_MAX_LENGTH, { message: '引用长度过长' }),
-  reference: z
-    .string()
-    .min(1, { message: '来源不能为空' })
-    .max(ECHO_REFERENCE_MAX_LENGTH, { message: '来源长度过长' }),
+    .max(100, { message: '引用长度过长' }),
+  reference: z.string().min(1, { message: '来源不能为空' }).max(20, { message: '来源长度过长' }),
   isPublished: z.boolean(),
 })
 
