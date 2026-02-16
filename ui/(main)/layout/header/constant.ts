@@ -18,6 +18,21 @@ export type NavGroup = {
 
 export type RouteItem = (NavRoute & { group?: never }) | { group: NavGroup }
 
+export const slideVariants = {
+  enter: (direction: number) => ({
+    x: direction === 0 ? 0 : direction > 0 ? 20 : -20,
+    opacity: 0,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction: number) => ({
+    x: direction === 0 ? 0 : direction < 0 ? 20 : -20,
+    opacity: 0,
+  }),
+}
+
 export const navigationConfig: RouteItem[] = [
   {
     path: '/',
@@ -44,15 +59,14 @@ export const navigationConfig: RouteItem[] = [
   },
   {
     group: {
-      key: 'refer',
-      mainPath: '/refer',
-      disabled: true,
+      key: 'mutter',
+      mainPath: '/mutter',
       items: [
         {
-          path: '/refer',
-          pathName: '参考',
-          pattern: /^\/refer($|\/)/,
-          disabled: true,
+          path: '/mutter',
+          pathName: '低语',
+          pattern: /^\/mutter($|\/)/,
+          // disabled: true,
         },
         {
           path: '/tool',
@@ -63,7 +77,6 @@ export const navigationConfig: RouteItem[] = [
       ],
     },
   },
-  // TODO: web3 login
   {
     group: {
       key: 'more',

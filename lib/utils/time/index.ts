@@ -31,6 +31,33 @@ export function prettyDateTime(date: number | Date) {
   return dayjs(date).tz(SHANGHAI).locale('zh-cn').format('YY年M月D日 H时 m分')
 }
 
+export function toRelativeDate(date: number | Date) {
+  const now = dayjs().tz(SHANGHAI)
+  const target = dayjs(date).tz(SHANGHAI)
+  const diff = now.valueOf() - target.valueOf()
+
+  if (diff <= 0) return '刚刚'
+
+  const minute = 60 * 1000
+  const hour = 60 * minute
+  const day = 24 * hour
+  const month = 30 * day
+
+  if (diff < hour) {
+    return `${Math.max(1, Math.floor(diff / minute))} 分钟前`
+  }
+
+  if (diff < day) {
+    return `${Math.floor(diff / hour)} 小时前`
+  }
+
+  if (diff < month) {
+    return `${Math.floor(diff / day)} 天前`
+  }
+
+  return target.locale('zh-cn').format('YYYY年M月D日')
+}
+
 export function toDisplayDate(date: number | Date) {
   return dayjs(date).tz(SHANGHAI).locale('en').format('MMM DD, YYYY')
 }

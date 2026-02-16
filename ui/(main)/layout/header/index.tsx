@@ -10,7 +10,7 @@ import { useIsMounted } from '@/hooks/common'
 import { cn } from '@/lib/utils/common/shadcn'
 import { useModalStore } from '@/store/use-modal-store'
 import { MaxWidthWrapper } from '../../../components/shared/max-width-wrapper'
-import { type NavRoute, navigationConfig } from './constant'
+import { type NavRoute, navigationConfig, slideVariants } from './constant'
 import { HoverBackground } from './hover-background'
 import { NavItem } from './nav-item'
 import { useScrollVisibility } from './use-scroll-visibility'
@@ -18,21 +18,6 @@ import { useScrollVisibility } from './use-scroll-visibility'
 const flatNavRoutes = navigationConfig.flatMap(route =>
   'group' in route && route.group != null ? route.group.items : [route as NavRoute],
 )
-
-const slideVariants = {
-  enter: (direction: number) => ({
-    x: direction === 0 ? 0 : direction > 0 ? 20 : -20,
-    opacity: 0,
-  }),
-  center: {
-    x: 0,
-    opacity: 1,
-  },
-  exit: (direction: number) => ({
-    x: direction === 0 ? 0 : direction < 0 ? 20 : -20,
-    opacity: 0,
-  }),
-}
 
 export default function Header() {
   const pathname = usePathname()
