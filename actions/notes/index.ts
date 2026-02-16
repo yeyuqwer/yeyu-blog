@@ -5,9 +5,9 @@ import type {
   UpdateArticleDTO,
 } from '@/ui/admin/components/admin-article-edit-page/type'
 import { revalidatePath } from 'next/cache'
-import { prisma } from '@/db'
 import { requireAdmin } from '@/lib/core/auth/guard'
 import { processor } from '@/lib/core/markdown'
+import { prisma } from '@/prisma/instance'
 
 export async function createNote(values: ArticleDTO) {
   await requireAdmin()

@@ -3,8 +3,8 @@
 import type { UpdateTagNameDTO } from './type'
 import { TagType } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
-import { prisma } from '@/db'
 import { requireAdmin } from '@/lib/core/auth/guard'
+import { prisma } from '@/prisma/instance'
 
 export async function createBlogTag(tagName: string) {
   await requireAdmin()

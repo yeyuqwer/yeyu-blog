@@ -11,7 +11,7 @@
     "ts:check": "tsc --noEmit",
     "lint": "biome check --max-diagnostics=100 .",
     "lint:fix": "biome check --max-diagnostics=100 --write .",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate --config ./prisma/prisma.config.ts",
     "postbuild": "next-sitemap",
     "prepare": "husky",
     "commit": "git-cz",

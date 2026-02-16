@@ -78,7 +78,7 @@ NEXT_PUBLIC_ADMIN_EMAILS=
 
 初始化表
 ```shell
-npx prisma migrate dev --name init
+npx prisma migrate dev --name init --config ./prisma/prisma.config.ts
 ```
 
 启动！

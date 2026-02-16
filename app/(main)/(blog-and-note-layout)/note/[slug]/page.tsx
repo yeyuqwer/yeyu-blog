@@ -1,4 +1,4 @@
-import { prisma } from '@/db'
+import { prisma } from '@/prisma/instance'
 import { NoteDetail } from '@/ui/(main)/(blog-and-note-layout)/note/[slug]'
 
 export async function generateStaticParams() {
