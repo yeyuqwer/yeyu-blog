@@ -10,7 +10,7 @@ import { AdminLogo } from './admin-logo'
 import { AvatarDropdownMenu } from './avatar-dropdown-menu'
 import { AdminRoutes } from './constant'
 
-export const AdminNavbar: FC<ComponentProps<'div'>> = () => {
+export const AdminNavbar: FC<ComponentProps<'header'>> = () => {
   const pathname = usePathname()
   const activeUrl = getActiveAdminPath(pathname)
 

@@ -1,4 +1,4 @@
-export const AdminRoutes = [
+export const AdminRoutes: { path: string; pathName: string }[] = [
   {
     path: '/admin',
     pathName: '首页',
@@ -19,4 +19,8 @@ export const AdminRoutes = [
     path: '/admin/echo',
     pathName: '引用',
   },
-] as const
+  {
+    path: '/admin/mutter',
+    pathName: '低语',
+  },
+]
