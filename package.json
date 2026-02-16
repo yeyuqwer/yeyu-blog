@@ -73,13 +73,13 @@
     "tailwindcss-animate": "^1.0.7",
     "unified": "^11.0.5",
     "uploadthing": "^7.7.4",
-    "viem": "~2.45.1",
-    "wagmi": "^3.3.4",
+    "viem": "~2.45.3",
+    "wagmi": "^3.4.4",
     "zod": "^3.25.76",
     "zustand": "^5.0.11"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.14",
+    "@biomejs/biome": "^2.4.0",
     "@commitlint/cli": "^20.4.1",
     "@commitlint/config-conventional": "^20.4.1",
     "@tailwindcss/postcss": "^4.1.18",
