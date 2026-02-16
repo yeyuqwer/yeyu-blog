@@ -153,8 +153,8 @@ importers:
         specifier: ^3.22.0
         version: 3.22.0
       simple-icons:
-        specifier: ^16.7.0
-        version: 16.7.0
+        specifier: ^16.9.0
+        version: 16.9.0
       siwe:
         specifier: ^3.0.0
         version: 3.0.0(ethers@6.16.0)
@@ -3724,8 +3724,8 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
-  simple-icons@16.7.0:
-    resolution: {integrity: sha512-2BteuQXu1+/jK5dF8YXe8nwoRG3afwl03bCmgPJLiotllUBU46B+WntXT731Z17oOntfV5eeTI7Q1k7MeOA6eg==}
+  simple-icons@16.9.0:
+    resolution: {integrity: sha512-aKst2C7cLkFyaiQ/Crlwxt9xYOpGPk05XuJZ0ZTJNNCzHCKYrGWz2ebJSi5dG8CmTCxUF/BGs6A8uyJn/EQxqw==}
     engines: {node: '>=0.12.18'}
 
   siwe@3.0.0:
@@ -7694,7 +7694,7 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
-  simple-icons@16.7.0: {}
+  simple-icons@16.9.0: {}
 
   siwe@3.0.0(ethers@6.16.0):
     dependencies:
