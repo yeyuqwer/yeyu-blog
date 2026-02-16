@@ -7,7 +7,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useIndicatorPosition } from '@/hooks/animation'
 import { useIsMounted } from '@/hooks/common'
-import { getActiveMainPath } from '@/lib/url'
 import { cn } from '@/lib/utils/common/shadcn'
 import { useModalStore } from '@/store/use-modal-store'
 import { MaxWidthWrapper } from '../../../components/shared/max-width-wrapper'
@@ -15,6 +14,10 @@ import { type NavRoute, navigationConfig } from './constant'
 import { HoverBackground } from './hover-background'
 import { NavItem } from './nav-item'
 import { useScrollVisibility } from './use-scroll-visibility'
+
+const flatNavRoutes = navigationConfig.flatMap(route =>
+  'group' in route && route.group != null ? route.group.items : [route as NavRoute],
+)
 
 const slideVariants = {
   enter: (direction: number) => ({
@@ -33,7 +36,7 @@ const slideVariants = {
 
 export default function Header() {
   const pathname = usePathname()
-  const activeUrl = getActiveMainPath(pathname)
+  const activeUrl = flatNavRoutes.find(route => route.pattern.test(pathname))?.path ?? pathname
   const { modalType, onModalClose } = useModalStore()
   const refs = useRef(new Map<string, HTMLElement>())
   const [hoveredPath, setHoveredPath] = useState<string | null>(null)
@@ -49,11 +52,7 @@ export default function Header() {
 
   const effectiveActiveUrl = useMemo(() => {
     if (modalType != null) {
-      const modalRoute = navigationConfig
-        .flatMap(route =>
-          'group' in route && route.group != null ? route.group.items : [route as NavRoute],
-        )
-        .find(route => route.modal === modalType)
+      const modalRoute = flatNavRoutes.find(route => route.modal === modalType)
 
       if (modalRoute != null) return modalRoute.path
     }
