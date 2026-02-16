@@ -4,14 +4,13 @@ import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 // * 高亮代码块
-// TODO: 准备移除 rehype-pretty-code ?
 import './hljs-theme.css'
 
 import { customMarkdownTheme } from '@/lib/core/markdown'
 import { simpleProcessor } from '@/lib/core/markdown/simple-processor'
 import { useUploadThing } from './uploadthing'
+import { useMarkdownAutoSave } from './use-markdown-auto-save'
 
-// TODO: 样式重写吧...
 export default function MarkdownEditor({
   value,
   onChange,
@@ -21,6 +20,7 @@ export default function MarkdownEditor({
 }) {
   const [html, setHtml] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  useMarkdownAutoSave({ value, onChange })
 
   const { startUpload, isUploading } = useUploadThing('imageUploader', {
     onClientUploadComplete: res => {
