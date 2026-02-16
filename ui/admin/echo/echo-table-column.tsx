@@ -3,7 +3,7 @@
 import type { Echo } from '@prisma/client'
 import type { ColumnDef } from '@tanstack/react-table'
 import { CalendarDays, Eye, Quote, TypeIcon, Wrench } from 'lucide-react'
-import { prettyDateTime } from '@/lib/time'
+import { prettyDateTime } from '@/lib/utils/time'
 import { Button } from '@/ui/shadcn/button'
 import ActionButtons from './action-buttons'
 import PublishToggleSwitch from './publish-toggle-switch'

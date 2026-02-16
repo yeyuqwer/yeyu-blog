@@ -3,7 +3,7 @@
 import type { ColumnDef } from '@tanstack/react-table'
 import type { NoteListItem } from '@/actions/notes/type'
 import { ArrowDown, ArrowUp, CalendarDays, Eye, TagIcon, TypeIcon, Wrench } from 'lucide-react'
-import { prettyDateTime } from '@/lib/time'
+import { prettyDateTime } from '@/lib/utils/time'
 import TagItemBadge from '@/ui/components/shared/tag-item-badge'
 import { Button } from '@/ui/shadcn/button'
 import ActionButtons from './action-buttons'

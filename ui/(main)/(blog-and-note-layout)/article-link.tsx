@@ -3,8 +3,8 @@ import type { BlogListItem } from '@/actions/blogs/type'
 import type { NoteListItem } from '@/actions/notes/type'
 import { TagType } from '@prisma/client'
 import Link from 'next/link'
-import { toDisplayDate } from '@/lib/time'
 import { cn } from '@/lib/utils/common/shadcn'
+import { toDisplayDate } from '@/lib/utils/time'
 import ScaleUnderline from '@/ui/components/shared/scale-underline'
 
 export const ArticleLink: FC<{

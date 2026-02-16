@@ -1,4 +1,4 @@
-import { toDisplayDate } from '@/lib/time'
+import { toDisplayDate } from '@/lib/utils/time'
 import TagItemBadge from '@/ui/components/shared/tag-item-badge'
 
 export default function ArticleDisplayHeader({
