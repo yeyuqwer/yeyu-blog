@@ -138,3 +138,14 @@ model Echo {
   content     String   @db.VarChar(100) // * ECHO_CONTENT_MAX_LENGTH
   createdAt   DateTime @default(now())
 }
+
+model Mutter {
+  id          Int      @id @default(autoincrement())
+  content     String   @db.VarChar(300) // * MUTTER_CONTENT_MAX_LENGTH
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([isPublished, createdAt])
+}
