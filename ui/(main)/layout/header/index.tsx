@@ -4,6 +4,7 @@ import type { NavGroup, RouteItem } from './constant'
 import { AnimatePresence, motion } from 'motion/react'
 import { usePathname } from 'next/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useIndicatorPosition } from '@/lib/hooks/animation'
 import { getActiveMainPath } from '@/lib/url'
 import { cn } from '@/lib/utils/common/shadcn'
@@ -38,6 +39,11 @@ export default function Header() {
   const [direction, setDirection] = useState(0)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isHeaderVisible = useScrollVisibility()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <TEMP TODO>
   useEffect(() => {
@@ -144,17 +150,21 @@ export default function Header() {
       }}
       transition={{ duration: 0.25, ease: 'easeOut' }}
     >
-      <AnimatePresence>
-        {isSubmenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 -z-10 bg-black/5 backdrop-blur-xs dark:bg-black/20"
-          />
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {isSubmenuOpen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 z-10 bg-black/5 backdrop-blur-xs dark:bg-black/20"
+              />
+            )}
+          </AnimatePresence>,
+          document.body,
         )}
-      </AnimatePresence>
       <MaxWidthWrapper
         className={cn(
           // TODO: config other colors
