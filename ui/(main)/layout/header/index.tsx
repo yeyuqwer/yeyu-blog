@@ -5,7 +5,8 @@ import { AnimatePresence, motion } from 'motion/react'
 import { usePathname } from 'next/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { useIndicatorPosition } from '@/lib/hooks/animation'
+import { useIndicatorPosition } from '@/hooks/animation'
+import { useIsMounted } from '@/hooks/common'
 import { getActiveMainPath } from '@/lib/url'
 import { cn } from '@/lib/utils/common/shadcn'
 import { useModalStore } from '@/store/use-modal-store'
@@ -39,11 +40,7 @@ export default function Header() {
   const [direction, setDirection] = useState(0)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isHeaderVisible = useScrollVisibility()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = useIsMounted()
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <TEMP TODO>
   useEffect(() => {

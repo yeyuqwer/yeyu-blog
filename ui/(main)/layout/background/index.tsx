@@ -2,7 +2,7 @@
 
 // * thanks https://hypercolor.dev/
 import type { FC } from 'react'
-import { useTransitionTheme } from '@/lib/hooks/animation'
+import { useTransitionTheme } from '@/hooks/animation'
 import { cn } from '@/lib/utils/common/shadcn'
 // * thanks https://www.mshr.app/mesh/1727202711374
 import '@/lib/styles/background-animate.css'

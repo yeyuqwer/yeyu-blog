@@ -3,7 +3,7 @@
 import type { Theme } from '@giscus/react'
 import Giscus from '@giscus/react'
 import { COMMENT_CARD_REPO, COMMENT_CARD_REPO_ID } from '@/config/constant'
-import { useTransitionTheme } from '@/lib/hooks/animation'
+import { useTransitionTheme } from '@/hooks/animation'
 
 // * term 唯一且不可变，用 id 做，防止评论丢失
 export default function CommentCard({ term }: { term: string }) {

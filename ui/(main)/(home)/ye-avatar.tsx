@@ -5,7 +5,7 @@ import { AnimatePresence, motion, useMotionValue, useMotionValueEvent } from 'mo
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import avatar from '@/config/img/avatar.webp'
-import { useTransitionTheme } from '@/lib/hooks/animation'
+import { useTransitionTheme } from '@/hooks/animation'
 import { cn } from '@/lib/utils/common/shadcn'
 import { typedEntries } from '@/lib/utils/typed'
 import { useBackgroundMusicStore } from '@/store/use-background-music-store'

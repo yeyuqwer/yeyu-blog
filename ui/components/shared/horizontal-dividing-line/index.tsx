@@ -2,7 +2,7 @@
 
 import { motion, useAnimationFrame, useMotionValue } from 'motion/react'
 import { useState } from 'react'
-import { useTransitionTheme } from '@/lib/hooks/animation'
+import { useTransitionTheme } from '@/hooks/animation'
 import { FlowerIcon } from './flower-icon'
 
 // * 拖拽两边移动距离阈值，超过触发
