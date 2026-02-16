@@ -27,8 +27,8 @@ export const MutterForm: FC<{
     <form className={cn('h-40 max-h-40 min-h-40 shrink-0', className)} onSubmit={handleSubmit}>
       <InputGroup className="h-full min-h-0 has-[>[data-align=block-end]]:h-full has-[>textarea]:h-full">
         <InputGroupTextarea
-          className="h-full min-h-0 overflow-y-auto [field-sizing:fixed]"
-          placeholder="写点新的 mutter..."
+          className="field-sizing-fixed h-full min-h-0 overflow-y-auto"
+          placeholder="碎碎念..."
           value={value}
           onChange={event => {
             onValueChange(event.target.value)

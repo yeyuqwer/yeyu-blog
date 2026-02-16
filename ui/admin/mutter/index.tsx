@@ -20,7 +20,8 @@ const dateFormatter = new Intl.DateTimeFormat('zh-CN', {
 
 export const MutterPage: FC<ComponentProps<'main'>> = () => {
   const [draft, setDraft] = useState('')
-  const { data, isPending } = useMutterQuery()
+  const [query, setQuery] = useState('')
+  const { data, isPending } = useMutterQuery({ q: query })
   const { mutateAsync: createMutter, isPending: isCreating } = useMutterMutation()
 
   const fetchedMutters: MutterListItem[] = (data?.list ?? []).map(item => {
@@ -51,7 +52,7 @@ export const MutterPage: FC<ComponentProps<'main'>> = () => {
 
   return (
     <main className="flex h-full min-h-0 w-full flex-1 flex-col gap-2 overflow-hidden">
-      <MutterSearch />
+      <MutterSearch setQuery={setQuery} />
 
       {isPending ? <Loading /> : <MutterList data={fetchedMutters} />}
 
