@@ -1,6 +1,17 @@
 import type { BaseErrorOptions } from './base'
 import { BaseError } from './base'
 
+export class BadRequestError extends BaseError {
+  name = 'BadRequestError'
+
+  constructor(message = 'Bad request.', options: BaseErrorOptions = {}) {
+    super(message, {
+      ...options,
+      needFix: false,
+    })
+  }
+}
+
 export class TimeoutError extends BaseError {
   name = 'TimeoutError'
 

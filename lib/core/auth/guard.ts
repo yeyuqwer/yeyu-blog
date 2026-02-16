@@ -2,6 +2,7 @@ import { headers } from 'next/headers'
 import { isAddress } from 'viem'
 import { auth } from '@/auth'
 import { ADMIN_EMAILS, ADMIN_WALLET_ADDRESS } from '@/config/constant'
+import { BadRequestError } from '@/lib/common/errors/request'
 
 export const noPermission = async () => {
   const session = await auth.api.getSession({
@@ -35,9 +36,8 @@ export const noPermission = async () => {
   return true
 }
 
-// TODO: remove it, use global error handler
 export const requireAdmin = async () => {
   if (await noPermission()) {
-    throw new Error('权限不够喵~')
+    throw new BadRequestError('Insufficient permissions.')
   }
 }
