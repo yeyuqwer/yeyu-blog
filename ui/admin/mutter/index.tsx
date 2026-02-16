@@ -2,7 +2,8 @@
 
 import type { ComponentProps, FC } from 'react'
 import { useState } from 'react'
-import { useMutterQuery } from '@/hooks/api/mutter'
+import { toast } from 'sonner'
+import { useMutterMutation, useMutterQuery } from '@/hooks/api/mutter'
 import Loading from '@/ui/components/shared/loading'
 import { MutterForm } from './mutter-form'
 import { MutterList, type MutterListItem } from './mutter-list'
@@ -18,9 +19,9 @@ const dateFormatter = new Intl.DateTimeFormat('zh-CN', {
 })
 
 export const MutterPage: FC<ComponentProps<'main'>> = () => {
-  const [optimisticMutters, setOptimisticMutters] = useState<MutterListItem[]>([])
   const [draft, setDraft] = useState('')
   const { data, isPending } = useMutterQuery()
+  const { mutateAsync: createMutter, isPending: isCreating } = useMutterMutation()
 
   const fetchedMutters: MutterListItem[] = (data?.list ?? []).map(item => {
     return {
@@ -30,27 +31,36 @@ export const MutterPage: FC<ComponentProps<'main'>> = () => {
     }
   })
 
-  const handleCreateMutter = () => {
+  const handleCreateMutter = async () => {
     const content = draft.trim()
     if (content.length === 0) return
 
-    const nextMutter: MutterListItem = {
-      id: Date.now(),
-      content,
-      createdAt: dateFormatter.format(new Date()),
+    try {
+      await createMutter({
+        content,
+      })
+      setDraft('')
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message)
+      } else {
+        toast.error('Failed to create mutter.')
+      }
     }
-
-    setOptimisticMutters(prev => [nextMutter, ...prev])
-    setDraft('')
   }
 
   return (
     <main className="flex h-full min-h-0 w-full flex-1 flex-col gap-2 overflow-hidden">
       <MutterSearch />
 
-      {isPending ? <Loading /> : <MutterList data={[...optimisticMutters, ...fetchedMutters]} />}
+      {isPending ? <Loading /> : <MutterList data={fetchedMutters} />}
 
-      <MutterForm onCreate={handleCreateMutter} value={draft} onValueChange={setDraft} />
+      <MutterForm
+        isCreating={isCreating}
+        onCreate={handleCreateMutter}
+        value={draft}
+        onValueChange={setDraft}
+      />
     </main>
   )
 }

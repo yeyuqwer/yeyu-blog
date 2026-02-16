@@ -1,4 +1,4 @@
-import type { ComponentProps, FC, FormEvent } from 'react'
+import type { FC, FormEvent } from 'react'
 import { cn } from '@/lib/utils/common/shadcn'
 import {
   InputGroup,
@@ -8,33 +8,23 @@ import {
   InputGroupTextarea,
 } from '@/ui/shadcn/input-group'
 
-interface MutterFormProps extends Omit<ComponentProps<'form'>, 'onSubmit'> {
-  onCreate: () => void
+export const MutterForm: FC<{
+  className?: string
+  isCreating?: boolean
+  onCreate: () => Promise<void> | void
   onValueChange: (value: string) => void
   value: string
-}
-
-export const MutterForm: FC<MutterFormProps> = ({
-  className,
-  onCreate,
-  onValueChange,
-  value,
-  ...props
-}) => {
+}> = ({ className, isCreating = false, onCreate, onValueChange, value }) => {
   const canSubmit = value.trim().length > 0
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (!canSubmit) return
-    onCreate()
+    if (!canSubmit || isCreating) return
+    void onCreate()
   }
 
   return (
-    <form
-      className={cn('h-40 max-h-40 min-h-40 shrink-0', className)}
-      onSubmit={handleSubmit}
-      {...props}
-    >
+    <form className={cn('h-40 max-h-40 min-h-40 shrink-0', className)} onSubmit={handleSubmit}>
       <InputGroup className="h-full min-h-0 has-[>[data-align=block-end]]:h-full has-[>textarea]:h-full">
         <InputGroupTextarea
           className="h-full min-h-0 overflow-y-auto [field-sizing:fixed]"
@@ -51,7 +41,7 @@ export const MutterForm: FC<MutterFormProps> = ({
             variant="secondary"
             size="sm"
             className="cursor-pointer"
-            disabled={!canSubmit}
+            disabled={!canSubmit || isCreating}
           >
             提交
           </InputGroupButton>
