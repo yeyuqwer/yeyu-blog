@@ -5,8 +5,7 @@
 @plugin "@tailwindcss/typography";
 
 /* * 感谢工具 https://chinese-font.netlify.app/zh-cn/online-split/ */
-@import "./font/LXGWWenKaiMono-Regular/result.css";
-@import "./font/LXGWWenKaiMono-Medium/result.css";
+@import "./font/MapleMono-NF-CN-SemiBold/result.css";
 
 @import "./shadcn.css";
 
