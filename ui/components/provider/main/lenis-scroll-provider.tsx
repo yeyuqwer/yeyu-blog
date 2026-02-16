@@ -3,23 +3,17 @@
 import type { FC } from 'react'
 import { ReactLenis } from 'lenis/react'
 
-interface LenisScrollProviderProps {
-  children: React.ReactNode
-}
-
-// copy from https://easings.net/en#easeOutQuint
-// https://easings.net/en
-function easeOutQuint(x: number): number {
-  return 1 - (1 - x) ** 5
-}
-
-const LenisScrollProvider: FC<LenisScrollProviderProps> = ({ children }) => {
+const LenisScrollProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <ReactLenis
-      options={{
-        easing: easeOutQuint,
-      }}
       root
+      options={{
+        lerp: 0.15,
+        duration: 1.5,
+        smoothWheel: true,
+        wheelMultiplier: 1,
+        touchMultiplier: 2,
+      }}
     >
       {children}
     </ReactLenis>
