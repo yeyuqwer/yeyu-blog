@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache'
 import { BadRequestError } from '@/lib/common/errors/request'
 import { requireAdmin } from '@/lib/core/auth/guard'
 import { readJsonBody } from '@/lib/infra/http/read-json-body'
@@ -74,6 +75,9 @@ export const POST = withResponse(async request => {
     },
   })
 
+  revalidatePath('/mutter')
+  revalidatePath('/admin/mutter')
+
   return {
     message: 'Created.',
     data: created,
@@ -144,6 +148,9 @@ export const DELETE = withResponse(async request => {
       id,
     },
   })
+
+  revalidatePath('/mutter')
+  revalidatePath('/admin/mutter')
 
   return {
     message: 'Deleted.',
