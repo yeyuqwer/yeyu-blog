@@ -115,6 +115,9 @@ export const PATCH = withResponse(async request => {
     },
   })
 
+  revalidatePath('/mutter')
+  revalidatePath('/admin/mutter')
+
   return {
     message: 'Updated.',
     data: updated,
