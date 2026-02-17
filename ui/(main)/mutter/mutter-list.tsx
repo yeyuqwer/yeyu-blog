@@ -15,11 +15,7 @@ export function MutterList() {
   }
 
   if (isError) {
-    return (
-      <section className="mx-auto mt-6 flex w-full max-w-5xl flex-1 items-center justify-center rounded-3xl border border-zinc-300/80 border-dashed bg-white/25 px-5 py-12 text-zinc-600 backdrop-blur-xs dark:border-zinc-700/60 dark:bg-black/20 dark:text-zinc-400">
-        加载失败。
-      </section>
-    )
+    throw new Error('')
   }
 
   if (mutters.length === 0) {
