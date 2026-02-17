@@ -1,10 +1,26 @@
-import Image from 'next/image'
-import { getAllMutters } from '@/actions/mutters'
-import avatar from '@/config/img/avatar.webp'
-import { prettyDateTime, toRelativeDate } from '@/lib/utils/time'
+'use client'
 
-export async function MutterList() {
-  const mutters = await getAllMutters()
+import Image from 'next/image'
+import avatar from '@/config/img/avatar.webp'
+import { usePublicMutterQuery } from '@/hooks/api/mutter'
+import { prettyDateTime, toRelativeDate } from '@/lib/utils/time'
+import Loading from '@/ui/components/shared/loading'
+
+export function MutterList() {
+  const { data, isPending, isError } = usePublicMutterQuery()
+  const mutters = data?.list ?? []
+
+  if (isPending) {
+    return <Loading />
+  }
+
+  if (isError) {
+    return (
+      <section className="mx-auto mt-6 flex w-full max-w-5xl flex-1 items-center justify-center rounded-3xl border border-zinc-300/80 border-dashed bg-white/25 px-5 py-12 text-zinc-600 backdrop-blur-xs dark:border-zinc-700/60 dark:bg-black/20 dark:text-zinc-400">
+        加载失败。
+      </section>
+    )
+  }
 
   if (mutters.length === 0) {
     return (
