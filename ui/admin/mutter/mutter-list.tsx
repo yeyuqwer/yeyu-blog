@@ -5,6 +5,7 @@ import { type ComponentProps, type FC, useState } from 'react'
 import { toast } from 'sonner'
 import { useMutterPublishMutation, useMutterQuery } from '@/hooks/api/mutter'
 import { prettyDateTime } from '@/lib/utils/time'
+import { useModalStore } from '@/store/use-modal-store'
 import Loading from '@/ui/components/shared/loading'
 import { Button } from '@/ui/shadcn/button'
 
@@ -14,6 +15,7 @@ export const MutterList: FC<
   }
 > = ({ query }) => {
   const { data, isPending } = useMutterQuery({ q: query })
+  const { setModalOpen } = useModalStore()
   const { mutateAsync: toggleMutterPublish } = useMutterPublishMutation()
   const [togglingMutterIds, setTogglingMutterIds] = useState<number[]>([])
   const mutters = data?.list ?? []
@@ -84,6 +86,12 @@ export const MutterList: FC<
                     size="icon-xs"
                     className="cursor-pointer text-red-600"
                     aria-label="delete mutter"
+                    onClick={() => {
+                      setModalOpen('deleteMutterModal', {
+                        id: item.id,
+                        content: item.content,
+                      })
+                    }}
                   >
                     <Trash className="size-3" />
                   </Button>
