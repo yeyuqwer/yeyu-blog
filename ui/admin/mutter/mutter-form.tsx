@@ -1,7 +1,7 @@
-import type { FC, FormEvent } from 'react'
-import { useState } from 'react'
+import { type FC, type FormEvent, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { useMutterMutation } from '@/hooks/api/mutter'
+import { useModalStore } from '@/store/use-modal-store'
 import {
   InputGroup,
   InputGroupAddon,
@@ -10,13 +10,33 @@ import {
   InputGroupTextarea,
 } from '@/ui/shadcn/input-group'
 
-export const MutterForm: FC = () => {
+type MutterFormProps = {
+  editingMutter: {
+    id: number
+    content: string
+  } | null
+  clearEditingMutter: () => void
+}
+
+export const MutterForm: FC<MutterFormProps> = ({ editingMutter, clearEditingMutter }) => {
+  const { setModalOpen } = useModalStore()
   const [draft, setDraft] = useState('')
   const { mutateAsync: createMutter, isPending: isCreating } = useMutterMutation()
-  const canSubmit = draft.trim().length > 0
+  const trimmedDraft = draft.trim()
+  const canSubmit = trimmedDraft.length > 0
+  const isEditing = editingMutter != null
+  const hasContentChanged = isEditing ? trimmedDraft !== editingMutter.content.trim() : false
+
+  useEffect(() => {
+    if (editingMutter == null) {
+      return
+    }
+
+    setDraft(editingMutter.content)
+  }, [editingMutter])
 
   const handleCreateMutter = async () => {
-    const content = draft.trim()
+    const content = trimmedDraft
     if (content.length === 0) return
 
     try {
@@ -36,6 +56,22 @@ export const MutterForm: FC = () => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (!canSubmit || isCreating) return
+
+    if (isEditing) {
+      if (!hasContentChanged) return
+
+      setModalOpen('updateMutterModal', {
+        id: editingMutter.id,
+        oldContent: editingMutter.content,
+        newContent: trimmedDraft,
+        onSuccess: () => {
+          setDraft('')
+          clearEditingMutter()
+        },
+      })
+      return
+    }
+
     void handleCreateMutter()
   }
 
@@ -57,9 +93,9 @@ export const MutterForm: FC = () => {
             variant="secondary"
             size="sm"
             className="cursor-pointer"
-            disabled={!canSubmit || isCreating}
+            disabled={!canSubmit || isCreating || (isEditing && !hasContentChanged)}
           >
-            提交
+            {isEditing ? '更新' : '提交'}
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>

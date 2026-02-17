@@ -12,8 +12,9 @@ import { Button } from '@/ui/shadcn/button'
 export const MutterList: FC<
   ComponentProps<'main'> & {
     query: string
+    onEditMutter: (values: { id: number; content: string }) => void
   }
-> = ({ query }) => {
+> = ({ query, onEditMutter }) => {
   const { data, isPending } = useMutterQuery({ q: query })
   const { setModalOpen } = useModalStore()
   const { mutateAsync: toggleMutterPublish } = useMutterPublishMutation()
@@ -53,6 +54,11 @@ export const MutterList: FC<
       ) : (
         <ul className="w-full space-y-2">
           {mutters.map(item => {
+            const createdAt = new Date(item.createdAt)
+            const updatedAt = new Date(item.updatedAt)
+            const isEdited = updatedAt.getTime() > createdAt.getTime()
+            const displayAt = isEdited ? updatedAt : createdAt
+
             return (
               <li key={item.id} className="relative rounded-sm border bg-background p-2 shadow-xs">
                 <section className="absolute top-1.5 right-1.5 flex items-center gap-0.5">
@@ -62,6 +68,12 @@ export const MutterList: FC<
                     size="icon-xs"
                     className="cursor-pointer"
                     aria-label="edit mutter"
+                    onClick={() => {
+                      onEditMutter({
+                        id: item.id,
+                        content: item.content,
+                      })
+                    }}
                   >
                     <Edit2 className="size-3" />
                   </Button>
@@ -105,7 +117,8 @@ export const MutterList: FC<
                   {item.content}
                 </p>
                 <time className="mt-2 block text-right text-muted-foreground text-xs">
-                  {prettyDateTime(new Date(item.createdAt))}
+                  {prettyDateTime(displayAt)}
+                  {isEdited ? <span className="ml-1">(#已编辑)</span> : null}
                 </time>
               </li>
             )

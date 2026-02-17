@@ -8,6 +8,7 @@ import DeleteMutterModal from '@/ui/components/modal/delete-mutter-modal'
 import DeleteTagModal from '@/ui/components/modal/delete-tag-modal'
 import EditEchoModal from '@/ui/components/modal/edit-echo-modal'
 import EditTagModal from '@/ui/components/modal/edit-tag-modal'
+import UpdateMutterModal from '@/ui/components/modal/update-mutter-modal'
 
 export function AdminModalProvider({ children }: { children: React.ReactNode }) {
   return (
@@ -15,6 +16,7 @@ export function AdminModalProvider({ children }: { children: React.ReactNode }) 
       {children}
       <DeleteArticleModal />
       <DeleteMutterModal />
+      <UpdateMutterModal />
       <EditTagModal />
       <DeleteTagModal />
       <CreateEchoModal />

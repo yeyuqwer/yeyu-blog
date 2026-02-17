@@ -3,6 +3,7 @@ import { create } from 'zustand'
 export type IModalType =
   | 'deleteArticleModal'
   | 'deleteMutterModal'
+  | 'updateMutterModal'
   | 'editTagModal'
   | 'deleteTagModal'
   | 'createEchoModal'
