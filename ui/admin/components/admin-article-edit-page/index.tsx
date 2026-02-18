@@ -10,8 +10,8 @@ import { File, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { createBlog, updateBlogById } from '@/actions/blogs'
 import { useBlogTagsQuery, useNoteTagsQuery } from '@/hooks/api/tag'
+import { createBlog, updateBlog } from '@/lib/api/blog'
 import { createNote, updateNote } from '@/lib/api/note'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
@@ -26,7 +26,7 @@ import { ArticleSchema } from './type'
 const STRATEGIES = {
   [TagType.BLOG]: {
     create: createBlog,
-    update: updateBlogById,
+    update: updateBlog,
     queryKey: 'blog-list',
     path: 'blog',
   },
@@ -99,6 +99,9 @@ export const AdminArticleEditPage: FC<{
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['tags'] })
       queryClient.invalidateQueries({ queryKey: [strategy.queryKey] })
+      if (type === TagType.BLOG) {
+        queryClient.invalidateQueries({ queryKey: ['public-blog-list'] })
+      }
       if (type === TagType.NOTE) {
         queryClient.invalidateQueries({ queryKey: ['public-note-list'] })
       }

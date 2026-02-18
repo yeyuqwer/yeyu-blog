@@ -1,7 +1,7 @@
 import type { TagType } from '@prisma/client'
 import type { Variants } from 'motion/react'
 import type { ComponentProps, FC } from 'react'
-import type { BlogListItem } from '@/actions/blogs/type'
+import type { BlogListItem } from '@/lib/api/blog'
 import type { NoteListItem } from '@/lib/api/note'
 import * as motion from 'motion/react-client'
 import { ArticleLink } from './article-link'

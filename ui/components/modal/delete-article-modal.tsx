@@ -1,7 +1,7 @@
 import { TagType } from '@prisma/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { deleteBlogById } from '@/actions/blogs'
+import { deleteBlog } from '@/lib/api/blog'
 import { deleteNote } from '@/lib/api/note'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
@@ -33,6 +33,7 @@ export default function DeleteArticleModal() {
       switch (variables.articleType) {
         case TagType.BLOG:
           queryClient.invalidateQueries({ queryKey: ['blog-list'] })
+          queryClient.invalidateQueries({ queryKey: ['public-blog-list'] })
           break
         case TagType.NOTE:
           queryClient.invalidateQueries({ queryKey: ['note-list'] })
@@ -88,7 +89,7 @@ export default function DeleteArticleModal() {
 async function handleDeleteArticle({ id, articleType }: DeleteArticleParams) {
   switch (articleType) {
     case TagType.BLOG:
-      await deleteBlogById(id)
+      await deleteBlog({ id })
       break
     case TagType.NOTE:
       await deleteNote({ id })

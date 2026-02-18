@@ -1,5 +1,5 @@
 import type { FC } from 'react'
-import type { BlogListItem } from '@/actions/blogs/type'
+import type { BlogListItem } from '@/lib/api/blog'
 import type { NoteListItem } from '@/lib/api/note'
 import { TagType } from '@prisma/client'
 import Link from 'next/link'
