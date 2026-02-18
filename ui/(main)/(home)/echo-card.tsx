@@ -1,15 +1,10 @@
 'use client'
 
-import type { Echo } from '@prisma/client'
-import { useRandomEchoIndexStore } from '@/store/use-display-echo-store'
+import { usePublicEchoQuery } from '@/hooks/api/echo'
 
-export default function EchoCard({ allPublishedEcho }: { allPublishedEcho: Echo[] }) {
-  const randomIndex = useRandomEchoIndexStore(s => s.randomIndex)
-  const selectRandomIndex = useRandomEchoIndexStore(s => s.selectRandomIndex)
-
-  if (randomIndex === null) selectRandomIndex(allPublishedEcho.length)
-
-  const echo = allPublishedEcho[randomIndex ?? 0]
+export default function EchoCard() {
+  const { data } = usePublicEchoQuery()
+  const echo = data
 
   return (
     <section className="mt-4 flex w-2/3 flex-col">

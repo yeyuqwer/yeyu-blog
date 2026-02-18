@@ -1,14 +1,14 @@
 'use client'
 
-import type { Echo } from '@prisma/client'
 import type { ColumnDef } from '@tanstack/react-table'
+import type { EchoRecord } from '@/lib/api/echo'
 import { CalendarDays, Eye, Quote, TypeIcon, Wrench } from 'lucide-react'
 import { prettyDateTime } from '@/lib/utils/time'
 import { Button } from '@/ui/shadcn/button'
 import ActionButtons from './action-buttons'
 import PublishToggleSwitch from './publish-toggle-switch'
 
-export const columns: ColumnDef<Echo>[] = [
+export const columns: ColumnDef<EchoRecord>[] = [
   {
     accessorKey: 'content',
     header: () => {
@@ -80,7 +80,7 @@ export const columns: ColumnDef<Echo>[] = [
       )
     },
     cell: ({ row }) => {
-      const prettyTime = prettyDateTime(row.original.createdAt)
+      const prettyTime = prettyDateTime(new Date(row.original.createdAt))
       return <time>{prettyTime}</time>
     },
   },

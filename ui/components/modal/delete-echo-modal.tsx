@@ -1,6 +1,5 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { deleteEchoById } from '@/actions/echos'
+import { useEchoDeleteMutation } from '@/hooks/api/echo'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
 import {
@@ -16,29 +15,25 @@ export default function DeleteEchoModal() {
   const isModalOpen = modalType === 'deleteEchoModal'
   const { id } = payload != null ? (payload as { id: number }) : {}
 
-  const queryClient = useQueryClient()
-  const { mutate, isPending } = useMutation({
-    mutationFn: handleDeleteEcho,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['echo-list'] })
-      toast.success(`删除成功`)
-    },
-    onError: error => {
-      if (error instanceof Error) {
-        toast.error(`删除失败${error.message}`)
-      } else {
-        toast.error(`删除失败`)
-      }
-    },
-  })
+  const { mutateAsync: deleteEcho, isPending } = useEchoDeleteMutation()
 
   async function onSubmit() {
     if (id == null) {
       toast.error(`标签信息不存在，删除失败`)
       return
     }
-    mutate(id)
-    onModalClose()
+
+    try {
+      await deleteEcho({ id })
+      toast.success(`删除成功`)
+      onModalClose()
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(`删除失败${error.message}`)
+      } else {
+        toast.error(`删除失败`)
+      }
+    }
   }
 
   return (
@@ -64,8 +59,4 @@ export default function DeleteEchoModal() {
       </DialogContent>
     </Dialog>
   )
-}
-
-async function handleDeleteEcho(id: number) {
-  await deleteEchoById(id)
 }

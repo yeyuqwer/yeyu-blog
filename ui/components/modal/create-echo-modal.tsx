@@ -1,13 +1,12 @@
 'use client'
 
-import type { CreateEchoDTO } from '@/actions/echos/type'
+import type { CreateEchoDTO } from '@/lib/api/echo'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { createEcho } from '@/actions/echos'
-import { CreateEchoSchema } from '@/actions/echos/type'
+import { useEchoCreateMutation } from '@/hooks/api/echo'
+import { CreateEchoSchema } from '@/lib/api/echo'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
 import {
@@ -26,22 +25,7 @@ import { Textarea } from '@/ui/shadcn/textarea'
 export default function CreateEchoModal() {
   const { modalType, onModalClose } = useModalStore()
   const isModalOpen = modalType === 'createEchoModal'
-  const queryClient = useQueryClient()
-
-  const mutation = useMutation({
-    mutationFn: handleCreateEcho,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['echo-list'] })
-      toast.success(`创建成功`)
-    },
-    onError: error => {
-      if (error instanceof Error) {
-        toast.error(`创建引用失败~ ${error.message}`)
-      } else {
-        toast.error(`创建引用失败~`)
-      }
-    },
-  })
+  const { mutateAsync: createEcho, isPending } = useEchoCreateMutation()
 
   const form = useForm<CreateEchoDTO>({
     resolver: zodResolver(CreateEchoSchema),
@@ -59,9 +43,18 @@ export default function CreateEchoModal() {
     }
   }, [isModalOpen, form])
 
-  function onSubmit(values: CreateEchoDTO) {
-    mutation.mutate(values)
-    onModalClose()
+  async function onSubmit(values: CreateEchoDTO) {
+    try {
+      await createEcho(values)
+      toast.success(`创建成功`)
+      onModalClose()
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(`创建引用失败~ ${error.message}`)
+      } else {
+        toast.error(`创建引用失败~`)
+      }
+    }
   }
 
   return (
@@ -120,7 +113,7 @@ export default function CreateEchoModal() {
                 )}
               />
               <DialogFooter>
-                <Button type="submit" className="cursor-pointer">
+                <Button type="submit" className="cursor-pointer" disabled={isPending}>
                   保存修改
                 </Button>
               </DialogFooter>
@@ -130,8 +123,4 @@ export default function CreateEchoModal() {
       </DialogContent>
     </Dialog>
   )
-}
-
-async function handleCreateEcho(values: CreateEchoDTO) {
-  await createEcho(values)
 }

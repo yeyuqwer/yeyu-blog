@@ -1,13 +1,12 @@
 'use client'
 
-import type { UpdateEchoDTO } from '@/actions/echos/type'
+import type { UpdateEchoDTO } from '@/lib/api/echo'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { updateEchoById } from '@/actions/echos'
-import { UpdateEchoSchema } from '@/actions/echos/type'
+import { useEchoUpdateMutation } from '@/hooks/api/echo'
+import { UpdateEchoSchema } from '@/lib/api/echo'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/ui/shadcn/dialog'
@@ -48,25 +47,20 @@ export default function EditEchoModal() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isModalOpen, form])
 
-  const queryClient = useQueryClient()
-  const { mutate, isPending } = useMutation({
-    mutationFn: handleEditEcho,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['echo-list'] })
+  const { mutateAsync: updateEcho, isPending } = useEchoUpdateMutation()
+
+  async function onSubmit(values: UpdateEchoDTO) {
+    try {
+      await updateEcho(values)
       toast.success(`修改成功`)
-    },
-    onError: error => {
+      onModalClose()
+    } catch (error) {
       if (error instanceof Error) {
         toast.error(`更新引用失败~ ${error.message}`)
       } else {
         toast.error('更新引用失败~')
       }
-    },
-  })
-
-  async function onSubmit(values: UpdateEchoDTO) {
-    mutate(values)
-    onModalClose()
+    }
   }
 
   return (
@@ -143,8 +137,4 @@ export default function EditEchoModal() {
       </DialogContent>
     </Dialog>
   )
-}
-
-async function handleEditEcho(values: UpdateEchoDTO) {
-  await updateEchoById({ ...values })
 }
