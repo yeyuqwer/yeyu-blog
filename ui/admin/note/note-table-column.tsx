@@ -1,7 +1,7 @@
 'use client'
 
 import type { ColumnDef } from '@tanstack/react-table'
-import type { NoteListItem } from '@/actions/notes/type'
+import type { NoteListItem } from '@/lib/api/note'
 import { ArrowDown, ArrowUp, CalendarDays, Eye, TagIcon, TypeIcon, Wrench } from 'lucide-react'
 import { prettyDateTime } from '@/lib/utils/time'
 import TagItemBadge from '@/ui/components/shared/tag-item-badge'
@@ -79,7 +79,7 @@ export const columns: ColumnDef<NoteListItem>[] = [
       )
     },
     cell: ({ row }) => {
-      const prettyTime = prettyDateTime(row.original.createdAt)
+      const prettyTime = prettyDateTime(new Date(row.original.createdAt))
       return <span>{prettyTime}</span>
     },
   },

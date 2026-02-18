@@ -1,9 +1,16 @@
+'use client'
+
 import { TagType } from '@prisma/client'
-import { getAllShowNotes } from '@/actions/notes'
+import { usePublicNoteListQuery } from '@/hooks/api/note'
+import Loading from '@/ui/components/shared/loading'
 import { ArticleList } from '../article-list'
 
-export default async function NoteListPage() {
-  const allNotes = await getAllShowNotes()
+export default function NoteListPage() {
+  const { data, isPending } = usePublicNoteListQuery()
 
-  return <ArticleList items={allNotes} type={TagType.NOTE} />
+  if (isPending) {
+    return <Loading />
+  }
+
+  return <ArticleList items={data ?? []} type={TagType.NOTE} />
 }

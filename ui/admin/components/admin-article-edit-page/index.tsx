@@ -11,8 +11,8 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { createBlog, updateBlogById } from '@/actions/blogs'
-import { createNote, updateNoteById } from '@/actions/notes'
 import { useBlogTagsQuery, useNoteTagsQuery } from '@/hooks/api/tag'
+import { createNote, updateNote } from '@/lib/api/note'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
 import { Combobox } from '@/ui/shadcn/combobox'
@@ -32,7 +32,7 @@ const STRATEGIES = {
   },
   [TagType.NOTE]: {
     create: createNote,
-    update: updateNoteById,
+    update: updateNote,
     queryKey: 'note-list',
     path: 'note',
   },
@@ -99,6 +99,9 @@ export const AdminArticleEditPage: FC<{
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['tags'] })
       queryClient.invalidateQueries({ queryKey: [strategy.queryKey] })
+      if (type === TagType.NOTE) {
+        queryClient.invalidateQueries({ queryKey: ['public-note-list'] })
+      }
 
       toast.success('保存成功')
       router.push(`/admin/${strategy.path}/edit/${variables.slug}`)

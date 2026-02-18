@@ -1,7 +1,7 @@
 import { TagType } from '@prisma/client'
 import { redirect } from 'next/navigation'
-import { getRawNoteBySlug } from '@/actions/notes'
 import { requireAdmin } from '@/lib/core/auth/guard'
+import { prisma } from '@/prisma/instance'
 import { AdminArticleEditPage } from '@/ui/admin/components/admin-article-edit-page'
 
 export default async function Page({
@@ -16,7 +16,17 @@ export default async function Page({
   }
 
   const slug = (await params).slug?.[0] ?? null
-  const article = slug != null ? await getRawNoteBySlug(slug) : null
+  const article =
+    slug != null
+      ? await prisma.note.findUnique({
+          where: {
+            slug,
+          },
+          include: {
+            tags: true,
+          },
+        })
+      : null
 
   const relatedArticleTagNames = article != null ? article.tags.map(v => v.tagName) : []
 

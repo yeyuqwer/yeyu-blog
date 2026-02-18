@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import type { BlogListItem } from '@/actions/blogs/type'
-import type { NoteListItem } from '@/actions/notes/type'
+import type { NoteListItem } from '@/lib/api/note'
 import { TagType } from '@prisma/client'
 import Link from 'next/link'
 import { cn } from '@/lib/utils/common/shadcn'
@@ -27,7 +27,7 @@ export const ArticleLink: FC<{
         <ScaleUnderline className="bg-clear-sky-indicator dark:bg-white" />
       </h2>
       <time className="shrink-0 font-light text-gray-400 text-sm group-hover:text-clear-sky-indicator dark:group-hover:text-white">
-        {toDisplayDate(item.createdAt)}
+        {toDisplayDate(new Date(item.createdAt))}
       </time>
     </Link>
   )

@@ -2,7 +2,7 @@ import type { TagType } from '@prisma/client'
 import type { Variants } from 'motion/react'
 import type { ComponentProps, FC } from 'react'
 import type { BlogListItem } from '@/actions/blogs/type'
-import type { NoteListItem } from '@/actions/notes/type'
+import type { NoteListItem } from '@/lib/api/note'
 import * as motion from 'motion/react-client'
 import { ArticleLink } from './article-link'
 
@@ -29,10 +29,12 @@ const listVariants: Variants = {
   },
 }
 
+type ArticleListItem = BlogListItem | NoteListItem
+
 // TODO: 大括号样式
 export const ArticleList: FC<
   ComponentProps<'div'> & {
-    items: BlogListItem[] | NoteListItem[]
+    items: ArticleListItem[]
     type: TagType
   }
 > = ({ items, type }) => {
@@ -53,7 +55,7 @@ export const ArticleList: FC<
       acc[year].push(item)
       return acc
     },
-    {} as Record<number, typeof items>,
+    {} as Record<number, ArticleListItem[]>,
   )
 
   const sortedYears = Object.keys(groupedItems)

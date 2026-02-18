@@ -1,13 +1,29 @@
 import type { ComponentProps, FC } from 'react'
 import { notFound } from 'next/navigation'
-import { getPublishedNoteHTMLBySlug } from '@/actions/notes'
+import { processor } from '@/lib/core/markdown'
+import { prisma } from '@/prisma/instance'
 import ArticleDisplayPage from '@/ui/components/shared/article-display-page'
 import CommentCard from '@/ui/components/shared/comment-card'
 import HorizontalDividingLine from '@/ui/components/shared/horizontal-dividing-line'
 
 export const NoteDetail: FC<ComponentProps<'div'> & { slug: string }> = async ({ slug }) => {
-  const article = await getPublishedNoteHTMLBySlug(slug)
-  if (article == null) notFound()
+  const note = await prisma.note.findUnique({
+    where: {
+      slug,
+      isPublished: true,
+    },
+    include: {
+      tags: true,
+    },
+  })
+
+  if (note == null || note.content.length === 0) notFound()
+
+  const noteHTML = await processor.process(note.content)
+  const article = {
+    ...note,
+    content: noteHTML.toString(),
+  }
 
   const { content, title, createdAt, tags, id } = article
   const tagNames = tags.map(v => v.tagName)

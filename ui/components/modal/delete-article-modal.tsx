@@ -2,7 +2,7 @@ import { TagType } from '@prisma/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { deleteBlogById } from '@/actions/blogs'
-import { deleteNoteById } from '@/actions/notes'
+import { deleteNote } from '@/lib/api/note'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
 import {
@@ -36,6 +36,7 @@ export default function DeleteArticleModal() {
           break
         case TagType.NOTE:
           queryClient.invalidateQueries({ queryKey: ['note-list'] })
+          queryClient.invalidateQueries({ queryKey: ['public-note-list'] })
           break
         default:
           throw new Error(`删除文章类型不匹配`)
@@ -90,7 +91,7 @@ async function handleDeleteArticle({ id, articleType }: DeleteArticleParams) {
       await deleteBlogById(id)
       break
     case TagType.NOTE:
-      await deleteNoteById(id)
+      await deleteNote({ id })
       break
     default:
       throw new Error(`文章类型不正确`)
