@@ -1,14 +1,12 @@
 'use client'
 
-import type { UpdateTagNameDTO } from '@/actions/tags/type'
+import type { UpdateTagNameDTO } from '@/lib/api/tag'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { TagType } from '@prisma/client'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { updateBlogTagById, updateNoteTagById } from '@/actions/tags'
-import { UpdateTagNameSchema } from '@/actions/tags/type'
+import { useTagUpdateMutation } from '@/hooks/api/tag'
+import { UpdateTagNameSchema } from '@/lib/api/tag'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
 import {
@@ -26,21 +24,7 @@ export default function EditTagModal() {
   const isModalOpen = modalType === 'editTagModal'
   const { id, tagName, tagType } = payload != null ? (payload as UpdateTagNameDTO) : {}
 
-  const queryClient = useQueryClient()
-  const { mutate, isPending } = useMutation({
-    mutationFn: updateTagName,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tags'] })
-      toast.success(`修改成功`)
-    },
-    onError: error => {
-      if (error instanceof Error) {
-        toast.error(`修改标签出错 ${error.message}`)
-      } else {
-        toast.error(`修改标签出错`)
-      }
-    },
-  })
+  const { mutateAsync: updateTagName, isPending } = useTagUpdateMutation()
 
   const form = useForm<UpdateTagNameDTO>({
     resolver: zodResolver(UpdateTagNameSchema),
@@ -58,8 +42,17 @@ export default function EditTagModal() {
   }, [isModalOpen, form, tagName, id, tagType])
 
   async function onSubmit(values: UpdateTagNameDTO) {
-    mutate(values)
-    onModalClose()
+    try {
+      await updateTagName(values)
+      toast.success(`修改成功`)
+      onModalClose()
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(`修改标签出错 ${error.message}`)
+      } else {
+        toast.error(`修改标签出错`)
+      }
+    }
   }
 
   return (
@@ -94,17 +87,4 @@ export default function EditTagModal() {
       </DialogContent>
     </Dialog>
   )
-}
-
-async function updateTagName(values: UpdateTagNameDTO) {
-  switch (values.tagType) {
-    case TagType.BLOG:
-      await updateBlogTagById(values)
-      break
-    case TagType.NOTE:
-      await updateNoteTagById(values)
-      break
-    default:
-      throw new Error('标签类型错误!')
-  }
 }

@@ -1,14 +1,13 @@
 'use client'
 
-import type { CreateTagDTO } from '@/actions/tags/type'
+import type { CreateTagDTO } from '@/lib/api/tag'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { TagType } from '@prisma/client'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { createBlogTag, createNoteTag } from '@/actions/tags'
-import { CreateTagSchema } from '@/actions/tags/type'
+import { useTagCreateMutation } from '@/hooks/api/tag'
+import { CreateTagSchema } from '@/lib/api/tag'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/ui/shadcn/dialog'
@@ -19,22 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 export default function CreateTagModal() {
   const { modalType, onModalClose } = useModalStore()
   const isModalOpen = modalType === 'createTagModal'
-  const queryClient = useQueryClient()
-
-  const mutation = useMutation({
-    mutationFn: handleCreateTag,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tags'] })
-      toast.success(`创建成功`)
-    },
-    onError: error => {
-      if (error instanceof Error) {
-        toast.error(`创建标签失败~ ${error.message}`)
-      } else {
-        toast.error(`创建标签失败~`)
-      }
-    },
-  })
+  const { mutateAsync: createTag, isPending } = useTagCreateMutation()
 
   const form = useForm<CreateTagDTO>({
     resolver: zodResolver(CreateTagSchema),
@@ -51,9 +35,18 @@ export default function CreateTagModal() {
     }
   }, [isModalOpen, form])
 
-  function onSubmit(values: CreateTagDTO) {
-    mutation.mutate(values)
-    onModalClose()
+  async function onSubmit(values: CreateTagDTO) {
+    try {
+      await createTag(values)
+      toast.success(`创建成功`)
+      onModalClose()
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(`创建标签失败~ ${error.message}`)
+      } else {
+        toast.error(`创建标签失败~`)
+      }
+    }
   }
 
   return (
@@ -106,7 +99,7 @@ export default function CreateTagModal() {
                 )}
               />
               <DialogFooter>
-                <Button type="submit" className="cursor-pointer">
+                <Button type="submit" className="cursor-pointer" disabled={isPending}>
                   保存
                 </Button>
               </DialogFooter>
@@ -116,17 +109,4 @@ export default function CreateTagModal() {
       </DialogContent>
     </Dialog>
   )
-}
-
-async function handleCreateTag(values: CreateTagDTO) {
-  switch (values.tagType) {
-    case TagType.BLOG:
-      await createBlogTag(values.tagName)
-      break
-    case TagType.NOTE:
-      await createNoteTag(values.tagName)
-      break
-    default:
-      throw new Error('tag type 不匹配')
-  }
 }

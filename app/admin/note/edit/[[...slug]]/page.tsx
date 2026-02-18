@@ -1,7 +1,6 @@
 import { TagType } from '@prisma/client'
 import { redirect } from 'next/navigation'
 import { getRawNoteBySlug } from '@/actions/notes'
-import { getNoteTags } from '@/actions/tags'
 import { requireAdmin } from '@/lib/core/auth/guard'
 import { AdminArticleEditPage } from '@/ui/admin/components/admin-article-edit-page'
 
@@ -17,11 +16,7 @@ export default async function Page({
   }
 
   const slug = (await params).slug?.[0] ?? null
-
-  const [article, noteTags] = await Promise.all([
-    slug != null ? getRawNoteBySlug(slug) : Promise.resolve(null),
-    getNoteTags(),
-  ])
+  const article = slug != null ? await getRawNoteBySlug(slug) : null
 
   const relatedArticleTagNames = article != null ? article.tags.map(v => v.tagName) : []
 
@@ -29,7 +24,6 @@ export default async function Page({
     <AdminArticleEditPage
       article={article}
       relatedArticleTagNames={relatedArticleTagNames}
-      allTags={noteTags}
       type={TagType.NOTE}
     />
   )

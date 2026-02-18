@@ -1,6 +1,6 @@
 'use client'
 
-import type { Blog, BlogTag, Note, NoteTag } from '@prisma/client'
+import type { Blog, Note } from '@prisma/client'
 import type { FC } from 'react'
 import type { ArticleDTO } from './type'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -12,6 +12,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { createBlog, updateBlogById } from '@/actions/blogs'
 import { createNote, updateNoteById } from '@/actions/notes'
+import { useBlogTagsQuery, useNoteTagsQuery } from '@/hooks/api/tag'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
 import { Combobox } from '@/ui/shadcn/combobox'
@@ -74,12 +75,18 @@ function extractMarkdownH1Title(content: string): string | null {
 export const AdminArticleEditPage: FC<{
   article: Blog | Note | null
   relatedArticleTagNames?: string[]
-  allTags: BlogTag[] | NoteTag[]
   type: TagType
-}> = ({ article, relatedArticleTagNames, allTags, type }) => {
+}> = ({ article, relatedArticleTagNames, type }) => {
   const router = useRouter()
   const { setModalOpen } = useModalStore()
   const strategy = STRATEGIES[type]
+  const { data: blogTags } = useBlogTagsQuery({
+    enabled: type === TagType.BLOG,
+  })
+  const { data: noteTags } = useNoteTagsQuery({
+    enabled: type === TagType.NOTE,
+  })
+  const allTags = type === TagType.BLOG ? (blogTags ?? []) : (noteTags ?? [])
 
   const queryClient = useQueryClient()
   const { mutate, isPending } = useMutation({

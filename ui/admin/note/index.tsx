@@ -4,7 +4,7 @@ import type { ComponentProps, FC } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { getNoteList, getNotesBySelectedTagName, getQueryNotes } from '@/actions/notes'
-import { getNoteTags } from '@/actions/tags'
+import { useNoteTagsQuery } from '@/hooks/api/tag'
 import Loading from '@/ui/components/shared/loading'
 import { DataTable } from '../components/table/data-table'
 import NoteSearch from './note-search'
@@ -25,10 +25,7 @@ export const AdminNotePage: FC<ComponentProps<'main'>> = () => {
     staleTime: 1000 * 30,
   })
 
-  const { data: noteTags, isPending: noteTagsPending } = useQuery({
-    queryKey: ['note-tags'],
-    queryFn: getNoteTags,
-  })
+  const { data: noteTags, isPending: noteTagsPending } = useNoteTagsQuery()
 
   return (
     <main className="flex w-full flex-col gap-2">

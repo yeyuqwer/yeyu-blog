@@ -1,8 +1,6 @@
-import type { DeleteTagDTO } from '@/actions/tags/type'
-import { TagType } from '@prisma/client'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import type { DeleteTagDTO } from '@/lib/api/tag'
 import { toast } from 'sonner'
-import { deleteBlogTagById, deleteNoteTagById } from '@/actions/tags'
+import { useTagDeleteMutation } from '@/hooks/api/tag'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
 import {
@@ -18,29 +16,25 @@ export default function DeleteTagModal() {
   const isModalOpen = modalType === 'deleteTagModal'
   const values = payload != null ? (payload as DeleteTagDTO) : null
 
-  const queryClient = useQueryClient()
-  const { mutate, isPending } = useMutation({
-    mutationFn: handleDeleteTag,
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['tags'] })
-      toast.success(`删除标签 #${variables?.tagName} 成功`)
-    },
-    onError: (error, variables) => {
-      if (error instanceof Error) {
-        toast.error(`删除标签 ${variables?.tagName} 失败~ ${error.message}`)
-      } else {
-        toast.error(`删除标签 ${variables?.tagName} 出错~`)
-      }
-    },
-  })
+  const { mutateAsync: deleteTag, isPending } = useTagDeleteMutation()
 
   async function onSubmit() {
     if (values == null) {
       toast.error(`标签信息不存在，删除出错`)
       return
     }
-    mutate(values)
-    onModalClose()
+
+    try {
+      await deleteTag(values)
+      toast.success(`删除标签 #${values.tagName} 成功`)
+      onModalClose()
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(`删除标签 ${values.tagName} 失败~ ${error.message}`)
+      } else {
+        toast.error(`删除标签 ${values.tagName} 出错~`)
+      }
+    }
   }
 
   return (
@@ -67,17 +61,4 @@ export default function DeleteTagModal() {
       </DialogContent>
     </Dialog>
   )
-}
-
-async function handleDeleteTag({ tagType, id }: DeleteTagDTO) {
-  switch (tagType) {
-    case TagType.BLOG:
-      await deleteBlogTagById(id)
-      break
-    case TagType.NOTE:
-      await deleteNoteTagById(id)
-      break
-    default:
-      throw new Error('标签类型错误或 id 不存在!')
-  }
 }

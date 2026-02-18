@@ -1,7 +1,7 @@
 'use client'
 
 import type { ColumnDef } from '@tanstack/react-table'
-import type { WithCountTagDTO } from '@/actions/tags/type'
+import type { WithCountTagDTO } from '@/lib/api/tag'
 import { ArrowDown, ArrowUp, FileText, TagsIcon, TypeIcon, Wrench } from 'lucide-react'
 import TagItemBadge from '@/ui/components/shared/tag-item-badge'
 import { Badge } from '@/ui/shadcn/badge'

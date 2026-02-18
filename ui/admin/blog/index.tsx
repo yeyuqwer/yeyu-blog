@@ -4,7 +4,7 @@ import type { ComponentProps, FC } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { getBlogList, getBlogsBySelectedTagName, getQueryBlog } from '@/actions/blogs'
-import { getBlogTags } from '@/actions/tags'
+import { useBlogTagsQuery } from '@/hooks/api/tag'
 import Loading from '@/ui/components/shared/loading'
 import { DataTable } from '../components/table/data-table'
 import BlogSearch from './blog-search'
@@ -25,10 +25,7 @@ export const AdminBlogPage: FC<ComponentProps<'div'>> = () => {
     staleTime: 1000 * 30,
   })
 
-  const { data: blogTags, isPending: blogTagsPending } = useQuery({
-    queryKey: ['blog-tags'],
-    queryFn: getBlogTags,
-  })
+  const { data: blogTags, isPending: blogTagsPending } = useBlogTagsQuery()
 
   return (
     <main className="flex w-full flex-col gap-2">
