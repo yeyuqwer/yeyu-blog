@@ -14,9 +14,11 @@ import { useMarkdownAutoSave } from './use-markdown-auto-save'
 export default function MarkdownEditor({
   value,
   onChange,
+  previewTitle,
 }: {
   value: string
   onChange: (value: string) => void
+  previewTitle?: string
 }) {
   const [html, setHtml] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -79,11 +81,18 @@ export default function MarkdownEditor({
 
   useEffect(() => {
     const render = async () => {
-      const file = await simpleProcessor.process(value)
+      const normalizedPreviewTitle = previewTitle?.trim() ?? ''
+      const previewHeading = normalizedPreviewTitle.length > 0 ? `# ${normalizedPreviewTitle}` : ''
+      const firstLine = value.split(/\r?\n/, 1)[0]?.trim() ?? ''
+      const hasMarkdownH1 = /^#\s+/.test(firstLine)
+      const markdownForPreview =
+        previewHeading.length > 0 && !hasMarkdownH1 ? `${previewHeading}\n\n${value}` : value
+
+      const file = await simpleProcessor.process(markdownForPreview)
       setHtml(String(file))
     }
     render()
-  }, [value])
+  }, [previewTitle, value])
 
   return (
     <div className="flex h-[800px] w-full flex-row gap-2 rounded-md border bg-background p-2 shadow-sm">

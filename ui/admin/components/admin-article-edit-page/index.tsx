@@ -37,6 +37,40 @@ const STRATEGIES = {
   },
 }
 
+function syncMarkdownTitle(content: string, title: string): string {
+  const normalizedTitle = title.trim()
+  const lines = content.split(/\r?\n/)
+  const firstLine = lines[0] ?? ''
+  const hasHeading = /^#\s+/.test(firstLine)
+
+  if (normalizedTitle.length === 0) {
+    if (!hasHeading) return content
+
+    lines.shift()
+    if (lines[0] === '') {
+      lines.shift()
+    }
+    return lines.join('\n')
+  }
+
+  const heading = `# ${normalizedTitle}`
+  if (content.trim().length === 0) return heading
+
+  if (hasHeading) {
+    lines[0] = heading
+    return lines.join('\n')
+  }
+
+  return `${heading}\n\n${content}`
+}
+
+function extractMarkdownH1Title(content: string): string | null {
+  const firstLine = content.split(/\r?\n/, 1)[0] ?? ''
+  const match = firstLine.match(/^#(?!#)\s*(.*)$/)
+  if (match == null) return null
+  return match[1].trim()
+}
+
 export const AdminArticleEditPage: FC<{
   article: Blog | Note | null
   relatedArticleTagNames?: string[]
@@ -82,6 +116,7 @@ export const AdminArticleEditPage: FC<{
     },
     mode: 'onBlur',
   })
+  const previewTitle = form.watch('title')
 
   return (
     <Form {...form}>
@@ -96,7 +131,23 @@ export const AdminArticleEditPage: FC<{
             <FormItem>
               <FormLabel className="text-lg">标题</FormLabel>
               <FormControl>
-                <Input placeholder="请输入标题" {...field} />
+                <Input
+                  placeholder="请输入标题"
+                  {...field}
+                  onChange={e => {
+                    const nextTitle = e.target.value
+                    field.onChange(nextTitle)
+
+                    const currentContent = form.getValues('content')
+                    const nextContent = syncMarkdownTitle(currentContent, nextTitle)
+
+                    if (nextContent !== currentContent) {
+                      form.setValue('content', nextContent, {
+                        shouldValidate: true,
+                      })
+                    }
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -184,7 +235,23 @@ export const AdminArticleEditPage: FC<{
             <FormItem>
               <FormLabel className="text-lg">内容</FormLabel>
               <FormControl>
-                <MarkdownEditor value={field.value} onChange={field.onChange} />
+                <MarkdownEditor
+                  value={field.value}
+                  onChange={nextContent => {
+                    field.onChange(nextContent)
+
+                    const markdownTitle = extractMarkdownH1Title(nextContent)
+                    if (markdownTitle == null) return
+
+                    const currentTitle = form.getValues('title')
+                    if (markdownTitle !== currentTitle) {
+                      form.setValue('title', markdownTitle, {
+                        shouldValidate: true,
+                      })
+                    }
+                  }}
+                  previewTitle={previewTitle}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
