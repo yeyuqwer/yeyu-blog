@@ -22,7 +22,7 @@
     "@giscus/react": "^3.1.0",
     "@hookform/resolvers": "^5.2.2",
     "@prisma/adapter-pg": "^7.4.1",
-    "@prisma/client": "^7.4.0",
+    "@prisma/client": "^7.4.2",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-label": "^2.1.8",
