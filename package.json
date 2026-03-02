@@ -95,7 +95,7 @@
     "lint-staged": "^16.2.7",
     "next-sitemap": "^4.2.3",
     "prisma": "^7.4.1",
-    "tailwindcss": "^4.2.0",
+    "tailwindcss": "^4.2.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
