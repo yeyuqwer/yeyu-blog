@@ -1,16 +1,25 @@
-'use client'
-
 import { TagType } from '@prisma/client'
-import { usePublicBlogListQuery } from '@/hooks/api/blog'
-import Loading from '@/ui/components/shared/loading'
+import { prisma } from '@/prisma/instance'
 import { ArticleList } from '../article-list'
 
-export default function BlogListPage() {
-  const { data, isPending } = usePublicBlogListQuery()
+export default async function BlogListPage() {
+  const blogList = await prisma.blog.findMany({
+    where: {
+      isPublished: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      isPublished: true,
+      createdAt: true,
+      updatedAt: true,
+      tags: true,
+    },
+  })
 
-  if (isPending) {
-    return <Loading />
-  }
-
-  return <ArticleList items={data ?? []} type={TagType.BLOG} />
+  return <ArticleList items={blogList} type={TagType.BLOG} />
 }
