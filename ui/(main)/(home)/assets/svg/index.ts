@@ -1,4 +1,3 @@
-export * from './golang-icon'
 export * from './nestjs-icon'
 export * from './nextjs-icon'
 export * from './react-icon'
