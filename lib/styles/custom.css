@@ -1,6 +1,4 @@
 @theme inline {
-  --font-ye-font: "Maple Mono NF CN SemiBold";
-
   /* 麻了, 找半天 bug, 结果是没有加 分号... */
   /* ! 这里有两个问题, 做个记录 */
   /* ! 1. 使用内置 tailwindcss 类没有提示 */
