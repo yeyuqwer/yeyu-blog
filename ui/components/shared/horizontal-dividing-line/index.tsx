@@ -11,7 +11,7 @@ import { FlowerIcon } from './flower-icon'
 const THRESHOLD = 100
 
 export default function HorizontalDividingLine() {
-  const { resolvedTheme, setTransitionTheme } = useTransitionTheme()
+  const { setTransitionTheme } = useTransitionTheme()
   const rotate = useMotionValue(0)
   const [duration, setDuration] = useState(4)
 
@@ -19,15 +19,9 @@ export default function HorizontalDividingLine() {
     rotate.set(rotate.get() + (360 * delta) / (duration * 1000))
   })
 
-  const borderColor = resolvedTheme === 'light' ? 'var(--clear-sky-primary)' : '#edededcc'
-  const fill = resolvedTheme === 'light' ? '#6FC3C4' : '#edededcc'
-
   return (
     <div className="relative flex w-full items-center justify-center">
-      <hr
-        className="absolute left-0 w-[45%] border-dashed dark:border-accent"
-        style={{ borderColor }}
-      />
+      <hr className="absolute left-0 w-[45%] border-clear-sky-primary border-dashed dark:border-accent" />
       <motion.div
         style={{ rotate }}
         drag="x"
@@ -47,12 +41,9 @@ export default function HorizontalDividingLine() {
         }}
         className="cursor-grab"
       >
-        <FlowerIcon fill={fill} />
+        <FlowerIcon className="text-[#6FC3C4] dark:text-accent" />
       </motion.div>
-      <hr
-        className="absolute right-0 w-[45%] border-dashed dark:border-accent"
-        style={{ borderColor }}
-      />
+      <hr className="absolute right-0 w-[45%] border-clear-sky-primary border-dashed dark:border-accent" />
     </div>
   )
 }

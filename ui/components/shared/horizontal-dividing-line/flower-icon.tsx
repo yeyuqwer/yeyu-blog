@@ -1,6 +1,6 @@
 import type { ComponentProps, FC } from 'react'
 
-export const FlowerIcon: FC<ComponentProps<'svg'>> = ({ className, fill = '#40B2AF' }) => {
+export const FlowerIcon: FC<ComponentProps<'svg'>> = ({ className, fill = 'currentColor' }) => {
   return (
     <svg
       className={className}

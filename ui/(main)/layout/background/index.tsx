@@ -3,13 +3,20 @@
 // * thanks https://hypercolor.dev/
 import type { FC } from 'react'
 import { useTransitionTheme } from '@/hooks/animation'
+import { useIsMounted } from '@/hooks/common'
 import { cn } from '@/lib/utils/common/shadcn'
 // * thanks https://www.mshr.app/mesh/1727202711374
 import '@/lib/styles/background-animate.css'
 import { ArtPlum } from './art-plum'
 
 export const Background: FC = () => {
+  const mounted = useIsMounted()
   const { resolvedTheme } = useTransitionTheme()
+
+  if (!mounted) {
+    return <div className="pointer-events-none fixed top-0 left-0 -z-20 min-h-screen w-screen" />
+  }
+
   if (resolvedTheme === 'light') {
     return (
       <>
