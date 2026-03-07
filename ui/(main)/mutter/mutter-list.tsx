@@ -1,22 +1,18 @@
-'use client'
-
 import Image from 'next/image'
 import avatar from '@/config/img/avatar.webp'
-import { usePublicMutterQuery } from '@/hooks/api/mutter'
 import { prettyDateTime, toRelativeDate } from '@/lib/utils/time'
-import Loading from '@/ui/components/shared/loading'
+import { prisma } from '@/prisma/instance'
 
-export function MutterList() {
-  const { data, isPending, isError } = usePublicMutterQuery()
-  const mutters = data?.list ?? []
-
-  if (isPending) {
-    return <Loading />
-  }
-
-  if (isError) {
-    throw new Error('')
-  }
+export async function MutterList() {
+  const mutters = await prisma.mutter.findMany({
+    where: {
+      isPublished: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+    take: 20,
+  })
 
   if (mutters.length === 0) {
     return (
