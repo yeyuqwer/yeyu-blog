@@ -309,3 +309,7 @@ html.dark .markdown-content pre.shiki span.highlighted-word {
 ::view-transition-old(root) {
   animation: none;
 }
+
+:root {
+  text-autospace: normal;
+}
