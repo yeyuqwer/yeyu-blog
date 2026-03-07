@@ -30,37 +30,115 @@ body::-webkit-scrollbar-thumb {
 
 /* * markdown 渲染时的代码主题 */
 /* ! shiki 的双主题变量由 @shikijs/rehype 注入 */
+.markdown-content pre {
+  border: 1px solid color-mix(in srgb, var(--clear-sky-indicator) 30%, transparent);
+  border-radius: 0.25rem;
+  background-color: color-mix(in srgb, var(--clear-sky-background) 78%, white);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+}
+
+html.dark .markdown-content pre {
+  border-color: color-mix(in srgb, var(--border) 88%, transparent);
+  background-color: color-mix(in srgb, var(--background) 72%, var(--muted) 28%);
+}
+
+.markdown-content pre code,
+.markdown-content pre.shiki,
+.markdown-content pre.shiki code,
+.markdown-content .hljs {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace !important;
+}
+
+.markdown-content pre code {
+  background-color: transparent !important;
+}
+
 .markdown-content pre.shiki,
 .markdown-content pre.shiki span {
   color: var(--shiki-light);
-  background-color: var(--shiki-light-bg);
+  background-color: transparent !important;
 }
 
 html.dark .markdown-content pre.shiki,
 html.dark .markdown-content pre.shiki span {
   color: var(--shiki-dark);
-  background-color: var(--shiki-dark-bg);
+  background-color: transparent !important;
 }
 
 /* * shiki transformers: line / word decorations */
 .markdown-content pre.shiki .line {
   display: block;
+  padding: 0 1.25rem;
+}
+
+.markdown-content pre.shiki .line > span:last-child {
+  margin-right: 1.25rem;
+}
+
+.markdown-content pre.shiki .line::after {
+  content: " ";
+}
+
+.markdown-content pre.shiki .line.highlighted,
+.markdown-content pre.shiki .line.diff {
+  position: relative;
+  overflow-wrap: anywhere;
+}
+
+.markdown-content pre.shiki .line.highlighted::before,
+.markdown-content pre.shiki .line.diff::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 2px;
+  content: "";
 }
 
 .markdown-content pre.shiki .line.highlighted {
-  background-color: rgba(250, 204, 21, 0.15);
+  background-color: rgba(51, 166, 184, 0.2);
 }
 
 html.dark .markdown-content pre.shiki .line.highlighted {
-  background-color: rgba(250, 204, 21, 0.2);
+  background-color: rgba(148, 163, 184, 0.14);
+}
+
+.markdown-content pre.shiki .line.highlighted::before {
+  background-color: #33a6b8;
+}
+
+html.dark .markdown-content pre.shiki .line.highlighted::before {
+  background-color: #94a3b8;
 }
 
 .markdown-content pre.shiki .line.diff.add {
-  background-color: rgba(34, 197, 94, 0.14);
+  background-color: rgba(34, 197, 94, 0.15);
+}
+
+.markdown-content pre.shiki .line.diff.add::before {
+  background-color: #22c55e;
+}
+
+.markdown-content pre.shiki .line.diff.add::after {
+  position: absolute;
+  left: 0;
+  color: #22c55e;
+  content: " +";
 }
 
 .markdown-content pre.shiki .line.diff.remove {
-  background-color: rgba(244, 63, 94, 0.14);
+  background-color: rgba(239, 68, 68, 0.15);
+}
+
+.markdown-content pre.shiki .line.diff.remove::before {
+  background-color: #ef4444;
+}
+
+.markdown-content pre.shiki .line.diff.remove::after {
+  position: absolute;
+  left: 0;
+  color: #ef4444;
+  content: " -";
 }
 
 html.dark .markdown-content pre.shiki .line.diff.add {
@@ -84,11 +162,20 @@ html.dark .markdown-content pre.shiki .line.diff.remove {
 
 .markdown-content pre.shiki span.highlighted-word {
   border-radius: 0.25rem;
-  background-color: rgba(14, 165, 233, 0.2) !important;
+  background-color: rgba(51, 166, 184, 0.24) !important;
 }
 
 html.dark .markdown-content pre.shiki span.highlighted-word {
-  background-color: rgba(56, 189, 248, 0.28) !important;
+  background-color: rgba(148, 163, 184, 0.24) !important;
+}
+
+.markdown-content pre.shiki::-webkit-scrollbar-track {
+  margin-left: 1rem;
+  margin-right: var(--sr-margin, 0);
+}
+
+.markdown-content pre.shiki::-webkit-scrollbar {
+  background-color: transparent !important;
 }
 
 /* * 覆盖亮暗切换时默认的过渡的属性 */
