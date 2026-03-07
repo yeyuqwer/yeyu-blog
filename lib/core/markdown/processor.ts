@@ -18,6 +18,7 @@ import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 import { unified } from 'unified'
 import { rehypeCodeBlockRenderer } from './rehype-code-block-renderer'
+import { rehypeHeadingAnchorRenderer } from './rehype-heading-anchor-renderer'
 
 export const processor = unified()
   .use(remarkParse)
@@ -44,4 +45,5 @@ export const processor = unified()
     ],
   })
   .use(rehypeCodeBlockRenderer as never)
+  .use(rehypeHeadingAnchorRenderer as never)
   .use(rehypeStringify)

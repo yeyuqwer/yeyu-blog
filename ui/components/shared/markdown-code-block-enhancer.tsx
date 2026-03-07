@@ -11,6 +11,23 @@ export default function MarkdownCodeBlockEnhancer({ rootSelector }: { rootSelect
 
     const timers = new Map<HTMLButtonElement, number>()
 
+    const scrollToHeading = (anchor: HTMLAnchorElement) => {
+      const href = anchor.getAttribute('href') ?? ''
+      if (!href.startsWith('#') || href.length <= 1) return
+
+      const headingId = decodeURIComponent(href.slice(1))
+      const heading = document.getElementById(headingId)
+      if (heading == null) return
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      heading.scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'start',
+      })
+
+      window.history.pushState(null, '', `#${headingId}`)
+    }
+
     const resetButtonState = (button: HTMLButtonElement) => {
       button.dataset.copied = 'false'
       const label = button.querySelector<HTMLElement>('[data-copy-label]')
@@ -20,6 +37,21 @@ export default function MarkdownCodeBlockEnhancer({ rootSelector }: { rootSelect
     const handleCopyClick = async (event: MouseEvent) => {
       const target = event.target
       if (!(target instanceof Element)) return
+
+      const headingAnchor = target.closest<HTMLAnchorElement>('a.md-heading-anchor[href^="#"]')
+      if (
+        headingAnchor != null &&
+        root.contains(headingAnchor) &&
+        event.button === 0 &&
+        !event.metaKey &&
+        !event.ctrlKey &&
+        !event.shiftKey &&
+        !event.altKey
+      ) {
+        event.preventDefault()
+        scrollToHeading(headingAnchor)
+        return
+      }
 
       const button = target.closest<HTMLButtonElement>('button[data-code-copy]')
       if (button == null || !root.contains(button)) return
