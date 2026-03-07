@@ -41,7 +41,7 @@ export function toRelativeDate(date: number | Date) {
   const minute = 60 * 1000
   const hour = 60 * minute
   const day = 24 * hour
-  const month = 30 * day
+  const week = 7 * day
 
   if (diff < hour) {
     return `${Math.max(1, Math.floor(diff / minute))} 分钟前`
@@ -51,7 +51,7 @@ export function toRelativeDate(date: number | Date) {
     return `${Math.floor(diff / hour)} 小时前`
   }
 
-  if (diff < month) {
+  if (diff <= week) {
     return `${Math.floor(diff / day)} 天前`
   }
 

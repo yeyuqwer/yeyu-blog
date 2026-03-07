@@ -1,7 +1,32 @@
+import type { Variants } from 'motion/react'
+import * as motion from 'motion/react-client'
 import Image from 'next/image'
 import avatar from '@/config/img/avatar.webp'
 import { prettyDateTime, toRelativeDate } from '@/lib/utils/time'
 import { prisma } from '@/prisma/instance'
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: [30, -8, 0] as number[],
+    transition: {
+      type: 'tween' as const,
+      ease: 'easeInOut',
+      duration: 0.8,
+    },
+  },
+}
+
+const listVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+}
 
 export async function MutterList() {
   const mutters = await prisma.mutter.findMany({
@@ -23,14 +48,19 @@ export async function MutterList() {
   }
 
   return (
-    <section className="mx-auto mt-8 flex w-full max-w-3xl flex-col gap-4 pb-10">
-      <ul className="flex flex-col gap-4">
+    <motion.section
+      className="mx-auto mt-8 flex w-full max-w-3xl flex-col gap-4 pb-10"
+      initial="hidden"
+      animate="visible"
+      variants={listVariants}
+    >
+      <motion.ul className="flex flex-col gap-4" variants={listVariants}>
         {mutters.map((item, index) => {
           const createdAt = new Date(item.createdAt)
           const relativeDate = toRelativeDate(createdAt)
 
           return (
-            <li key={item.id} className="flex items-start gap-3.5">
+            <motion.li key={item.id} className="flex items-start gap-3.5" variants={itemVariants}>
               <Image
                 src={avatar}
                 alt="avatar"
@@ -50,10 +80,10 @@ export async function MutterList() {
                   <p className="wrap-break-word whitespace-pre-wrap">{item.content}</p>
                 </article>
               </div>
-            </li>
+            </motion.li>
           )
         })}
-      </ul>
-    </section>
+      </motion.ul>
+    </motion.section>
   )
 }
