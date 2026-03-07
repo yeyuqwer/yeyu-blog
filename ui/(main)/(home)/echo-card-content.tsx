@@ -73,7 +73,7 @@ export default function EchoCardContent({ echo }: { echo: EchoCardViewData }) {
         <motion.footer
           suppressHydrationWarning
           variants={lineVariants}
-          className="ml-auto font-thin text-pink-600 text-sm drop-shadow-[0_0_0.75rem_#1babbb] dark:text-white dark:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+          className="ml-auto text-pink-600 text-sm drop-shadow-[0_0_0.75rem_#1babbb] dark:text-white dark:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]"
         >
           「{displayEcho?.reference ?? '无名。'}」
         </motion.footer>

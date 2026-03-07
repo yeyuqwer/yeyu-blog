@@ -82,9 +82,10 @@ export const ArticleList: FC<
               <motion.div
                 variants={itemVariants}
                 key={v.id}
-                className="transition hover:opacity-100! group-hover/list:opacity-50!"
+                className="transition-opacity hover:opacity-100! group-hover/list:opacity-50!"
                 whileHover={{
                   scale: 1.01,
+                  transition: { type: 'spring', stiffness: 200, damping: 25 },
                 }}
               >
                 <ArticleLink item={v} type={type} />

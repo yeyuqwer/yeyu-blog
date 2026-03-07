@@ -37,7 +37,7 @@ export default function HorizontalDividingLine() {
         dragElastic={0.15}
         whileDrag={{ cursor: 'grabbing' }}
         onDragStart={() => setDuration(0.8)}
-        onDragEnd={(event, info) => {
+        onDragEnd={(_, info) => {
           setDuration(4)
           if (info.offset.x < -THRESHOLD) {
             setTransitionTheme('light', { direction: 'left' })
@@ -45,11 +45,12 @@ export default function HorizontalDividingLine() {
             setTransitionTheme('dark', { direction: 'right' })
           }
         }}
+        className="cursor-grab"
       >
         <FlowerIcon fill={fill} />
       </motion.div>
       <hr
-        className="absolute right-0 w-[45%] border-indigo-500 border-dashed dark:border-accent"
+        className="absolute right-0 w-[45%] border-dashed dark:border-accent"
         style={{ borderColor }}
       />
     </div>

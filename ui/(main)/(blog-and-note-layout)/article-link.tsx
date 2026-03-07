@@ -26,7 +26,7 @@ export const ArticleLink: FC<{
         {item.title}
         <ScaleUnderline className="bg-clear-sky-indicator dark:bg-white" />
       </h2>
-      <time className="shrink-0 font-light text-gray-400 text-sm group-hover:text-clear-sky-indicator dark:group-hover:text-white">
+      <time className="shrink-0 text-gray-400 text-sm group-hover:text-clear-sky-indicator dark:group-hover:text-white">
         {toDisplayDate(new Date(item.createdAt))}
       </time>
     </Link>

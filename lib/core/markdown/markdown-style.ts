@@ -39,7 +39,7 @@ const className = `
   [--tw-prose-invert-th-borders:#3f3f46]
   [--tw-prose-invert-td-borders:#27272a]
 
-  prose-headings:scroll-mt-24 prose-headings:tracking-tight
+  prose-headings:scroll-mt-24 prose-headings:tracking-tight prose-headings:text-center
   prose-h1:text-3xl sm:prose-h1:text-4xl prose-h1:font-bold
   prose-h2:text-2xl sm:prose-h2:text-3xl prose-h2:font-bold
   prose-h3:text-xl sm:prose-h3:text-2xl prose-h3:font-semibold
