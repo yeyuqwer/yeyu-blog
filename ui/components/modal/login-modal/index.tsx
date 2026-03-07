@@ -11,7 +11,7 @@ import { useCallback } from 'react'
 import { SiweMessage } from 'siwe'
 import { useChainId, useChains, useConnect, useConnections, useConnectors } from 'wagmi'
 import { disconnect, signMessage } from 'wagmi/actions'
-import { ADMIN_WALLET_ADDRESS } from '@/config/constant'
+import { clientEnv } from '@/config/env/client-env'
 import {
   authClient,
   isEmailLoggedIn,
@@ -27,6 +27,8 @@ import Loading from '@/ui/components/shared/loading'
 import { Button } from '@/ui/shadcn/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/ui/shadcn/dialog'
 import { GitHubIcon } from './github-icon'
+
+const adminWalletAddress = clientEnv.NEXT_PUBLIC_ADMIN_WALLET_ADDRESS?.trim().toLowerCase()
 
 // TODO: 钱包签名认证
 // TODO: 全局状态管理存储钱包登录状态 ？
@@ -67,9 +69,9 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
 
   // TODO: 抽取
   const isSessionAdmin =
-    ADMIN_WALLET_ADDRESS !== undefined &&
+    adminWalletAddress !== undefined &&
     session?.user?.name !== undefined &&
-    session.user.name.toLowerCase() === ADMIN_WALLET_ADDRESS.toLowerCase()
+    session.user.name.toLowerCase() === adminWalletAddress
 
   const handleSignIn = useCallback(
     async (params?: { address: string; chainId: number }) => {

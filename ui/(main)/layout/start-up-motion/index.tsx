@@ -2,8 +2,9 @@
 
 import { animate, motion, useMotionValue, useMotionValueEvent } from 'motion/react'
 import { useEffect } from 'react'
-import { INITIAL_WELCOME_TEXT } from '@/config/constant'
 import { useStartupStore } from '@/store/use-startup-store'
+
+const initialWelcomeText = '业余'
 
 export default function StartUpMotion() {
   const { setAnimationComplete } = useStartupStore()
@@ -77,7 +78,7 @@ export default function StartUpMotion() {
           transition={{ duration: 2.4, ease: 'easeInOut' }}
         >
           {/* 文字展示 */}
-          {INITIAL_WELCOME_TEXT.split('').map((char, i) => (
+          {initialWelcomeText.split('').map((char, i) => (
             <span key={`${i.toString()}+${char}`}>{char}</span>
           ))}
         </motion.div>

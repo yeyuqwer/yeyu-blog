@@ -83,11 +83,10 @@ model WalletAddress {
   @@map("walletAddress")
 }
 
-// * 数字手动同步到 config/constant/index.ts 文件中，如果没必要，不建议修改
 model Blog {
   id          Int     @id @default(autoincrement())
   slug        String  @unique
-  title       String  @db.VarChar(50) // * BLOG_TITLE_MAX_LENGTH 
+  title       String  @db.VarChar(50)
   content     String  @db.Text
   isPublished Boolean @default(true)
 
@@ -100,7 +99,7 @@ model Blog {
 model Note {
   id          Int     @id @default(autoincrement())
   slug        String  @unique
-  title       String  @db.VarChar(50) // * NOTE_TITLE_MAX_LENGTH
+  title       String  @db.VarChar(50)
   content     String  @db.Text
   isPublished Boolean @default(true)
 
@@ -117,7 +116,7 @@ enum TagType {
 
 model BlogTag {
   id      Int     @id @default(autoincrement())
-  tagName String  @unique @db.VarChar(20) // * TAG_NAME_MAX_LENGTH
+  tagName String  @unique @db.VarChar(20)
   tagType TagType @default(BLOG)
 
   blogs Blog[]
@@ -125,7 +124,7 @@ model BlogTag {
 
 model NoteTag {
   id      Int     @id @default(autoincrement())
-  tagName String  @unique @db.VarChar(20) // * TAG_NAME_MAX_LENGTH
+  tagName String  @unique @db.VarChar(20)
   tagType TagType @default(NOTE)
 
   notes Note[]
@@ -133,15 +132,15 @@ model NoteTag {
 
 model Echo {
   id          Int      @id @default(autoincrement())
-  reference   String   @db.VarChar(20) // * ECHO_REFERENCE_MAX_LENGTH
+  reference   String   @db.VarChar(20)
   isPublished Boolean  @default(true)
-  content     String   @db.VarChar(100) // * ECHO_CONTENT_MAX_LENGTH
+  content     String   @db.VarChar(100)
   createdAt   DateTime @default(now())
 }
 
 model Mutter {
   id          Int      @id @default(autoincrement())
-  content     String   @db.VarChar(300) // * MUTTER_CONTENT_MAX_LENGTH
+  content     String   @db.VarChar(300)
   isPublished Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

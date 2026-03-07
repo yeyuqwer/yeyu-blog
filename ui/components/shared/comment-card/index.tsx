@@ -2,8 +2,11 @@
 
 import type { Theme } from '@giscus/react'
 import Giscus from '@giscus/react'
-import { COMMENT_CARD_REPO, COMMENT_CARD_REPO_ID } from '@/config/constant'
+import { clientEnv } from '@/config/env/client-env'
 import { useTransitionTheme } from '@/hooks/animation'
+
+const commentCardRepo = 'yeyuqwer/yeyu-blog-comment'
+const commentCardRepoId = clientEnv.NEXT_PUBLIC_COMMENT_CARD_REPO_ID
 
 // * term 唯一且不可变，用 id 做，防止评论丢失
 export default function CommentCard({ term }: { term: string }) {
@@ -14,8 +17,8 @@ export default function CommentCard({ term }: { term: string }) {
   return (
     <Giscus
       id="comments"
-      repo={COMMENT_CARD_REPO}
-      repoId={COMMENT_CARD_REPO_ID}
+      repo={commentCardRepo}
+      repoId={commentCardRepoId}
       category="Announcements"
       categoryId="DIC_kwDOOiAAJM4Cpm1t"
       mapping="specific"

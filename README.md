@@ -137,12 +137,25 @@ UPLOADTHING_TOKEN=
 > 肥肠抱歉，由于本人技术太菜，所以很多地方都需要你手动去修改代码才能更新自己的配置，我会尽量告诉你各个文件的位置。
 
 - config
-  - constant 目录中包含项目的 metadata 和 首页动画文字展示，评论系统的仓库地址
+  - env
+    - 客户端和服务端环境变量校验
   - img
     - 首页展示的个人头像，建议图片采用 webp 格式，再压缩一下~
     - [推荐图片处理工具](https://imagestool.com/)
   - svg
     - 存放底部的技术栈展示的 svg
+
+- config/seo/index.ts
+  - metadata（SEO 信息）
+
+- ui/(main)/layout/start-up-motion/index.tsx
+  - 首页动画欢迎文案
+
+- ui/components/shared/comment-card/index.tsx
+  - 评论系统 repo / repoId 配置
+
+- lib/core/auth/guard.ts + ui/components/modal/login-modal/index.tsx
+  - 管理员邮箱与管理员钱包地址配置（来自环境变量）
 
 - modules/main/page/main-home-page/internal/bio-section.tsx
   - 首页个人简介
@@ -167,7 +180,7 @@ UPLOADTHING_TOKEN=
 
 最后在 「启用 giscus」下有一个代码片段，**不要直接复制**，只需要复制 `data-repo` 和 `data-repo-id` 的值就可以了，其他配置项可以自行研究~
 
-组件在 `components/shared/comment-card/index.tsx` 下，配置 `data-repo` 和 `data-repo-id` 的值在 `config/constant/index.ts` 中配置。
+组件在 `ui/components/shared/comment-card/index.tsx` 下，配置 `data-repo` 和 `data-repo-id` 的值也在该文件内设置。
 
 ## 特别感谢🙏🏻
 

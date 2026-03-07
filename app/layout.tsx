@@ -1,6 +1,6 @@
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-import { metadata } from '@/config/constant'
+import { metadata } from '@/config/seo'
 import '@/lib/styles/index.css'
 import GlobalProvider from '@/ui/components/provider/global'
 

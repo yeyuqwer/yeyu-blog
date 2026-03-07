@@ -1,8 +1,20 @@
 import { headers } from 'next/headers'
 import { isAddress } from 'viem'
 import { auth } from '@/auth'
-import { ADMIN_EMAILS, ADMIN_WALLET_ADDRESS } from '@/config/constant'
+import { clientEnv } from '@/config/env/client-env'
 import { BadRequestError } from '@/lib/common/errors/request'
+
+const ADMIN_EMAILS = clientEnv.NEXT_PUBLIC_ADMIN_EMAILS.split(',')
+  .map(email => email.trim())
+  .filter(email => email.length > 0)
+
+const ADMIN_WALLET_ADDRESS = clientEnv.NEXT_PUBLIC_ADMIN_WALLET_ADDRESS?.trim().toLowerCase()
+
+const isAdminWalletAddress = (walletAddress?: string | null) =>
+  walletAddress !== null &&
+  walletAddress !== undefined &&
+  ADMIN_WALLET_ADDRESS !== undefined &&
+  walletAddress.toLowerCase() === ADMIN_WALLET_ADDRESS
 
 export const noPermission = async () => {
   const session = await auth.api.getSession({
@@ -23,13 +35,13 @@ export const noPermission = async () => {
   // * 😭 把我 bug 都给挡住
   // * 😭 就算通宵也不慌 (写于 26.1.22 23:01)
   if (isAddress(session.user.name) && ADMIN_WALLET_ADDRESS !== undefined) {
-    return session.user.name.toLowerCase() !== ADMIN_WALLET_ADDRESS.toLowerCase()
+    return !isAdminWalletAddress(session.user.name)
   }
 
   // * 检查邮箱是否在管理员邮箱列表中
   const email = session.user.email
 
-  if (ADMIN_EMAILS !== undefined && ADMIN_EMAILS.length > 0) {
+  if (ADMIN_EMAILS.length > 0) {
     return !ADMIN_EMAILS.includes(email)
   }
 
