@@ -1,0 +1,7 @@
+export * from './git-icon'
+export * from './github-actions-icon'
+export * from './neovim-icon'
+export * from './obsidian-icon'
+export * from './prisma-icon'
+export * from './shadcnui-icon'
+export * from './vim-icon'

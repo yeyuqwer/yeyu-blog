@@ -1,0 +1,18 @@
+import type { ComponentProps, FC } from 'react'
+import { siNodedotjs } from 'simple-icons/icons'
+import { cn } from '@/lib/utils/common/shadcn'
+
+export const NodejsIcon: FC<ComponentProps<'svg'>> = ({ className, ...props }) => {
+  return (
+    <svg
+      role="img"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+      className={cn('text-zinc-400 transition-colors duration-300 hover:text-[#5fa04e]', className)}
+      {...props}
+    >
+      <path d={siNodedotjs.path} />
+    </svg>
+  )
+}

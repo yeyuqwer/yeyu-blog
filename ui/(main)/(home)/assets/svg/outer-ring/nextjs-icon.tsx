@@ -10,7 +10,7 @@ export const NextjsIcon: FC<ComponentProps<'svg'>> = ({ className, ...props }) =
       xmlns="http://www.w3.org/2000/svg"
       fill="currentColor"
       className={cn(
-        'text-zinc-400 transition-colors duration-300 hover:text-black dark:hover:text-white',
+        'text-zinc-400 transition-colors duration-300 hover:text-[#000000] dark:hover:text-[#ffffff]',
         className,
       )}
       {...props}

@@ -9,7 +9,7 @@ export const TypeScriptIcon: FC<ComponentProps<'svg'>> = ({ className, ...props 
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
       fill="currentColor"
-      className={cn('text-zinc-400 transition-colors duration-300 hover:text-[#3178c6]', className)}
+      className={cn(`text-zinc-400 transition-colors duration-300 hover:text-[#3178c6]`, className)}
       {...props}
     >
       <path d={siTypescript.path} />
