@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 // * 高亮代码块
@@ -8,6 +8,7 @@ import './hljs-theme.css'
 
 import { customMarkdownTheme } from '@/lib/core/markdown'
 import { simpleProcessor } from '@/lib/core/markdown/simple-processor'
+import MarkdownCodeBlockEnhancer from '@/ui/components/shared/markdown-code-block-enhancer'
 import { useUploadThing } from './uploadthing'
 import { useMarkdownAutoSave } from './use-markdown-auto-save'
 
@@ -21,6 +22,7 @@ export default function MarkdownEditor({
   previewTitle?: string
 }) {
   const [html, setHtml] = useState('')
+  const previewId = useId()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   useMarkdownAutoSave({ value, onChange })
 
@@ -107,9 +109,11 @@ export default function MarkdownEditor({
         placeholder="在此输入 Markdown... (支持粘贴/拖拽上传图片)"
       />
       <div
+        id={previewId}
         className={`h-full w-1/2 overflow-y-auto rounded-md border p-4 ${customMarkdownTheme}`}
         dangerouslySetInnerHTML={{ __html: html }}
       />
+      <MarkdownCodeBlockEnhancer rootSelector={`#${previewId}`} />
     </div>
   )
 }

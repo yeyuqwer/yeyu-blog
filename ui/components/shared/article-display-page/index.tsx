@@ -1,5 +1,6 @@
 import * as motion from 'motion/react-client'
 import { customMarkdownTheme } from '@/lib/core/markdown'
+import MarkdownCodeBlockEnhancer from '@/ui/components/shared/markdown-code-block-enhancer'
 import ArticleDisplayHeader from './internal/article-display-header'
 import { type Heading, PostToc } from './internal/post-toc'
 
@@ -56,6 +57,7 @@ export default function ArticleDisplayPage({
           className={customMarkdownTheme}
           dangerouslySetInnerHTML={{ __html: content }}
         />
+        <MarkdownCodeBlockEnhancer rootSelector="#article-content" />
         <PostToc headings={headings} />
       </motion.article>
     </div>

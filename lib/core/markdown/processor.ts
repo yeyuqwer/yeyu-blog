@@ -17,6 +17,7 @@ import remarkGfm from 'remark-gfm'
 import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 import { unified } from 'unified'
+import { rehypeCodeBlockRenderer } from './rehype-code-block-renderer'
 
 export const processor = unified()
   .use(remarkParse)
@@ -29,6 +30,7 @@ export const processor = unified()
       light: 'catppuccin-latte',
     } satisfies Record<'dark' | 'light', BuiltinTheme>,
     defaultColor: false,
+    addLanguageClass: true,
     transformers: [
       transformerRemoveNotationEscape(),
       transformerNotationDiff(),
@@ -41,4 +43,5 @@ export const processor = unified()
       transformerRemoveLineBreak(),
     ],
   })
+  .use(rehypeCodeBlockRenderer as never)
   .use(rehypeStringify)
