@@ -1,11 +1,11 @@
 /* * temp, for dev */
 /* TODO: config more theme */
 :root {
-  --clear-sky-primary: #107c84;
-  --clear-sky-background: #c9e6f3;
-  --clear-sky-active-text: #f2f4f5;
-  --clear-sky-indicator: #1babbb;
-  --clear-sky-hover-background: #9acbd0;
+  --clear-sky-primary: hsl(184 48% 33%);
+  --clear-sky-background: hsl(186 46% 91%);
+  --clear-sky-active-text: hsl(0 0% 100%);
+  --clear-sky-indicator: hsl(179 50% 56%);
+  --clear-sky-hover-background: hsl(184 40% 81%);
 }
 
 @theme inline {
