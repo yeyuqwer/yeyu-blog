@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { clientEnv } from '@/env'
+import { clientEnv } from '@/config/env/client-env'
 
 // * --------------- 以下配置您可以自定义 ---------------
 

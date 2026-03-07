@@ -1,9 +1,9 @@
 import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from '@prisma/client'
 import { Pool } from 'pg'
-import { getServerEnv } from '@/env'
+import { serverEnv } from '@/config/env/server-env'
 
-const rawConnectionString = getServerEnv().DATABASE_URL
+const rawConnectionString = serverEnv.DATABASE_URL
 
 const normalizeConnectionString = (connectionString: string) => {
   const url = new URL(connectionString)

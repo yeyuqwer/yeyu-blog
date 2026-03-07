@@ -3,10 +3,10 @@ import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { siwe } from 'better-auth/plugins'
 import { generateNonce } from 'siwe'
 import { getAddress, verifyMessage as verifyViemMessage } from 'viem'
-import { getServerEnv } from '@/env'
+import { serverEnv } from '@/config/env/server-env'
 import { prisma } from '@/prisma/instance'
 
-const env = getServerEnv()
+const env = serverEnv
 const siteUrl = env.SITE_URL
 const domain = siteUrl !== undefined && siteUrl !== '' ? new URL(siteUrl).host : 'localhost:3000'
 
