@@ -64,7 +64,7 @@ const className = `
   [&_blockquote]:before:bg-[#33a6b8] dark:[&_blockquote]:before:bg-[#f596aa]
   [&_blockquote]:before:content-['']
 
-  prose-hr:mx-auto prose-hr:w-[60px] prose-hr:border-zinc-400/20 dark:prose-hr:border-zinc-200/20
+  prose-hr:mx-0 prose-hr:w-full prose-hr:border-zinc-400/20 dark:prose-hr:border-zinc-200/20
   prose-table:my-5 prose-table:w-full
   prose-th:align-middle prose-th:border prose-th:border-zinc-200 prose-th:bg-zinc-100 prose-th:font-medium
   dark:prose-th:border-zinc-700 dark:prose-th:bg-zinc-800
