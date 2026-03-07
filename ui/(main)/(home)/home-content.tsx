@@ -57,7 +57,7 @@ export default function HomeContent({
 
   return (
     <motion.main
-      className="flex w-full flex-col items-center justify-center gap-6 pt-16 pb-4"
+      className="flex w-full flex-col items-center justify-center gap-4 pt-16 pb-4"
       initial="hidden"
       animate={isAnimationComplete ? 'visible' : 'hidden'}
       variants={containerVariants}
