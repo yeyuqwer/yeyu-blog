@@ -30,7 +30,7 @@ export const NoteDetail: FC<ComponentProps<'div'> & { slug: string }> = async ({
 
   return (
     <div className="flex flex-col gap-4">
-      <ArticleDisplayPage title={title} createdAt={createdAt} content={content} tags={tagNames} />
+      <ArticleDisplayPage createdAt={createdAt} content={content} tags={tagNames} />
       <HorizontalDividingLine />
       <CommentCard term={`${title}-note-${id}`} />
     </div>

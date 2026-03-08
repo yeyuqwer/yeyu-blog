@@ -1,5 +1,6 @@
 'use client'
 
+import type { Heading } from './utils'
 import { useLenis } from 'lenis/react'
 import { ChevronDown, TextAlignJustify } from 'lucide-react'
 import { AnimatePresence, motion, useScroll } from 'motion/react'
@@ -7,12 +8,6 @@ import { type FC, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { cn } from '@/lib/utils/common/shadcn'
 import { useStartupStore } from '@/store/use-startup-store'
-
-export type Heading = {
-  level: number
-  text: string
-  id: string
-}
 
 const variants = {
   enter: (direction: number) => ({

@@ -35,7 +35,7 @@ export const BlogDetail: FC<
 
   return (
     <div className="flex flex-col gap-4">
-      <ArticleDisplayPage title={title} createdAt={createdAt} content={content} tags={tagNames} />
+      <ArticleDisplayPage createdAt={createdAt} content={content} tags={tagNames} />
       <HorizontalDividingLine />
       <CommentCard term={`${title}-blog-${id}`} />
     </div>
