@@ -1,5 +1,5 @@
+import { Toaster } from 'sileo'
 import HorizontalDividingLine from '@/ui/components/shared/horizontal-dividing-line'
-import { Toaster } from '@/ui/shadcn/sonner'
 import MainProvider from '../components/provider/main'
 import { MaxWidthWrapper } from '../components/shared/max-width-wrapper'
 import { Background } from './layout/background'
@@ -24,7 +24,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <Background />
         <DraggableFloatingMenu />
         <StartUpMotion />
-        <Toaster position="top-center" richColors />
+        <Toaster position="top-left" />
       </main>
     </MainProvider>
   )

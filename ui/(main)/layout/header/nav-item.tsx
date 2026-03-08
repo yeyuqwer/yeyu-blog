@@ -1,7 +1,7 @@
 import type { ComponentProps, FC } from 'react'
 import type { NavRoute } from './constant'
 import Link from 'next/link'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import { useModalStore } from '@/store/use-modal-store'
 
 export const NavItem: FC<
@@ -22,9 +22,8 @@ export const NavItem: FC<
         onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
           if (item.disabled === true) {
             e.preventDefault()
-            toast('Coming soon...', {
-              position: 'top-left',
-            })
+
+            sileo.info({ title: 'Coming soon...' })
             return
           }
           if (item.modal != null) {
@@ -46,9 +45,7 @@ export const NavItem: FC<
       onClick={e => {
         if (item.disabled === true) {
           e.preventDefault()
-          toast('Coming soon...', {
-            position: 'top-left',
-          })
+          sileo.info({ title: 'Coming soon...' })
           return
         }
       }}

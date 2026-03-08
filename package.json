@@ -64,6 +64,7 @@
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
     "shiki": "^4.0.1",
+    "sileo": "^0.1.5",
     "simple-icons": "^16.10.0",
     "siwe": "^3.0.0",
     "sonner": "^2.0.7",
