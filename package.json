@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "prebuild": "rm -rf .next/cache",
     "build": "next build",
     "start": "next start",
     "ts:check": "tsc --noEmit",
@@ -97,6 +96,15 @@
     "tailwindcss": "^4.2.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/engines",
+      "esbuild",
+      "msgpackr-extract",
+      "prisma",
+      "sharp"
+    ]
   },
   "config": {
     "commitizen": {
