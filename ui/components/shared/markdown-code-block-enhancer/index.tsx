@@ -1,10 +1,15 @@
 'use client'
 
+import type { ComponentProps, FC } from 'react'
 import { useEffect } from 'react'
 
-const COPY_RESET_MS = 1800
+const copyResetMS = 1800
 
-export default function MarkdownCodeBlockEnhancer({ rootSelector }: { rootSelector: string }) {
+export const MarkdownCodeBlockEnhancer: FC<
+  ComponentProps<'div'> & {
+    rootSelector: string
+  }
+> = ({ rootSelector }) => {
   useEffect(() => {
     const root = document.querySelector<HTMLElement>(rootSelector)
     if (root == null) return
@@ -76,7 +81,7 @@ export default function MarkdownCodeBlockEnhancer({ rootSelector }: { rootSelect
         const timer = window.setTimeout(() => {
           resetButtonState(button)
           timers.delete(button)
-        }, COPY_RESET_MS)
+        }, copyResetMS)
         timers.set(button, timer)
       } catch {
         resetButtonState(button)

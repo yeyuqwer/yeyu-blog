@@ -8,7 +8,7 @@ import './hljs-theme.css'
 
 import { customMarkdownTheme } from '@/lib/core/markdown'
 import { simpleProcessor } from '@/lib/core/markdown/simple-processor'
-import MarkdownCodeBlockEnhancer from '@/ui/components/shared/markdown-code-block-enhancer'
+import { MarkdownCodeBlockEnhancer } from '@/ui/components/shared/markdown-code-block-enhancer'
 import { useUploadThing } from './uploadthing'
 import { useMarkdownAutoSave } from './use-markdown-auto-save'
 
