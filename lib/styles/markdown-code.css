@@ -1,90 +1,5 @@
-@theme inline {
-  /* 麻了, 找半天 bug, 结果是没有加 分号... */
-  /* ! 这里有两个问题, 做个记录 */
-  /* ! 1. 使用内置 tailwindcss 类没有提示 */
-  /* ! 2. @keyframes 必须放到最后, 要不然编辑器颜色为白色... */
-
-  /* * 自定义动画 */
-  --animate-ye-ping-one-dot-one: "ye-keyframes-ping-one-dot-one" 1.1s cubic-bezier(0, 0, 0.2, 1)
-    infinite;
-
-  --animate-ye-spin-slowly: spin 24s linear infinite;
-
-  @keyframes "ye-keyframes-ping-one-dot-one" {
-    75%,
-    100% {
-      transform: scale(1.1);
-      opacity: 0;
-    }
-  }
-}
-
-body::-webkit-scrollbar {
-  width: 4px;
-}
-
-body::-webkit-scrollbar-thumb {
-  background: rgba(88, 85, 85, 0.4);
-  border-radius: 8px;
-}
-
 /* * markdown 渲染时的代码主题 */
 /* ! shiki 的双主题变量由 @shikijs/rehype 注入 */
-.markdown-content :is(h1, h2, h3, h4, h5, h6) > .md-heading-anchor {
-  display: inline-flex;
-  align-items: center;
-  color: inherit;
-  border-bottom: 0 !important;
-  text-decoration: none;
-}
-
-.markdown-content :is(h1, h2, h3, h4, h5, h6) > .md-heading-anchor::after {
-  margin-left: 0.35em;
-  color: color-mix(in srgb, var(--clear-sky-primary) 72%, transparent);
-  font-size: 0.72em;
-  line-height: 1;
-  letter-spacing: 0.03em;
-  opacity: 0;
-  transform: translateX(-2px);
-  transition:
-    opacity 0.18s ease,
-    transform 0.18s ease;
-}
-
-.markdown-content h1 > .md-heading-anchor::after {
-  content: "#";
-}
-
-.markdown-content h2 > .md-heading-anchor::after {
-  content: "##";
-}
-
-.markdown-content h3 > .md-heading-anchor::after {
-  content: "###";
-}
-
-.markdown-content h4 > .md-heading-anchor::after {
-  content: "####";
-}
-
-.markdown-content h5 > .md-heading-anchor::after {
-  content: "#####";
-}
-
-.markdown-content h6 > .md-heading-anchor::after {
-  content: "######";
-}
-
-.markdown-content :is(h1, h2, h3, h4, h5, h6):hover > .md-heading-anchor::after,
-.markdown-content :is(h1, h2, h3, h4, h5, h6) > .md-heading-anchor:focus-visible::after {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-html.dark .markdown-content :is(h1, h2, h3, h4, h5, h6) > .md-heading-anchor::after {
-  color: color-mix(in srgb, var(--muted-foreground) 86%, transparent);
-}
-
 .markdown-content .md-code-block {
   position: relative;
   margin: 1.5rem 0;
@@ -302,14 +217,4 @@ html.dark .markdown-content pre.shiki span.highlighted-word {
 
 .markdown-content pre.shiki::-webkit-scrollbar {
   background-color: transparent !important;
-}
-
-/* * 覆盖亮暗切换时默认的过渡的属性 */
-::view-transition-new(root),
-::view-transition-old(root) {
-  animation: none;
-}
-
-:root {
-  text-autospace: normal;
 }

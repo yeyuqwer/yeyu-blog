@@ -10,4 +10,12 @@
 
 @import "./fonts.css";
 
-@import "./custom.css";
+@import "./animation.css";
+
+@import "./scrollbar.css";
+
+@import "./markdown-heading-anchor.css";
+
+@import "./markdown-code.css";
+
+@import "./root.css";

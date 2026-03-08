@@ -1,0 +1,8 @@
+::view-transition-new(root),
+::view-transition-old(root) {
+  animation: none;
+}
+
+:root {
+  text-autospace: normal;
+}

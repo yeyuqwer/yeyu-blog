@@ -1,0 +1,54 @@
+.markdown-content :is(h1, h2, h3, h4, h5, h6) > .md-heading-anchor {
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+  border-bottom: 0 !important;
+  text-decoration: none;
+}
+
+.markdown-content :is(h1, h2, h3, h4, h5, h6) > .md-heading-anchor::after {
+  margin-left: 0.35em;
+  color: color-mix(in srgb, var(--clear-sky-primary) 72%, transparent);
+  font-size: 0.72em;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  opacity: 0;
+  transform: translateX(-2px);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+
+.markdown-content h1 > .md-heading-anchor::after {
+  content: "#";
+}
+
+.markdown-content h2 > .md-heading-anchor::after {
+  content: "##";
+}
+
+.markdown-content h3 > .md-heading-anchor::after {
+  content: "###";
+}
+
+.markdown-content h4 > .md-heading-anchor::after {
+  content: "####";
+}
+
+.markdown-content h5 > .md-heading-anchor::after {
+  content: "#####";
+}
+
+.markdown-content h6 > .md-heading-anchor::after {
+  content: "######";
+}
+
+.markdown-content :is(h1, h2, h3, h4, h5, h6):hover > .md-heading-anchor::after,
+.markdown-content :is(h1, h2, h3, h4, h5, h6) > .md-heading-anchor:focus-visible::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+html.dark .markdown-content :is(h1, h2, h3, h4, h5, h6) > .md-heading-anchor::after {
+  color: color-mix(in srgb, var(--muted-foreground) 86%, transparent);
+}
