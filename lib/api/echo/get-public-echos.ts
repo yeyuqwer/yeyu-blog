@@ -11,6 +11,7 @@ export async function getPublicEchos(params: GetPublicEchosParams = {}) {
   return await apiRequest<EchoRecord | null>({
     url: 'echo',
     method: 'GET',
+    cache: 'no-store',
     searchParams: {
       q: q?.trim().length ? q.trim() : undefined,
     },

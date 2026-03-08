@@ -1,33 +1,45 @@
-import { unstable_noStore as noStore } from 'next/cache'
-import { prisma } from '@/prisma/instance'
+'use client'
+
+import { useQuery } from '@tanstack/react-query'
+import { useEffect } from 'react'
+import { getPublicEchos } from '@/lib/api/echo/get-public-echos'
+import { useHomeEchoStore } from '@/store/use-home-echo-store'
 import EchoCardContent, { type EchoCardViewData } from './echo-card-content'
 
-async function getRandomPublishedEcho(): Promise<EchoCardViewData> {
-  const where = { isPublished: true }
-  const total = await prisma.echo.count({ where })
+export default function EchoCard() {
+  const initialEcho = useHomeEchoStore(state => state.initialEcho)
+  const setInitialEcho = useHomeEchoStore(state => state.setInitialEcho)
 
-  if (total === 0) {
-    return null
-  }
+  const randomEchoQuery = useQuery({
+    queryKey: ['home-random-echo'],
+    queryFn: async (): Promise<EchoCardViewData> => {
+      const result = await getPublicEchos()
 
-  const randomSkip = Math.floor(Math.random() * total)
+      if (result === null) {
+        return null
+      }
 
-  return await prisma.echo.findFirst({
-    where,
-    orderBy: { id: 'asc' },
-    skip: randomSkip,
-    select: {
-      id: true,
-      content: true,
-      reference: true,
+      return {
+        id: result.id,
+        content: result.content,
+        reference: result.reference,
+      }
     },
+    enabled: initialEcho === undefined,
+    staleTime: Number.POSITIVE_INFINITY,
+    gcTime: Number.POSITIVE_INFINITY,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
   })
-}
 
-export default async function EchoCard() {
-  noStore()
+  useEffect(() => {
+    if (initialEcho === undefined && randomEchoQuery.status === 'success') {
+      setInitialEcho(randomEchoQuery.data)
+    }
+  }, [initialEcho, randomEchoQuery.status, randomEchoQuery.data, setInitialEcho])
 
-  const echo = await getRandomPublishedEcho()
+  const displayEcho = initialEcho ?? randomEchoQuery.data ?? null
 
-  return <EchoCardContent echo={echo} />
+  return <EchoCardContent echo={displayEcho} />
 }
