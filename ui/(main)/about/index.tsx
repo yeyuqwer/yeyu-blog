@@ -1,21 +1,61 @@
 'use client'
 
+import type { Variants } from 'motion/react'
 import * as motion from 'motion/react-client'
 import Link from 'next/link'
-import { useEffect } from 'react'
+import { Children, useEffect } from 'react'
 import { cn } from '@/lib/utils/common/shadcn'
 import { MaxWidthWrapper } from '@/ui/components/shared/max-width-wrapper'
 
+const sectionVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+}
+
+const lineVariants: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: [30, -8, 0] as number[],
+    transition: {
+      type: 'tween' as const,
+      ease: 'easeInOut',
+      duration: 0.8,
+    },
+  },
+}
+
 function Section({ children, className }: { children: React.ReactNode; className?: string }) {
+  const lines = Children.toArray(children).filter(child => {
+    if (typeof child === 'string') {
+      return child.trim().length > 0
+    }
+    return true
+  })
+
   return (
     <section className="flex h-[calc(100dvh-100px)] w-full snap-center flex-col items-center justify-center p-4">
-      <MaxWidthWrapper
-        className={cn(
-          'flex flex-col items-center justify-center gap-4 text-center md:text-lg',
-          className,
-        )}
-      >
-        {children}
+      <MaxWidthWrapper>
+        <motion.div
+          className={cn(
+            'flex flex-col items-center justify-center gap-4 text-center md:text-lg',
+            className,
+          )}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ amount: 0.45, once: true }}
+          variants={sectionVariants}
+        >
+          {lines.map((child, index) => (
+            <motion.div key={index} variants={lineVariants}>
+              {child}
+            </motion.div>
+          ))}
+        </motion.div>
       </MaxWidthWrapper>
     </section>
   )
@@ -30,15 +70,7 @@ export default function AboutPage() {
   }, [])
 
   return (
-    <motion.div
-      initial={{ y: 30, opacity: 0 }}
-      animate={{ y: [30, -8, 0], opacity: 1 }}
-      transition={{
-        duration: 0.6,
-        ease: 'easeOut',
-      }}
-      className="w-full"
-    >
+    <div className="w-full">
       <Section>
         <p>嗨, 你好呀~👋🏻</p>
         <h2>
@@ -191,6 +223,6 @@ export default function AboutPage() {
         <h3 className="text-clear-sky-primary">2026 上半 </h3>
         <p>unknown</p>
       </Section>
-    </motion.div>
+    </div>
   )
 }
