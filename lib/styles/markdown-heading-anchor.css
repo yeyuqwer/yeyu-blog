@@ -8,7 +8,7 @@
 
 .markdown-content :is(h1, h2, h3, h4, h5, h6) > .md-heading-anchor::after {
   margin-left: 0.35em;
-  color: color-mix(in srgb, var(--clear-sky-primary) 72%, transparent);
+  color: color-mix(in srgb, var(--mint-primary) 72%, transparent);
   font-size: 0.72em;
   line-height: 1;
   letter-spacing: 0.03em;

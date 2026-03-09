@@ -1,0 +1,53 @@
+:root {
+  /* Mint scale (shadcn/tailwind style) */
+  --mint-50: hsl(188 58% 97%);
+  --mint-100: hsl(187 53% 93%);
+  --mint-200: hsl(186 48% 86%);
+  --mint-300: hsl(184 45% 75%);
+  --mint-400: hsl(182 47% 63%);
+  --mint-500: hsl(180 46% 52%);
+  --mint-600: hsl(181 48% 42%);
+  --mint-700: hsl(184 48% 33%);
+  --mint-800: hsl(185 45% 27%);
+  --mint-900: hsl(186 41% 21%);
+  --mint-950: hsl(189 39% 13%);
+
+  /* Semantic brand tokens */
+  --mint-primary: var(--mint-700);
+  --mint-primary-foreground: hsl(0 0% 100%);
+  --mint-background: var(--mint-100);
+  --mint-surface: var(--mint-50);
+  --mint-active-text: hsl(0 0% 100%);
+  --mint-indicator: var(--mint-500);
+  --mint-hover-background: var(--mint-200);
+  --mint-border: var(--mint-300);
+  --mint-muted: var(--mint-200);
+  --mint-muted-foreground: var(--mint-800);
+  --mint-ring: var(--mint-400);
+}
+
+@theme inline {
+  --color-mint-50: var(--mint-50);
+  --color-mint-100: var(--mint-100);
+  --color-mint-200: var(--mint-200);
+  --color-mint-300: var(--mint-300);
+  --color-mint-400: var(--mint-400);
+  --color-mint-500: var(--mint-500);
+  --color-mint-600: var(--mint-600);
+  --color-mint-700: var(--mint-700);
+  --color-mint-800: var(--mint-800);
+  --color-mint-900: var(--mint-900);
+  --color-mint-950: var(--mint-950);
+
+  --color-mint-primary: var(--mint-primary);
+  --color-mint-primary-foreground: var(--mint-primary-foreground);
+  --color-mint-background: var(--mint-background);
+  --color-mint-surface: var(--mint-surface);
+  --color-mint-active-text: var(--mint-active-text);
+  --color-mint-indicator: var(--mint-indicator);
+  --color-mint-hover-background: var(--mint-hover-background);
+  --color-mint-border: var(--mint-border);
+  --color-mint-muted: var(--mint-muted);
+  --color-mint-muted-foreground: var(--mint-muted-foreground);
+  --color-mint-ring: var(--mint-ring);
+}

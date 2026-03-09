@@ -74,7 +74,7 @@ export default function AboutPage() {
       <Section>
         <p>嗨, 你好呀~👋🏻</p>
         <h2>
-          你可以叫我, <span className="font-bold text-clear-sky-indicator">叶鱼</span> (●´ω｀●)ゞ
+          你可以叫我, <span className="font-bold text-mint-indicator">叶鱼</span> (●´ω｀●)ゞ
         </h2>
         <p>一位业余的前端开发者 _(:3 ⌒ﾞ)_</p>
         <p>目前人还在上海活着 (¦3[▓▓]</p>
@@ -89,7 +89,7 @@ export default function AboutPage() {
       </Section>
 
       <Section>
-        <h3 className="text-clear-sky-primary">2022年高中毕业</h3>
+        <h3 className="text-mint-primary">2022年高中毕业</h3>
         <p>成绩血崩，算是人生中第二阴暗的时刻了</p>
         <p>
           我有两个姐姐，虽然她们当时没有安慰过我
@@ -102,7 +102,7 @@ export default function AboutPage() {
       </Section>
 
       <Section>
-        <h3 className="text-clear-sky-primary">2022年暑假</h3>
+        <h3 className="text-mint-primary">2022年暑假</h3>
         <p>
           看了
           <q>强风吹拂</q>, 为了缓解抑郁，一个暑假, 每天都在跑步
@@ -123,14 +123,12 @@ export default function AboutPage() {
         <p>非常感谢那个教会我使用电脑和教我编程的老师了</p>
         <Link href="https://space.bilibili.com/19658621" target="_blank" className="">
           (❀╹◡╹) =&gt;{' '}
-          <span className="text-clear-sky-indicator text-xl hover:text-clear-sky-primary">
-            Frank
-          </span>
+          <span className="text-mint-indicator text-xl hover:text-mint-primary">Frank</span>
         </Link>
       </Section>
 
       <Section>
-        <h3 className="text-clear-sky-primary">2023</h3>
+        <h3 className="text-mint-primary">2023</h3>
         <p>我不知道自己喜欢什么，不知道自己未来要做什么</p>
         <p>
           尝试过剪辑视频，尝试过盯着 k 线炒股，尝试过学习网络安全当<q>黑客</q>...
@@ -143,7 +141,7 @@ export default function AboutPage() {
           <Link
             href="https://dazidazi.com"
             target="_blank"
-            className="my-0 text-clear-sky-indicator hover:text-clear-sky-primary"
+            className="my-0 text-mint-indicator hover:text-mint-primary"
           >
             这个
           </Link>
@@ -159,7 +157,7 @@ export default function AboutPage() {
       </Section>
 
       <Section>
-        <h3 className="text-clear-sky-primary">2024 上半</h3>
+        <h3 className="text-mint-primary">2024 上半</h3>
         <p>
           从 <q>人工智能</q> -&gt; <q>软件工程</q>
         </p>
@@ -178,7 +176,7 @@ export default function AboutPage() {
       </Section>
 
       <Section>
-        <h3 className="text-clear-sky-primary">2024 下半</h3>
+        <h3 className="text-mint-primary">2024 下半</h3>
         <p>学习 react/next/tailwindcss</p>
         <p>决定走 react 方向，暂时不再看 vue 相关 </p>
         <p>学习区块链相关的知识</p>
@@ -191,7 +189,7 @@ export default function AboutPage() {
       </Section>
 
       <Section>
-        <h3 className="text-clear-sky-primary">2025 上半</h3>
+        <h3 className="text-mint-primary">2025 上半</h3>
         <p>逃课</p>
         <p>学习</p>
         <p>搓项目</p>
@@ -203,7 +201,7 @@ export default function AboutPage() {
       </Section>
 
       <Section>
-        <h3 className="text-clear-sky-primary">2025 下半</h3>
+        <h3 className="text-mint-primary">2025 下半</h3>
         <p>上海实习</p>
         <p>上班</p>
         <p>7 月，杭州</p>
@@ -220,7 +218,7 @@ export default function AboutPage() {
       </Section>
 
       <Section>
-        <h3 className="text-clear-sky-primary">2026 上半 </h3>
+        <h3 className="text-mint-primary">2026 上半 </h3>
         <p>unknown</p>
       </Section>
     </div>

@@ -133,7 +133,7 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onModalClose}>
-      <DialogContent className="rounded-xl bg-clear-sky-background/80 backdrop-blur-xl sm:max-w-96 dark:bg-black/70">
+      <DialogContent className="rounded-xl bg-mint-background/80 backdrop-blur-xl sm:max-w-96 dark:bg-black/70">
         <DialogHeader className="">
           <DialogTitle className="text-center font-bold text-xl">
             {isConnected || isGithubUser || isWalletUser ? '用户信息' : '登录 (ゝ∀･)'}

@@ -114,7 +114,7 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, .
             className="size-full rounded-full object-cover"
             placeholder="blur"
           />
-          <span className="absolute top-0 left-0 size-full animate-ye-ping-one-dot-one rounded-full ring-2 ring-clear-sky-indicator ring-offset-1 ring-offset-white dark:ring-neutral-800 dark:ring-offset-black" />
+          <span className="absolute top-0 left-0 size-full animate-ye-ping-one-dot-one rounded-full ring-2 ring-mint-indicator ring-offset-1 ring-offset-white dark:ring-neutral-800 dark:ring-offset-black" />
         </div>
 
         <AnimatePresence>
