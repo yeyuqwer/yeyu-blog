@@ -18,6 +18,8 @@ import { useScrollVisibility } from './use-scroll-visibility'
 const flatNavRoutes = navigationConfig.flatMap(route =>
   'group' in route && route.group != null ? route.group.items : [route as NavRoute],
 )
+const activeTextShadowClass = '[text-shadow:0.03em_0_0_currentColor,-0.03em_0_0_currentColor]'
+const inactiveTextShadowClass = '[text-shadow:0_0_0_transparent]'
 
 export default function Header() {
   const pathname = usePathname()
@@ -189,10 +191,10 @@ export default function Header() {
                   <NavItem
                     item={currentItem}
                     className={cn(
-                      'block cursor-pointer transition-colors',
+                      'block cursor-pointer transition-[color,text-shadow] duration-350 ease-out',
                       isGroupActive
-                        ? 'font-bold text-theme-active-text dark:text-black'
-                        : 'dark:hover:text-neutral-200',
+                        ? cn('text-theme-active-text dark:text-black', activeTextShadowClass)
+                        : cn('dark:hover:text-neutral-200', inactiveTextShadowClass),
                     )}
                   >
                     <div className="relative px-2 md:px-4">
@@ -225,10 +227,10 @@ export default function Header() {
                   if (el != null) refs.current.set(path, el)
                 }}
                 className={cn(
-                  'relative z-10 block transition-colors',
+                  'relative z-10 block transition-[color,text-shadow] duration-1000 ease-out',
                   path === activeKey
-                    ? 'font-bold text-theme-active-text dark:text-black'
-                    : 'dark:hover:text-neutral-200',
+                    ? cn('text-theme-active-text dark:text-black', activeTextShadowClass)
+                    : cn('dark:hover:text-neutral-200', inactiveTextShadowClass),
                 )}
                 onMouseEnter={() => handleMouseEnter(path)}
                 onMouseLeave={handleMouseLeave}
@@ -293,11 +295,11 @@ export default function Header() {
                             (activeGroupRoute.group.disabled ?? false) || (item.disabled ?? false),
                         }}
                         className={cn(
-                          'rounded-lg px-4 py-2 transition-colors',
+                          'rounded-lg px-4 py-2 transition-[color,text-shadow] duration-1000 ease-out',
                           'hover:underline',
                           item.path === effectiveActiveUrl
-                            ? 'font-bold text-primary'
-                            : 'text-neutral-600 dark:text-neutral-400',
+                            ? cn('text-primary', activeTextShadowClass)
+                            : cn('text-neutral-600 dark:text-neutral-400', inactiveTextShadowClass),
                         )}
                       >
                         {item.pathName}

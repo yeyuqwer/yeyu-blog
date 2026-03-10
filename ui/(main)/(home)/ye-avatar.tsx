@@ -89,9 +89,9 @@ export default function YeAvatar() {
                   exit={{ opacity: 0, scale: 0, ...initial }}
                   transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                   className={cn(
-                    'absolute z-50 flex size-10 items-center justify-center rounded-full shadow-sm backdrop-blur-md transition-colors duration-300',
+                    'absolute z-50 flex size-10 items-center justify-center rounded-full shadow-md shadow-theme-indicator/15 backdrop-blur-md transition-[color,background-color,border-color,box-shadow] duration-300 dark:shadow-black/35',
                     className,
-                    'border border-zinc-200 bg-white dark:border-neutral-800 dark:bg-black',
+                    'border border-border/90 bg-background/95 dark:border-neutral-800 dark:bg-black dark:shadow-sm',
                     activeIcon === id || isFunctionActive
                       ? 'text-theme-indicator dark:text-white'
                       : 'text-zinc-500 dark:text-neutral-500',
@@ -111,7 +111,7 @@ export default function YeAvatar() {
       {/* 摸摸头~ */}
       <motion.figure
         // TODO: config color
-        className="relative cursor-grab drop-shadow-2xl active:drop-shadow-[#7AB2B2] dark:active:drop-shadow-[#c0c0c0]"
+        className="relative cursor-grab drop-shadow-2xl active:drop-shadow-[0_0_16px_var(--theme-indicator)] dark:active:drop-shadow-[0_0_16px_rgba(192,192,192,0.7)]"
         whileTap={{ scale: 0.99, rotate: 1 }}
         drag
         dragConstraints={{ top: 0, right: 0, bottom: 0, left: 0 }}
