@@ -18,6 +18,7 @@ export default function YeAvatar() {
   const setModalOpen = useModalStore(s => s.setModalOpen)
   const [isDragging, setIsDragging] = useState(false)
   const [activeIcon, setActiveIcon] = useState<IconsId | null>(null)
+  const activeIconRef = useRef<IconsId | null>(null)
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const soundEffectRef = useRef<HTMLAudioElement | null>(null)
@@ -35,8 +36,9 @@ export default function YeAvatar() {
 
     const points = icons.reduce<Record<(typeof icons)[number]['id'], Point>>(
       (acc, { id, initial }) => {
+        const xRatio = id === 'lm' ? 85 / 30 : 100 / 30
         acc[id] = {
-          x: -initial.x * (100 / 30),
+          x: -initial.x * xRatio,
           y: -initial.y * (30 / 10),
         }
         return acc
@@ -56,11 +58,10 @@ export default function YeAvatar() {
       }
     }
 
-    if (minDist < threshold && closest !== null) {
-      setActiveIcon(closest)
-    } else {
-      setActiveIcon(null)
-    }
+    const currentThreshold = closest === 'lm' ? threshold + 30 : threshold
+    const result = minDist < currentThreshold && closest !== null ? closest : null
+    setActiveIcon(result)
+    activeIconRef.current = result
   }
 
   useMotionValueEvent(x, 'change', latest => checkProximity(latest, y.get()))
@@ -118,11 +119,11 @@ export default function YeAvatar() {
         drag
         dragConstraints={{ top: 0, right: 0, bottom: 0, left: 0 }}
         dragTransition={{ bounceStiffness: 500, bounceDamping: 15 }}
-        dragElastic={0.2}
+        dragElastic={0.25}
         onPointerDown={() => setIsDragging(true)}
         onPointerUp={() => setIsDragging(false)}
         onDragEnd={() => {
-          setIsDragging(false)
+          const selected = activeIconRef.current
 
           const playSoundEffect = () => {
             if (soundEffectRef.current !== null) {
@@ -131,21 +132,25 @@ export default function YeAvatar() {
             }
           }
 
-          if (activeIcon === 'bl') {
+          if (selected === 'bl') {
             setTransitionTheme('light', { direction: 'left', duration: 300 })
             playSoundEffect()
-          } else if (activeIcon === 'br') {
+          } else if (selected === 'br') {
             setTransitionTheme('dark', { direction: 'right', duration: 300 })
             playSoundEffect()
-          } else if (activeIcon === 'tl') {
+          } else if (selected === 'tl') {
             pause()
-          } else if (activeIcon === 'tr') {
+          } else if (selected === 'tr') {
             play()
             playSoundEffect()
-          } else if (activeIcon === 'bc') {
+          } else if (selected === 'lm') {
             setModalOpen('selectThemeModal')
             playSoundEffect()
           }
+
+          setIsDragging(false)
+          setActiveIcon(null)
+          activeIconRef.current = null
         }}
         style={{ x, y }}
       >

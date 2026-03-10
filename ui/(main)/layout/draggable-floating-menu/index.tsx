@@ -9,11 +9,18 @@ import avatar from '@/config/img/avatar.webp'
 import { useTransitionTheme } from '@/hooks/animation'
 import { cn } from '@/lib/utils/common/shadcn'
 import { useBackgroundMusicStore } from '@/store/use-background-music-store'
+import { useModalStore } from '@/store/use-modal-store'
 import { useStartupStore } from '@/store/use-startup-store'
-import { icons } from './constant'
+import { type IconsId, icons } from './constant'
 
-const menuRadius = 70
-const menuAngles = [157.5, 112.5, 67.5, 22.5]
+const menuRadius = 82
+const menuAngles: Record<IconsId, number> = {
+  tl: 160,
+  tr: 20,
+  lm: 90,
+  bl: 125,
+  br: 55,
+}
 
 // TODO: 固定底部时吸附效果
 // TODO: 类似 ipad cursor ?
@@ -22,6 +29,7 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, .
   const { isAnimationComplete } = useStartupStore()
   const { setTransitionTheme, resolvedTheme } = useTransitionTheme()
   const { isPlaying, play, pause } = useBackgroundMusicStore()
+  const setModalOpen = useModalStore(s => s.setModalOpen)
   const [isOpen, setIsOpen] = useState(false)
   const soundEffectRef = useRef<HTMLAudioElement | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -57,7 +65,7 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, .
     }
   }
 
-  const handleSelect = (id: string) => {
+  const handleSelect = (id: IconsId) => {
     if (id === 'bl') {
       setTransitionTheme('light', { direction: 'left', duration: 300 })
       playSoundEffect()
@@ -68,6 +76,9 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, .
       pause()
     } else if (id === 'tr') {
       play()
+      playSoundEffect()
+    } else if (id === 'lm') {
+      setModalOpen('selectThemeModal')
       playSoundEffect()
     }
     setIsOpen(false)
@@ -120,14 +131,14 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, .
         <AnimatePresence>
           {isOpen && (
             <>
-              {icons.map(({ id, Icon }, index) => {
+              {icons.map(({ id, Icon }) => {
                 const isFunctionActive =
                   (id === 'tl' && !isPlaying) ||
                   (id === 'tr' && isPlaying) ||
                   (id === 'bl' && resolvedTheme === 'light') ||
                   (id === 'br' && resolvedTheme === 'dark')
 
-                const angle = menuAngles[index]
+                const angle = menuAngles[id]
                 const radian = (angle * Math.PI) / 180
                 const x = menuRadius * Math.cos(radian)
                 const y = -menuRadius * Math.sin(radian)

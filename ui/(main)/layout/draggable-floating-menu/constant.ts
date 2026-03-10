@@ -4,8 +4,8 @@ export const icons = [
   {
     id: 'tl',
     Icon: VolumeOff,
-    className: '-top-4 -left-20',
-    initial: { x: 30, y: 10 },
+    className: '-right-20 -bottom-4',
+    initial: { x: -30, y: -10 },
   },
   {
     id: 'tr',
@@ -16,20 +16,20 @@ export const icons = [
   {
     id: 'bl',
     Icon: Sun,
-    className: '-bottom-4 -left-20',
-    initial: { x: 30, y: -10 },
+    className: '-top-4 -left-20',
+    initial: { x: 30, y: 10 },
   },
   {
     id: 'br',
     Icon: Moon,
-    className: '-right-20 -bottom-4',
-    initial: { x: -30, y: -10 },
+    className: '-bottom-4 -left-20',
+    initial: { x: 30, y: -10 },
   },
   {
-    id: 'bc',
+    id: 'lm',
     Icon: Palette,
-    className: '-bottom-20 left-0 right-0 mx-auto',
-    initial: { x: 0, y: -14 },
+    className: '-left-24 top-1/2 -translate-y-1/2',
+    initial: { x: 34, y: 0 },
   },
 ] as const
 
