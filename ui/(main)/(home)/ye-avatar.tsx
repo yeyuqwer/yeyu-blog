@@ -93,12 +93,12 @@ export default function YeAvatar() {
                     className,
                     'border border-zinc-200 bg-white dark:border-neutral-800 dark:bg-black',
                     activeIcon === id || isFunctionActive
-                      ? 'text-mint-indicator dark:text-white'
+                      ? 'text-theme-indicator dark:text-white'
                       : 'text-zinc-500 dark:text-neutral-500',
                   )}
                 >
                   {activeIcon === id && (
-                    <span className="absolute inset-0 animate-ye-ping-one-dot-one rounded-full ring-2 ring-mint-indicator ring-offset-2 ring-offset-mint-400 dark:ring-white dark:ring-offset-black" />
+                    <span className="absolute inset-0 animate-ye-ping-one-dot-one rounded-full ring-2 ring-theme-indicator ring-offset-2 ring-offset-theme-400 dark:ring-white dark:ring-offset-black" />
                   )}
                   <Icon className="relative z-10 size-5" />
                 </motion.div>
@@ -151,7 +151,7 @@ export default function YeAvatar() {
           placeholder="blur"
           priority
         />
-        <span className="absolute top-0 left-0 size-full animate-ye-ping-one-dot-one rounded-full ring-4 ring-mint-400 ring-offset-1 dark:ring-white dark:ring-offset-black" />
+        <span className="absolute top-0 left-0 size-full animate-ye-ping-one-dot-one rounded-full ring-4 ring-theme-400 ring-offset-1 dark:ring-white dark:ring-offset-black" />
       </motion.figure>
     </div>
   )

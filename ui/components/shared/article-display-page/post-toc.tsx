@@ -175,7 +175,7 @@ export const PostToc: FC<{
         layout
         className={cn(
           'fixed bottom-8 left-1/2 z-50 -translate-x-1/2',
-          'bg-mint-background/80 backdrop-blur-sm dark:bg-black/70',
+          'bg-theme-background/80 backdrop-blur-sm dark:bg-black/70',
           'border border-[#00000011] dark:border-white/10',
           'shadow-[0px_4px_10px_0px_#0000001A]',
           'overflow-hidden',

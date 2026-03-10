@@ -21,7 +21,7 @@ export default function HorizontalDividingLine() {
 
   return (
     <div className="relative flex w-full items-center justify-center">
-      <hr className="absolute left-0 w-[45%] border-mint-indicator border-dashed dark:border-accent-foreground" />
+      <hr className="absolute left-0 w-[45%] border-theme-indicator border-dashed dark:border-accent-foreground" />
       <motion.div
         style={{ rotate }}
         drag="x"
@@ -41,9 +41,9 @@ export default function HorizontalDividingLine() {
         }}
         className="cursor-grab"
       >
-        <FlowerIcon className="text-mint-indicator dark:text-accent-foreground" />
+        <FlowerIcon className="text-theme-indicator dark:text-accent-foreground" />
       </motion.div>
-      <hr className="absolute right-0 w-[45%] border-mint-indicator border-dashed dark:border-accent-foreground" />
+      <hr className="absolute right-0 w-[45%] border-theme-indicator border-dashed dark:border-accent-foreground" />
     </div>
   )
 }

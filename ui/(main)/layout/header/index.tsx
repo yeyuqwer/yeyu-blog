@@ -149,7 +149,7 @@ export default function Header() {
       <MaxWidthWrapper
         className={cn(
           // TODO: config other colors
-          'h-full rounded-full bg-mint-background/80 backdrop-blur-sm dark:bg-black/70',
+          'h-full rounded-full bg-theme-background/80 backdrop-blur-sm dark:bg-black/70',
           'px-2.5 py-1 md:px-3 md:py-2',
           'border border-[#00000011] dark:border-white/10',
           'shadow-[0px_4px_10px_0px_#0000001A]',
@@ -191,7 +191,7 @@ export default function Header() {
                     className={cn(
                       'block cursor-pointer transition-colors',
                       isGroupActive
-                        ? 'font-bold text-mint-active-text dark:text-black'
+                        ? 'font-bold text-theme-active-text dark:text-black'
                         : 'dark:hover:text-neutral-200',
                     )}
                   >
@@ -227,7 +227,7 @@ export default function Header() {
                 className={cn(
                   'relative z-10 block transition-colors',
                   path === activeKey
-                    ? 'font-bold text-mint-active-text dark:text-black'
+                    ? 'font-bold text-theme-active-text dark:text-black'
                     : 'dark:hover:text-neutral-200',
                 )}
                 onMouseEnter={() => handleMouseEnter(path)}
@@ -242,7 +242,7 @@ export default function Header() {
           })}
 
           <motion.div
-            className="absolute top-1/2 -translate-y-1/2 rounded-full bg-mint-indicator shadow-md dark:bg-white"
+            className="absolute top-1/2 -translate-y-1/2 rounded-full bg-theme-indicator shadow-md dark:bg-white"
             animate={indicatorStyle}
             transition={{
               type: 'spring',
@@ -261,7 +261,7 @@ export default function Header() {
                 transition={{ duration: 0.2 }}
                 className={cn(
                   'absolute top-[116%] left-0 w-full overflow-hidden rounded-3xl py-1 backdrop-blur-sm md:py-2',
-                  'bg-mint-background/80 dark:bg-black/70',
+                  'bg-theme-background/80 dark:bg-black/70',
                   'border border-[#00000011] dark:border-white/10',
                   'shadow-[0px_4px_10px_0px_#0000001A]',
                 )}

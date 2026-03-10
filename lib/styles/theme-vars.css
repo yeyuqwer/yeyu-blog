@@ -1,0 +1,25 @@
+@theme inline {
+  --color-theme-50: var(--theme-50);
+  --color-theme-100: var(--theme-100);
+  --color-theme-200: var(--theme-200);
+  --color-theme-300: var(--theme-300);
+  --color-theme-400: var(--theme-400);
+  --color-theme-500: var(--theme-500);
+  --color-theme-600: var(--theme-600);
+  --color-theme-700: var(--theme-700);
+  --color-theme-800: var(--theme-800);
+  --color-theme-900: var(--theme-900);
+  --color-theme-950: var(--theme-950);
+
+  --color-theme-primary: var(--theme-primary);
+  --color-theme-primary-foreground: var(--theme-primary-foreground);
+  --color-theme-background: var(--theme-background);
+  --color-theme-surface: var(--theme-surface);
+  --color-theme-active-text: var(--theme-active-text);
+  --color-theme-indicator: var(--theme-indicator);
+  --color-theme-hover-background: var(--theme-hover-background);
+  --color-theme-border: var(--theme-border);
+  --color-theme-muted: var(--theme-muted);
+  --color-theme-muted-foreground: var(--theme-muted-foreground);
+  --color-theme-ring: var(--theme-ring);
+}

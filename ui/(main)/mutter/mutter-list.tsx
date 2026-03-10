@@ -76,7 +76,7 @@ export async function MutterList() {
                 >
                   {relativeDate}
                 </time>
-                <article className="rounded-xl border border-[#00000011] bg-mint-background/80 px-4 py-3 text-[15px] text-zinc-900 leading-7 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100">
+                <article className="rounded-xl border border-[#00000011] bg-theme-background/80 px-4 py-3 text-[15px] text-zinc-900 leading-7 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100">
                   <p className="wrap-break-word whitespace-pre-wrap">{item.content}</p>
                 </article>
               </div>

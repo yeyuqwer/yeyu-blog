@@ -6,7 +6,10 @@
 
 @import "./shadcn.css";
 
-@import "./mint.css";
+/* * theme config */
+@import "./themes/index.css";
+
+@import "./theme-vars.css";
 
 @import "./fonts.css";
 

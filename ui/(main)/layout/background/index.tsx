@@ -23,7 +23,7 @@ export const Background: FC = () => {
         <div
           className={cn(
             'pointer-events-none fixed top-0 left-0 -z-20 min-h-screen w-screen',
-            'bg-[radial-gradient(ellipse_at_bottom,#38bdf8,#bae6fd)] opacity-45',
+            'bg-hero-radial-light opacity-45',
             // * 得考虑一下要不要这个动画了，或者再修改一下？
             'animate-background-light',
           )}

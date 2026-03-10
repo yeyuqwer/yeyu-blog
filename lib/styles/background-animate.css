@@ -1,6 +1,6 @@
 @keyframes hero-gradient-animation-light {
   0% {
-    --c-0: hsla(190.09900990099013, 84%, 76%, 1);
+    --c-0: var(--bg-animate-c-0-start);
     --s-start-0: 3%;
     --s-end-0: 79%;
     --x-0: 0%;
@@ -9,10 +9,10 @@
     --s-end-1: 79%;
     --x-1: 98%;
     --y-1: 35%;
-    --c-1: hsla(198.94736842105266, 86%, 74%, 1);
+    --c-1: var(--bg-animate-c-1-start);
   }
   100% {
-    --c-0: hsla(198.9473684210525, 0%, 100%, 1);
+    --c-0: var(--bg-animate-c-0-end);
     --s-start-0: 4%;
     --s-end-0: 67%;
     --x-0: 24%;
@@ -21,13 +21,13 @@
     --s-end-1: 67%;
     --x-1: 62%;
     --y-1: 100%;
-    --c-1: hsla(190.09900990099013, 84%, 76%, 1);
+    --c-1: var(--bg-animate-c-1-end);
   }
 }
 @property --c-0 {
   syntax: "<color>";
   inherits: false;
-  initial-value: hsla(190.09900990099013, 84%, 76%, 1);
+  initial-value: hsl(190 84% 76%);
 }
 @property --s-start-0 {
   syntax: "<percentage>";
@@ -72,16 +72,23 @@
 @property --c-1 {
   syntax: "<color>";
   inherits: false;
-  initial-value: hsla(198.94736842105266, 86%, 74%, 1);
+  initial-value: hsl(199 86% 74%);
+}
+.bg-hero-radial-light {
+  background-image: radial-gradient(
+    ellipse at bottom,
+    var(--bg-animate-base-start),
+    var(--bg-animate-base-end)
+  );
 }
 .animate-background-light {
-  --c-0: hsla(190.09900990099013, 84%, 76%, 1);
+  --c-0: var(--bg-animate-c-0-start);
   --x-0: 0%;
   --y-0: 90%;
   --x-1: 98%;
   --y-1: 35%;
-  --c-1: hsla(198.94736842105266, 86%, 74%, 1);
-  background-color: hsla(255, 0%, 100%, 1);
+  --c-1: var(--bg-animate-c-1-start);
+  background-color: var(--bg-animate-c-0-end);
   background-image:
     radial-gradient(
       circle at var(--x-0) var(--y-0),
