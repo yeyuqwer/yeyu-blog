@@ -1,4 +1,5 @@
-:root {
+:root,
+:root[data-brand-theme="mint"] {
   /* Theme scale (shadcn/tailwind style) */
   --theme-50: hsl(188 58% 97%);
   --theme-100: hsl(187 53% 93%);

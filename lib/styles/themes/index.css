@@ -1,6 +1,6 @@
 /*
- * Theme selector
- * Keep exactly one active @import line.
+ * Brand theme tokens.
+ * Mint is default; Sakura overrides when data-brand-theme="sakura".
  */
 @import "./mint.css";
-/* @import "./sakura.css"; */
+@import "./sakura.css";

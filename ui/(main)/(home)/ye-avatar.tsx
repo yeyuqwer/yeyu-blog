@@ -9,11 +9,13 @@ import { useTransitionTheme } from '@/hooks/animation'
 import { cn } from '@/lib/utils/common/shadcn'
 import { typedEntries } from '@/lib/utils/typed'
 import { useBackgroundMusicStore } from '@/store/use-background-music-store'
+import { useModalStore } from '@/store/use-modal-store'
 import { type IconsId, icons } from '../layout/draggable-floating-menu/constant'
 
 export default function YeAvatar() {
   const { setTransitionTheme, resolvedTheme } = useTransitionTheme()
   const { isPlaying, play, pause } = useBackgroundMusicStore()
+  const setModalOpen = useModalStore(s => s.setModalOpen)
   const [isDragging, setIsDragging] = useState(false)
   const [activeIcon, setActiveIcon] = useState<IconsId | null>(null)
   const x = useMotionValue(0)
@@ -139,6 +141,9 @@ export default function YeAvatar() {
             pause()
           } else if (activeIcon === 'tr') {
             play()
+            playSoundEffect()
+          } else if (activeIcon === 'bc') {
+            setModalOpen('selectThemeModal')
             playSoundEffect()
           }
         }}

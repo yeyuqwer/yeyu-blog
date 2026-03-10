@@ -1,4 +1,4 @@
-:root {
+:root[data-brand-theme="sakura"] {
   /* Theme scale (shadcn/tailwind style) */
   --theme-50: hsl(348 85% 98%);
   --theme-100: hsl(348 80% 96%);

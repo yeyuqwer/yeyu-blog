@@ -11,6 +11,7 @@ export type IModalType =
   | 'editEchoModal'
   | 'createTagModal'
   | 'loginModal'
+  | 'selectThemeModal'
   | null
 
 type IModalStore = {
