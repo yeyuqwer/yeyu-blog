@@ -18,5 +18,7 @@
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "registries": {}
+  "registries": {
+    "@soundcn": "https://soundcn.xyz/r/{name}.json"
+  }
 }

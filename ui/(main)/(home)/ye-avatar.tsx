@@ -3,10 +3,12 @@
 import type { Point } from '../layout/draggable-floating-menu/constant'
 import { AnimatePresence, motion, useMotionValue, useMotionValueEvent } from 'motion/react'
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import avatar from '@/config/img/avatar.webp'
 import { useTransitionTheme } from '@/hooks/animation'
+import { useSound } from '@/hooks/common/use-sound'
 import { cn } from '@/lib/utils/common/shadcn'
+import { clickSoftSound } from '@/lib/utils/sound/click-soft'
 import { typedEntries } from '@/lib/utils/typed'
 import { useBackgroundMusicStore } from '@/store/use-background-music-store'
 import { useModalStore } from '@/store/use-modal-store'
@@ -16,20 +18,16 @@ export default function YeAvatar() {
   const { setTransitionTheme, resolvedTheme } = useTransitionTheme()
   const { isPlaying, play, pause } = useBackgroundMusicStore()
   const setModalOpen = useModalStore(s => s.setModalOpen)
+  const [playClickSoft] = useSound(clickSoftSound)
   const [isDragging, setIsDragging] = useState(false)
   const [activeIcon, setActiveIcon] = useState<IconsId | null>(null)
   const activeIconRef = useRef<IconsId | null>(null)
   const x = useMotionValue(0)
   const y = useMotionValue(0)
-  const soundEffectRef = useRef<HTMLAudioElement | null>(null)
 
-  useEffect(() => {
-    soundEffectRef.current = new Audio('/sound/ui-select.wav')
-
-    return () => {
-      soundEffectRef.current = null
-    }
-  }, [])
+  const playSoundEffect = () => {
+    playClickSoft()
+  }
 
   const checkProximity = (currX: number, currY: number) => {
     const threshold = 100
@@ -124,13 +122,6 @@ export default function YeAvatar() {
         onPointerUp={() => setIsDragging(false)}
         onDragEnd={() => {
           const selected = activeIconRef.current
-
-          const playSoundEffect = () => {
-            if (soundEffectRef.current !== null) {
-              soundEffectRef.current.currentTime = 0
-              soundEffectRef.current.play().catch(e => console.error('Sound effect play failed', e))
-            }
-          }
 
           if (selected === 'bl') {
             setTransitionTheme('light', { direction: 'left', duration: 300 })

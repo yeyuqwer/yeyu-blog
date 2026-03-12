@@ -7,7 +7,9 @@ import { usePathname } from 'next/navigation'
 import { type FC, useEffect, useRef, useState } from 'react'
 import avatar from '@/config/img/avatar.webp'
 import { useTransitionTheme } from '@/hooks/animation'
+import { useSound } from '@/hooks/common/use-sound'
 import { cn } from '@/lib/utils/common/shadcn'
+import { clickSoftSound } from '@/lib/utils/sound/click-soft'
 import { useBackgroundMusicStore } from '@/store/use-background-music-store'
 import { useModalStore } from '@/store/use-modal-store'
 import { useStartupStore } from '@/store/use-startup-store'
@@ -30,18 +32,10 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, .
   const { setTransitionTheme, resolvedTheme } = useTransitionTheme()
   const { isPlaying, play, pause } = useBackgroundMusicStore()
   const setModalOpen = useModalStore(s => s.setModalOpen)
+  const [playClickSoft] = useSound(clickSoftSound)
   const [isOpen, setIsOpen] = useState(false)
-  const soundEffectRef = useRef<HTMLAudioElement | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const constraintsRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    soundEffectRef.current = new Audio('/sound/ui-select.wav')
-
-    return () => {
-      soundEffectRef.current = null
-    }
-  }, [])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -59,10 +53,7 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, .
   }, [isOpen])
 
   const playSoundEffect = () => {
-    if (soundEffectRef.current !== null) {
-      soundEffectRef.current.currentTime = 0
-      soundEffectRef.current.play().catch(e => console.error('Sound effect play failed', e))
-    }
+    playClickSoft()
   }
 
   const handleSelect = (id: IconsId) => {
