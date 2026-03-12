@@ -1,4 +1,5 @@
 export * from './use-mutter-delete-mutation'
+export * from './use-mutter-like-mutation'
 export * from './use-mutter-mutation'
 export * from './use-mutter-publish-mutation'
 export * from './use-mutter-query'

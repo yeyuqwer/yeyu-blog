@@ -1,125 +1,59 @@
 'use client'
 
-import type { Variants } from 'motion/react'
 import { Heart, MessageCircle } from 'lucide-react'
 import * as motion from 'motion/react-client'
 import Image from 'next/image'
 import { useState } from 'react'
-import { toast } from 'sonner'
 import avatar from '@/config/img/avatar.webp'
-import { likeMutter } from '@/lib/api/mutter'
+import { useMutterLikeMutation } from '@/hooks/api/mutter'
 import { cn } from '@/lib/utils/common/shadcn'
 import { prettyDateTime, toRelativeDate } from '@/lib/utils/time'
 import { useModalStore } from '@/store/use-modal-store'
+import { itemVariants, listVariants } from './constant'
 
-type MutterItem = {
+type MutterListItem = {
   id: number
   content: string
   likeCount: number
   createdAt: string
-  updatedAt: string
   commentCount: number
 }
 
-type MutterListClientProps = {
-  mutters: MutterItem[]
-}
-
-type MutterCommentModalPayload = {
-  mutterId: number
-  content: string
-  createdAt: string
-}
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: [30, -8, 0] as number[],
-    transition: {
-      type: 'tween' as const,
-      ease: 'easeInOut',
-      duration: 0.8,
-    },
-  },
-}
-
-const listVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-}
-
-export function MutterListClient({ mutters }: MutterListClientProps) {
+export function MutterListClient({ mutters }: { mutters: MutterListItem[] }) {
   const [likedMutterIds, setLikedMutterIds] = useState<number[]>([])
-  const [likingMutterIds, setLikingMutterIds] = useState<number[]>([])
   const [likeCounts, setLikeCounts] = useState<Record<number, number>>(
     Object.fromEntries(mutters.map(item => [item.id, item.likeCount])),
   )
+  const { mutateAsync: likeMutterById } = useMutterLikeMutation()
   const { modalType, payload, setModalOpen } = useModalStore()
   const activeCommentPayload =
     modalType === 'mutterCommentModal' && payload != null
-      ? (payload as MutterCommentModalPayload)
+      ? (payload as {
+          mutterId: number
+          content: string
+          createdAt: string
+        })
       : null
 
   const handleLike = async (id: number) => {
-    const previousLikeCount =
-      likeCounts[id] ?? mutters.find(mutter => mutter.id === id)?.likeCount ?? 0
-    const wasLiked = likedMutterIds.includes(id)
-
-    setLikingMutterIds(previousIds =>
-      previousIds.includes(id) ? previousIds : [...previousIds, id],
-    )
-    setLikedMutterIds(previousIds =>
-      previousIds.includes(id) ? previousIds : [...previousIds, id],
-    )
-    setLikeCounts(previousCounts => ({
-      ...previousCounts,
-      [id]: (previousCounts[id] ?? previousLikeCount) + 1,
-    }))
-
-    try {
-      const response = await likeMutter({
-        mutterId: id,
-      })
-
-      setLikeCounts(previousCounts => ({
-        ...previousCounts,
-        [id]: response.data.likeCount,
-      }))
-    } catch (error) {
-      setLikeCounts(previousCounts => ({
-        ...previousCounts,
-        [id]: previousLikeCount,
-      }))
-      if (!wasLiked) {
-        setLikedMutterIds(previousIds => previousIds.filter(currentId => currentId !== id))
-      }
-      if (error instanceof Error) {
-        toast.error(error.message)
-      } else {
-        toast.error('Failed to like mutter.')
-      }
-    } finally {
-      setLikingMutterIds(previousIds => previousIds.filter(currentId => currentId !== id))
-    }
-  }
-
-  const handleOpenCommentModal = (id: number) => {
-    const targetMutter = mutters.find(item => item.id === id)
-    if (targetMutter == null) {
+    if (likedMutterIds.includes(id)) {
       return
     }
 
-    setModalOpen('mutterCommentModal', {
-      mutterId: targetMutter.id,
-      content: targetMutter.content,
-      createdAt: targetMutter.createdAt,
-    } satisfies MutterCommentModalPayload)
+    setLikedMutterIds(previousIds => [...previousIds, id])
+    setLikeCounts(previousCounts => ({
+      ...previousCounts,
+      [id]: (previousCounts[id] ?? 0) + 1,
+    }))
+
+    const response = await likeMutterById({
+      mutterId: id,
+    })
+
+    setLikeCounts(previousCounts => ({
+      ...previousCounts,
+      [id]: response.data.likeCount,
+    }))
   }
 
   if (mutters.length === 0) {
@@ -176,7 +110,11 @@ export function MutterListClient({ mutters }: MutterListClientProps) {
                         isCommentActive && 'text-zinc-700 dark:text-zinc-200',
                       )}
                       onClick={() => {
-                        handleOpenCommentModal(item.id)
+                        setModalOpen('mutterCommentModal', {
+                          mutterId: item.id,
+                          content: item.content,
+                          createdAt: item.createdAt,
+                        })
                       }}
                     >
                       <MessageCircle className="size-4" />
@@ -195,7 +133,7 @@ export function MutterListClient({ mutters }: MutterListClientProps) {
                         'inline-flex h-8 cursor-pointer items-center justify-center gap-1 rounded-md px-2 text-zinc-400 transition-colors hover:text-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:text-zinc-500 dark:hover:text-zinc-200',
                         isLiked && 'text-rose-500 hover:text-rose-500 dark:text-rose-500',
                       )}
-                      disabled={likingMutterIds.includes(item.id)}
+                      disabled={isLiked}
                       onClick={() => {
                         void handleLike(item.id)
                       }}

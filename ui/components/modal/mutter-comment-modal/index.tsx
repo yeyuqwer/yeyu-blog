@@ -3,7 +3,6 @@
 import { MessageCircle } from 'lucide-react'
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
-import { toast } from 'sonner'
 import { type Address, isAddress } from 'viem'
 import avatar from '@/config/img/avatar.webp'
 import { useMutterCommentMutation, usePublicMutterCommentQuery } from '@/hooks/api/mutter-comment'
@@ -14,36 +13,19 @@ import { AccountIcon } from '@/ui/components/shared/account-icon'
 import Loading from '@/ui/components/shared/loading'
 import { Button } from '@/ui/shadcn/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/ui/shadcn/dialog'
-import { ScrollArea } from '@/ui/shadcn/scroll-area'
 import { Textarea } from '@/ui/shadcn/textarea'
-
-type MutterCommentPayload = {
-  mutterId: number
-  content: string
-  createdAt: string
-}
-
-const normalizeImageSrc = (value?: string | null) => {
-  if (value == null) {
-    return undefined
-  }
-
-  const normalized = value.trim()
-  return normalized.length > 0 ? normalized : undefined
-}
-
-const formatDisplayName = (value: string) => {
-  if (!isAddress(value)) {
-    return value
-  }
-
-  return `${value.slice(0, 6)}...${value.slice(-6)}`
-}
 
 export default function MutterCommentModal() {
   const { modalType, payload, onModalClose, setModalOpen } = useModalStore()
   const isModalOpen = modalType === 'mutterCommentModal'
-  const values = payload != null ? (payload as MutterCommentPayload) : null
+  const values =
+    payload != null
+      ? (payload as {
+          mutterId: number
+          content: string
+          createdAt: string
+        })
+      : null
   const mutterId = values?.mutterId ?? 0
   const createdAt = values?.createdAt != null ? new Date(values.createdAt) : null
   const hasValidCreatedAt = createdAt != null && !Number.isNaN(createdAt.getTime())
@@ -63,36 +45,33 @@ export default function MutterCommentModal() {
     enabled: isModalOpen && mutterId > 0,
   })
   const comments = commentListData?.list ?? []
-  const { mutateAsync: createComment, isPending: isCreatingComment } = useMutterCommentMutation()
+  const { mutate: createComment, isPending: isCreatingComment } = useMutterCommentMutation()
   const sessionAddress = isAddress(session?.user?.name ?? '')
     ? (session?.user?.name as Address)
     : undefined
-  const sessionAvatar = normalizeImageSrc(session?.user?.image)
+  const sessionAvatar = session?.user?.image?.trim() || undefined
 
-  const handleSubmitComment = async () => {
+  const handleSubmitComment = () => {
     if (!isLoggedIn || mutterId <= 0 || trimmedComment.length === 0) {
       return
     }
 
-    try {
-      const response = await createComment({
+    createComment(
+      {
         mutterId,
         content: trimmedComment,
-      })
-      toast.success(response.message)
-      setCommentContent('')
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message)
-      } else {
-        toast.error('Failed to submit comment.')
-      }
-    }
+      },
+      {
+        onSuccess: () => {
+          setCommentContent('')
+        },
+      },
+    )
   }
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onModalClose}>
-      <DialogContent className="rounded-2xl border-zinc-200 bg-theme-background/80 backdrop-blur-xl sm:max-w-[580px] dark:border-zinc-800 dark:bg-black/70">
+      <DialogContent className="max-h-[88vh] overflow-hidden rounded-2xl border-zinc-200 bg-theme-background/80 backdrop-blur-xl sm:max-w-[580px] dark:border-zinc-800 dark:bg-black/70">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-center gap-2 font-bold text-xl text-zinc-900 dark:text-zinc-100">
             <MessageCircle className="size-5 text-zinc-600 dark:text-zinc-300" />
@@ -116,14 +95,19 @@ export default function MutterCommentModal() {
                 {toRelativeDate(createdAt)}
               </time>
             ) : null}
-            <article className="rounded-xl border border-[#00000011] bg-theme-background/80 px-4 py-3 text-[15px] text-zinc-900 leading-7 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100">
+            <article className="rounded-xl border border-[#00000022] bg-theme-background/80 px-4 py-3 text-[15px] text-zinc-900 leading-7 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100">
               <p className="wrap-break-word whitespace-pre-wrap">{values?.content ?? ''}</p>
             </article>
           </div>
         </section>
 
-        <section>
-          <ScrollArea className="h-64 px-2 py-1">
+        <section className="min-h-0">
+          <div
+            className="h-64 overflow-y-auto overscroll-contain py-1 pr-2 [scrollbar-color:rgba(113,113,122,0.45)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-500/45 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-400/35 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-[3px]"
+            onWheel={event => {
+              event.stopPropagation()
+            }}
+          >
             {isCommentListPending ? (
               <div className="flex h-full min-h-32 items-center justify-center">
                 <Loading />
@@ -137,11 +121,13 @@ export default function MutterCommentModal() {
                 {comments.map(comment => {
                   const commentCreatedAt = new Date(comment.createdAt)
                   const displayName = comment.user?.name || comment.authorName
-                  const formattedDisplayName = formatDisplayName(displayName)
+                  const formattedDisplayName = isAddress(displayName)
+                    ? `${displayName.slice(0, 6)}...${displayName.slice(-6)}`
+                    : displayName
                   const isCurrentUserComment =
                     session?.user?.id != null && comment.userId === session.user.id
                   const commentAvatar =
-                    normalizeImageSrc(comment.user?.image) ?? normalizeImageSrc(comment.authorImage)
+                    comment.user?.image?.trim() || comment.authorImage?.trim() || undefined
                   const commentAddress = isAddress(comment.user?.name ?? '')
                     ? (comment.user?.name as Address)
                     : undefined
@@ -208,14 +194,16 @@ export default function MutterCommentModal() {
                             {toRelativeDate(commentCreatedAt)}
                           </time>
                         </div>
-                        <article
-                          className={
-                            isCurrentUserComment
-                              ? 'mt-1 max-w-full rounded-xl border border-[#00000011] bg-theme-background/80 px-4 py-3 text-right text-sm text-zinc-700 leading-6 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200'
-                              : 'mt-1 max-w-full rounded-xl border border-[#00000011] bg-theme-background/80 px-4 py-3 text-sm text-zinc-700 leading-6 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200'
-                          }
-                        >
-                          <p className="whitespace-pre-wrap">{comment.content}</p>
+                        <article className="mt-1 rounded-xl border border-[#00000022] bg-theme-background/80 px-4 py-2 text-[15px] text-zinc-900 leading-7 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100">
+                          <p
+                            className={
+                              isCurrentUserComment
+                                ? 'wrap-break-word whitespace-pre-wrap text-right'
+                                : 'wrap-break-word whitespace-pre-wrap'
+                            }
+                          >
+                            {comment.content}
+                          </p>
                         </article>
                       </div>
                     </li>
@@ -223,7 +211,7 @@ export default function MutterCommentModal() {
                 })}
               </ul>
             )}
-          </ScrollArea>
+          </div>
         </section>
 
         <section className="mt-2 pt-2">
