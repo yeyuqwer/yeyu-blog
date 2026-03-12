@@ -3,6 +3,7 @@ import { apiRequest } from '@/lib/infra/http/ky'
 export type MutterRecord = {
   id: number
   content: string
+  likeCount: number
   isPublished: boolean
   createdAt: string
   updatedAt: string
