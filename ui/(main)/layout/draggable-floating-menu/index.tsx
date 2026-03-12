@@ -2,10 +2,8 @@
 
 import type { HTMLMotionProps } from 'motion/react'
 import { AnimatePresence, motion } from 'motion/react'
-import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { type FC, useEffect, useRef, useState } from 'react'
-import avatar from '@/config/img/avatar.webp'
 import { useTransitionTheme } from '@/hooks/animation'
 import { useSound } from '@/hooks/common/use-sound'
 import { cn } from '@/lib/utils/common/shadcn'
@@ -23,6 +21,23 @@ const menuAngles: Record<IconsId, number> = {
   bl: 125,
   br: 55,
 }
+const goldenRatio = 1.61803398875
+const goldenRatioInv = 1 / goldenRatio
+const goldenRatioInvSquare = goldenRatioInv * goldenRatioInv
+const flowTimesPrimary = [
+  0,
+  goldenRatioInvSquare,
+  goldenRatioInv,
+  goldenRatioInv + goldenRatioInvSquare / 2,
+  1,
+]
+const flowTimesSecondary = [
+  0,
+  goldenRatioInvSquare * goldenRatioInv,
+  goldenRatioInvSquare,
+  goldenRatioInv,
+  1,
+]
 
 // TODO: 固定底部时吸附效果
 // TODO: 类似 ipad cursor ?
@@ -81,7 +96,10 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, .
 
   return (
     <>
-      <div ref={constraintsRef} className="pointer-events-none fixed inset-16 z-50" />
+      <div
+        ref={constraintsRef}
+        className="pointer-events-none fixed top-24 right-20 bottom-4 left-20 z-50"
+      />
       <motion.div
         ref={containerRef}
         drag
@@ -107,16 +125,54 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, .
         {...props}
       >
         <div
-          className="relative flex size-12 items-center justify-center rounded-full bg-white shadow-lg dark:border dark:border-neutral-800 dark:bg-black dark:shadow-[0_0_15px_rgba(255,255,255,0.5)]"
+          className="relative flex size-12 items-center justify-center overflow-hidden rounded-full border border-white/70 shadow-[0_8px_20px_color-mix(in_srgb,var(--theme-indicator)_35%,transparent)] dark:border-white/10 dark:shadow-[0_0_18px_rgba(255,255,255,0.3),0_10px_24px_rgba(0,0,0,0.56)]"
           onClick={() => setIsOpen(!isOpen)}
         >
-          <Image
-            src={avatar}
-            alt="menu"
-            className="size-full rounded-full object-cover"
-            placeholder="blur"
+          <motion.span
+            className="absolute inset-0 rounded-full bg-[linear-gradient(145deg,color-mix(in_srgb,var(--theme-indicator)_48%,white)_0%,color-mix(in_srgb,var(--theme-300)_62%,white)_38%,color-mix(in_srgb,var(--theme-200)_82%,white)_72%,color-mix(in_srgb,var(--theme-400)_56%,white)_100%)] dark:bg-[linear-gradient(145deg,color-mix(in_srgb,var(--theme-500)_34%,rgb(63_63_70))_0%,color-mix(in_srgb,var(--theme-400)_30%,rgb(82_82_91))_42%,color-mix(in_srgb,var(--theme-300)_24%,rgb(63_63_70))_74%,color-mix(in_srgb,var(--theme-600)_38%,rgb(39_39_42))_100%)]"
+            animate={{
+              backgroundPosition: ['16% 24%', '80% 36%', '28% 78%', '72% 64%', '16% 24%'],
+            }}
+            transition={{
+              duration: 8.8,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              times: flowTimesPrimary,
+            }}
+            style={{ backgroundSize: '230% 230%' }}
           />
-          <span className="absolute top-0 left-0 size-full animate-ye-ping-one-dot-one rounded-full ring-2 ring-theme-indicator ring-offset-1 ring-offset-white dark:ring-neutral-800 dark:ring-offset-black" />
+          <motion.span
+            className="absolute -top-2 -left-1 size-7 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.58)_0%,rgba(255,255,255,0.12)_52%,transparent_74%)] mix-blend-screen blur-[0.5px] dark:bg-[radial-gradient(circle,rgba(255,255,255,0.12)_0%,rgba(255,255,255,0.025)_56%,transparent_78%)]"
+            animate={{
+              x: [0, 10 * goldenRatioInv, -14 * goldenRatioInvSquare, 8, 0],
+              y: [0, -12 * goldenRatioInvSquare, 9 * goldenRatioInv, -6, 0],
+              scale: [1, 1.08, 0.94, 1.12, 1],
+              opacity: [0.42, 0.64, 0.5, 0.68, 0.42],
+            }}
+            transition={{
+              duration: 7.9,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              times: flowTimesPrimary,
+            }}
+          />
+          <motion.span
+            className="absolute -right-3 bottom-0 size-8 rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--theme-indicator)_34%,white)_0%,color-mix(in_srgb,var(--theme-300)_26%,white)_44%,transparent_72%)] mix-blend-screen blur-[0.5px] dark:bg-[radial-gradient(circle,rgba(255,255,255,0.07)_0%,rgba(255,255,255,0.02)_42%,transparent_70%)]"
+            animate={{
+              x: [0, -9 * goldenRatioInv, 7, -11 * goldenRatioInvSquare, 0],
+              y: [0, 7 * goldenRatioInvSquare, -8 * goldenRatioInv, 9, 0],
+              scale: [1.04, 0.96, 1.1, 0.98, 1.04],
+              opacity: [0.32, 0.52, 0.4, 0.58, 0.32],
+            }}
+            transition={{
+              duration: 11.3,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              times: flowTimesSecondary,
+            }}
+          />
+          <span className="absolute inset-[2px] rounded-full bg-[radial-gradient(circle_at_28%_22%,rgba(255,255,255,0.72)_0%,rgba(255,255,255,0.16)_38%,transparent_70%)] dark:bg-[radial-gradient(circle_at_28%_22%,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.03)_36%,transparent_68%)]" />
+          <span className="absolute top-0 left-0 size-full animate-ye-ping-one-dot-one rounded-full ring-2 ring-theme-400 ring-offset-1 ring-offset-background dark:ring-theme-600 dark:ring-offset-black" />
         </div>
 
         <AnimatePresence>
@@ -147,11 +203,11 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, .
                     exit={{ opacity: 0, scale: 0, x: 0, y: 0 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                     className={cn(
-                      'absolute top-1 left-1 flex size-10 cursor-pointer items-center justify-center rounded-full shadow-sm backdrop-blur-md transition-colors duration-300',
-                      'border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-black',
+                      'absolute top-1 left-1 flex size-10 cursor-pointer items-center justify-center rounded-full shadow-md shadow-theme-indicator/15 backdrop-blur-md transition-[color,background-color,border-color,box-shadow] duration-300 dark:shadow-black/35',
+                      'border border-border/90 bg-background/95 dark:border-neutral-800 dark:bg-black dark:shadow-sm',
                       isFunctionActive
-                        ? 'text-black dark:text-white'
-                        : 'text-neutral-500 dark:text-neutral-500',
+                        ? 'text-theme-indicator dark:text-white'
+                        : 'text-zinc-500 dark:text-neutral-500',
                     )}
                     onClick={e => {
                       e.stopPropagation()
