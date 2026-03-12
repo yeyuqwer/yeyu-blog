@@ -1,17 +1,9 @@
 'use client'
 
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import { useMutterDeleteMutation } from '@/hooks/api/mutter'
 import { useModalStore } from '@/store/use-modal-store'
-import { Button } from '@/ui/shadcn/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/ui/shadcn/dialog'
+import { ConfirmDialog } from '@/ui/components/modal/base/confirm-dialog'
 
 type DeleteMutterPayload = {
   id: number
@@ -22,62 +14,34 @@ export default function DeleteMutterModal() {
   const { modalType, payload, onModalClose } = useModalStore()
   const isModalOpen = modalType === 'deleteMutterModal'
   const values = payload != null ? (payload as DeleteMutterPayload) : null
-  const { mutateAsync: deleteMutterById, isPending } = useMutterDeleteMutation()
+  const { mutate: deleteMutterById, isPending } = useMutterDeleteMutation()
 
-  const onSubmit = async () => {
+  function onSubmit() {
     if (values == null) {
-      toast.error('Mutter info not found.')
+      sileo.error({ title: '说说信息不存在，删除失败' })
       return
     }
 
-    try {
-      await deleteMutterById({ id: values.id })
-      toast.success('Mutter deleted.')
-      onModalClose()
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message)
-      } else {
-        toast.error('Failed to delete mutter.')
-      }
-    }
+    deleteMutterById(
+      { id: values.id },
+      {
+        onSuccess: onModalClose,
+      },
+    )
   }
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={onModalClose}>
-      <DialogContent className="sm:max-w-[420px]">
-        <DialogHeader>
-          <DialogTitle>Confirm Delete</DialogTitle>
-          <DialogDescription>This action cannot be undone.</DialogDescription>
-        </DialogHeader>
-
-        <p className="line-clamp-3 whitespace-pre-wrap rounded-md border bg-muted/30 p-3 text-sm">
-          {values?.content}
-        </p>
-
-        <DialogFooter>
-          <Button
-            type="button"
-            variant="outline"
-            className="cursor-pointer"
-            onClick={onModalClose}
-            disabled={isPending}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="button"
-            variant="destructive"
-            className="cursor-pointer"
-            onClick={() => {
-              void onSubmit()
-            }}
-            disabled={values == null || isPending}
-          >
-            {isPending ? 'Deleting...' : 'Confirm'}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <ConfirmDialog
+      open={isModalOpen}
+      onClose={onModalClose}
+      onConfirm={onSubmit}
+      title="确定要删除这条说说吗？"
+      description="该操作不可撤销。"
+      isPending={isPending}
+    >
+      <p className="line-clamp-3 whitespace-pre-wrap rounded-md border bg-muted/30 p-3 text-sm">
+        {values?.content}
+      </p>
+    </ConfirmDialog>
   )
 }
