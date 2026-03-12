@@ -23,6 +23,7 @@ model User {
   sessions        Session[]
   accounts        Account[]
   walletAddresses WalletAddress[]
+  mutterComments  MutterComment[]
 
   @@map("user")
 }
@@ -141,10 +142,44 @@ model Echo {
 model Mutter {
   id          Int      @id @default(autoincrement())
   content     String   @db.VarChar(300)
+  likeCount   Int      @default(0)
   isPublished Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  comments    MutterComment[]
 
   @@index([createdAt])
   @@index([isPublished, createdAt])
+}
+
+enum MutterCommentState {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model MutterComment {
+  id          Int                @id @default(autoincrement())
+  mutterId    Int
+  mutter      Mutter             @relation(fields: [mutterId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  authorName  String             @db.VarChar(120)
+  authorImage String?
+  content     String             @db.VarChar(500)
+  state       MutterCommentState @default(PENDING)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@index([mutterId, createdAt])
+  @@index([state, createdAt])
+  @@index([userId, createdAt])
+}
+
+model MutterCommentConfig {
+  id                     Int      @id @default(1)
+  autoApproveEmailUsers  Boolean  @default(true)
+  autoApproveWalletUsers Boolean  @default(false)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
 }
