@@ -12,6 +12,7 @@ export type IModalType =
   | 'createTagModal'
   | 'loginModal'
   | 'selectThemeModal'
+  | 'mutterCommentModal'
   | null
 
 type IModalStore = {
