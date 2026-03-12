@@ -7,8 +7,46 @@ import { serverEnv } from '@/config/env/server-env'
 import { prisma } from '@/prisma/instance'
 
 const env = serverEnv
-const siteUrl = env.SITE_URL
-const domain = siteUrl !== undefined && siteUrl !== '' ? new URL(siteUrl).host : 'localhost:3000'
+
+const normalizeOrigin = (value?: string) => {
+  if (value == null || value.trim() === '') {
+    return undefined
+  }
+
+  try {
+    return new URL(value).origin
+  } catch {
+    return undefined
+  }
+}
+
+const trustedOrigins = (() => {
+  const origins = new Set<string>()
+
+  const add = (value?: string) => {
+    const normalizedOrigin = normalizeOrigin(value)
+    if (normalizedOrigin != null) {
+      origins.add(normalizedOrigin)
+    }
+  }
+
+  add(env.SITE_URL)
+  add(env.BETTER_AUTH_URL)
+  add(process.env.NEXT_PUBLIC_SITE_URL)
+
+  if (process.env.NODE_ENV !== 'production') {
+    origins.add('http://localhost:3000')
+    origins.add('http://127.0.0.1:3000')
+  }
+
+  if (origins.size === 0) {
+    origins.add('http://localhost:3000')
+  }
+
+  return [...origins]
+})()
+
+const domain = new URL(trustedOrigins[0]).host
 
 const githubAuthConfig =
   env.GITHUB_CLIENT_ID != null && env.GITHUB_CLIENT_SECRET != null
@@ -25,7 +63,7 @@ export const auth = betterAuth({
     provider: 'postgresql',
   }),
   socialProviders: githubAuthConfig,
-  trustedOrigins: siteUrl != null && siteUrl !== '' ? [siteUrl] : ['http://localhost:3000'],
+  trustedOrigins,
   plugins: [
     siwe({
       domain,
