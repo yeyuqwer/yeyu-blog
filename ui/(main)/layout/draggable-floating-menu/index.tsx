@@ -7,7 +7,7 @@ import { type FC, useEffect, useRef, useState } from 'react'
 import { useTransitionTheme } from '@/hooks/animation'
 import { useSound } from '@/hooks/common/use-sound'
 import { cn } from '@/lib/utils/common/shadcn'
-import { clickSoftSound } from '@/lib/utils/sound/click-soft'
+import { uChatScrollButtonSound } from '@/lib/utils/sound/u-chat-scroll-button'
 import { useBackgroundMusicStore } from '@/store/use-background-music-store'
 import { useModalStore } from '@/store/use-modal-store'
 import { useStartupStore } from '@/store/use-startup-store'
@@ -47,7 +47,7 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, .
   const { setTransitionTheme, resolvedTheme } = useTransitionTheme()
   const { isPlaying, play, pause } = useBackgroundMusicStore()
   const setModalOpen = useModalStore(s => s.setModalOpen)
-  const [playClickSoft] = useSound(clickSoftSound)
+  const [playClickSoft] = useSound(uChatScrollButtonSound)
   const [isOpen, setIsOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const constraintsRef = useRef<HTMLDivElement>(null)

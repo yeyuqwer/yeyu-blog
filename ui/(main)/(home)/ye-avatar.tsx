@@ -8,7 +8,7 @@ import avatar from '@/config/img/avatar.webp'
 import { useTransitionTheme } from '@/hooks/animation'
 import { useSound } from '@/hooks/common/use-sound'
 import { cn } from '@/lib/utils/common/shadcn'
-import { clickSoftSound } from '@/lib/utils/sound/click-soft'
+import { uChatScrollButtonSound } from '@/lib/utils/sound/u-chat-scroll-button'
 import { typedEntries } from '@/lib/utils/typed'
 import { useBackgroundMusicStore } from '@/store/use-background-music-store'
 import { useModalStore } from '@/store/use-modal-store'
@@ -18,7 +18,7 @@ export default function YeAvatar() {
   const { setTransitionTheme, resolvedTheme } = useTransitionTheme()
   const { isPlaying, play, pause } = useBackgroundMusicStore()
   const setModalOpen = useModalStore(s => s.setModalOpen)
-  const [playClickSoft] = useSound(clickSoftSound)
+  const [playClickSoft] = useSound(uChatScrollButtonSound)
   const [isDragging, setIsDragging] = useState(false)
   const [activeIcon, setActiveIcon] = useState<IconsId | null>(null)
   const activeIconRef = useRef<IconsId | null>(null)
