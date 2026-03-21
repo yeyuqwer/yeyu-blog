@@ -4,7 +4,7 @@ import type { ComponentProps, FC } from 'react'
 import type { MutterCommentState } from '@/lib/api/mutter-comment'
 import { Check, RefreshCcw, Search, Trash2, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import {
   useAdminMutterCommentDeleteMutation,
   useAdminMutterCommentQuery,
@@ -63,10 +63,9 @@ export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
 
   const comments = data?.list ?? []
 
-  const { mutateAsync: updateStateById, isPending: isUpdatingState } =
+  const { mutate: updateStateById, isPending: isUpdatingState } =
     useAdminMutterCommentStateMutation()
-  const { mutateAsync: deleteById, isPending: isDeletingComment } =
-    useAdminMutterCommentDeleteMutation()
+  const { mutate: deleteById, isPending: isDeletingComment } = useAdminMutterCommentDeleteMutation()
 
   const applyFilters = () => {
     setQuery(draftQuery.trim())
@@ -74,37 +73,39 @@ export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
     setState(draftState)
   }
 
-  const handleUpdateState = async (id: number, nextState: MutterCommentState) => {
-    try {
-      await updateStateById({
+  const handleUpdateState = (id: number, nextState: MutterCommentState) => {
+    updateStateById(
+      {
         id,
         state: nextState,
-      })
-      toast.success('评论状态已更新。')
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message)
-      } else {
-        toast.error('Failed to update comment state.')
-      }
-    }
+      },
+      {
+        onSuccess: () => {
+          sileo.success({ title: '评论状态已更新。' })
+        },
+        onError: error => {
+          sileo.error({ title: error.message })
+        },
+      },
+    )
   }
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = (id: number) => {
     if (!window.confirm('确认删除这条评论吗？此操作不可撤销。')) {
       return
     }
 
-    try {
-      await deleteById({ id })
-      toast.success('评论已删除。')
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message)
-      } else {
-        toast.error('Failed to delete comment.')
-      }
-    }
+    deleteById(
+      { id },
+      {
+        onSuccess: () => {
+          sileo.success({ title: '评论已删除。' })
+        },
+        onError: error => {
+          sileo.error({ title: error.message })
+        },
+      },
+    )
   }
 
   return (
@@ -197,7 +198,7 @@ export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
                       className="cursor-pointer"
                       disabled={isUpdatingState || comment.state === 'APPROVED'}
                       onClick={() => {
-                        void handleUpdateState(comment.id, 'APPROVED')
+                        handleUpdateState(comment.id, 'APPROVED')
                       }}
                     >
                       <Check className="size-4" />
@@ -210,7 +211,7 @@ export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
                       className="cursor-pointer"
                       disabled={isUpdatingState || comment.state === 'PENDING'}
                       onClick={() => {
-                        void handleUpdateState(comment.id, 'PENDING')
+                        handleUpdateState(comment.id, 'PENDING')
                       }}
                     >
                       <RefreshCcw className="size-4" />
@@ -223,7 +224,7 @@ export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
                       className="cursor-pointer"
                       disabled={isUpdatingState || comment.state === 'REJECTED'}
                       onClick={() => {
-                        void handleUpdateState(comment.id, 'REJECTED')
+                        handleUpdateState(comment.id, 'REJECTED')
                       }}
                     >
                       <X className="size-4" />
@@ -236,7 +237,7 @@ export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
                       className="cursor-pointer"
                       disabled={isDeletingComment}
                       onClick={() => {
-                        void handleDelete(comment.id)
+                        handleDelete(comment.id)
                       }}
                     >
                       <Trash2 className="size-4" />

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import { useBlogPublishMutation } from '@/hooks/api/blog'
 import { Switch } from '@/ui/shadcn/switch'
 
@@ -11,26 +11,27 @@ export default function PublishToggleSwitch({
   isPublished: boolean
 }) {
   const [isPublished, setIsPublished] = useState(initial)
-  const { mutateAsync: toggleBlogPublished, isPending } = useBlogPublishMutation()
+  const { mutate: toggleBlogPublished, isPending } = useBlogPublishMutation()
 
-  const handleToggle = async () => {
+  const handleToggle = () => {
     const newStatus = !isPublished
     setIsPublished(newStatus)
 
-    try {
-      await toggleBlogPublished({
+    toggleBlogPublished(
+      {
         id: blogId,
         isPublished: newStatus,
-      })
-      toast.success(`更新成功`)
-    } catch (error) {
-      setIsPublished(!newStatus)
-      if (error instanceof Error) {
-        toast.error(`发布状态更新失败 ${error.message}`)
-      } else {
-        toast.error(`发布状态更新失败`)
-      }
-    }
+      },
+      {
+        onSuccess: () => {
+          sileo.success({ title: '更新成功' })
+        },
+        onError: error => {
+          setIsPublished(!newStatus)
+          sileo.error({ title: `发布状态更新失败 ${error.message}` })
+        },
+      },
+    )
   }
 
   return <Switch onCheckedChange={handleToggle} checked={isPublished} disabled={isPending} />

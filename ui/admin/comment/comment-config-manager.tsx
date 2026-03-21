@@ -2,7 +2,7 @@
 
 import type { ComponentProps, FC } from 'react'
 import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import { useCommentConfigMutation, useCommentConfigQuery } from '@/hooks/api/comment'
 import Loading from '@/ui/components/shared/loading'
 import { Button } from '@/ui/shadcn/button'
@@ -10,7 +10,7 @@ import { Switch } from '@/ui/shadcn/switch'
 
 export const CommentConfigManager: FC<ComponentProps<'main'>> = () => {
   const { data, isPending } = useCommentConfigQuery()
-  const { mutateAsync: updateConfig, isPending: isUpdating } = useCommentConfigMutation()
+  const { mutate: updateConfig, isPending: isUpdating } = useCommentConfigMutation()
 
   const [autoApproveEmailUsers, setAutoApproveEmailUsers] = useState(true)
   const [autoApproveWalletUsers, setAutoApproveWalletUsers] = useState(false)
@@ -31,20 +31,21 @@ export const CommentConfigManager: FC<ComponentProps<'main'>> = () => {
     (currentConfig.autoApproveEmailUsers !== autoApproveEmailUsers ||
       currentConfig.autoApproveWalletUsers !== autoApproveWalletUsers)
 
-  const handleSave = async () => {
-    try {
-      await updateConfig({
+  const handleSave = () => {
+    updateConfig(
+      {
         autoApproveEmailUsers,
         autoApproveWalletUsers,
-      })
-      toast.success('评论审核策略已更新。')
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message)
-      } else {
-        toast.error('Failed to update comment config.')
-      }
-    }
+      },
+      {
+        onSuccess: () => {
+          sileo.success({ title: '评论审核策略已更新' })
+        },
+        onError: error => {
+          sileo.error({ title: error.message })
+        },
+      },
+    )
   }
 
   if (isPending) {
@@ -101,9 +102,7 @@ export const CommentConfigManager: FC<ComponentProps<'main'>> = () => {
             size="sm"
             className="cursor-pointer"
             disabled={isUpdating || !hasChanged}
-            onClick={() => {
-              void handleSave()
-            }}
+            onClick={handleSave}
           >
             {isUpdating ? '保存中...' : '保存配置'}
           </Button>

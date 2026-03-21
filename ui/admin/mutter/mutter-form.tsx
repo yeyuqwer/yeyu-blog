@@ -1,5 +1,5 @@
 import { type FC, type FormEvent, useEffect, useState } from 'react'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import { useMutterMutation } from '@/hooks/api/mutter'
 import { useModalStore } from '@/store/use-modal-store'
 import {
@@ -21,7 +21,7 @@ type MutterFormProps = {
 export const MutterForm: FC<MutterFormProps> = ({ editingMutter, clearEditingMutter }) => {
   const { setModalOpen } = useModalStore()
   const [draft, setDraft] = useState('')
-  const { mutateAsync: createMutter, isPending: isCreating } = useMutterMutation()
+  const { mutate: createMutter, isPending: isCreating } = useMutterMutation()
   const trimmedDraft = draft.trim()
   const canSubmit = trimmedDraft.length > 0
   const isEditing = editingMutter != null
@@ -35,22 +35,23 @@ export const MutterForm: FC<MutterFormProps> = ({ editingMutter, clearEditingMut
     setDraft(editingMutter.content)
   }, [editingMutter])
 
-  const handleCreateMutter = async () => {
+  const handleCreateMutter = () => {
     const content = trimmedDraft
     if (content.length === 0) return
 
-    try {
-      await createMutter({
+    createMutter(
+      {
         content,
-      })
-      setDraft('')
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message)
-      } else {
-        toast.error('Failed to create mutter.')
-      }
-    }
+      },
+      {
+        onSuccess: () => {
+          setDraft('')
+        },
+        onError: error => {
+          sileo.error({ title: error.message })
+        },
+      },
+    )
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -72,7 +73,7 @@ export const MutterForm: FC<MutterFormProps> = ({ editingMutter, clearEditingMut
       return
     }
 
-    void handleCreateMutter()
+    handleCreateMutter()
   }
 
   return (

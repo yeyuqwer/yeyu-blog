@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useRef } from 'react'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 
 const autoSavePrefix = 'admin-article-markdown-draft-v1'
 const autoSaveDelayMs = 800
@@ -65,7 +65,7 @@ export function useMarkdownAutoSave({
 
       if (payload.content !== latestValueRef.current) {
         onChange(payload.content)
-        toast.info('已恢复未保存内容')
+        sileo.info({ title: '已恢复未保存内容' })
       }
     } catch {
       localStorage.removeItem(storageKey)

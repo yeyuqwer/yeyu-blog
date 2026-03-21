@@ -9,7 +9,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { File, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import { useBlogTagsQuery, useNoteTagsQuery } from '@/hooks/api/tag'
 import { createBlog, updateBlog } from '@/lib/api/blog'
 import { createNote, updateNote } from '@/lib/api/note'
@@ -106,15 +106,11 @@ export const AdminArticleEditPage: FC<{
         queryClient.invalidateQueries({ queryKey: ['public-note-list'] })
       }
 
-      toast.success('保存成功')
+      sileo.success({ title: '保存成功' })
       router.push(`/admin/${strategy.path}/edit/${variables.slug}`)
     },
     onError: error => {
-      if (error instanceof Error) {
-        toast.error(`保存失败 ${error.message}`)
-      } else {
-        toast.error(`保存失败`)
-      }
+      sileo.error({ title: `保存失败 ${error.message}` })
     },
   })
 

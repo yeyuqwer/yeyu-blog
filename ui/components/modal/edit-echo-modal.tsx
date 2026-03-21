@@ -4,7 +4,7 @@ import type { UpdateEchoDTO } from '@/lib/api/echo'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import { useEchoUpdateMutation } from '@/hooks/api/echo'
 import { UpdateEchoSchema } from '@/lib/api/echo'
 import { useModalStore } from '@/store/use-modal-store'
@@ -46,21 +46,18 @@ export default function EditEchoModal() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isModalOpen, form])
+  const { mutate: updateEcho, isPending } = useEchoUpdateMutation()
 
-  const { mutateAsync: updateEcho, isPending } = useEchoUpdateMutation()
-
-  async function onSubmit(values: UpdateEchoDTO) {
-    try {
-      await updateEcho(values)
-      toast.success(`修改成功`)
-      onModalClose()
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(`更新引用失败~ ${error.message}`)
-      } else {
-        toast.error('更新引用失败~')
-      }
-    }
+  function onSubmit(values: UpdateEchoDTO) {
+    updateEcho(values, {
+      onSuccess: () => {
+        sileo.success({ title: '修改成功' })
+        onModalClose()
+      },
+      onError: error => {
+        sileo.error({ title: `更新引用失败~ ${error.message}` })
+      },
+    })
   }
 
   return (

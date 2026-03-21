@@ -1,6 +1,6 @@
 'use client'
 
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import { useMutterUpdateMutation } from '@/hooks/api/mutter'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
@@ -24,29 +24,30 @@ export default function UpdateMutterModal() {
   const { modalType, payload, onModalClose } = useModalStore()
   const isModalOpen = modalType === 'updateMutterModal'
   const values = payload != null ? (payload as UpdateMutterPayload) : null
-  const { mutateAsync: updateMutterById, isPending } = useMutterUpdateMutation()
+  const { mutate: updateMutterById, isPending } = useMutterUpdateMutation()
 
-  const onSubmit = async () => {
+  const onSubmit = () => {
     if (values == null) {
-      toast.error('Mutter info not found.')
+      sileo.error({ title: 'Mutter info not found.' })
       return
     }
 
-    try {
-      await updateMutterById({
+    updateMutterById(
+      {
         id: values.id,
         content: values.newContent,
-      })
-      toast.success('Mutter updated.')
-      values.onSuccess?.()
-      onModalClose()
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message)
-      } else {
-        toast.error('Failed to update mutter.')
-      }
-    }
+      },
+      {
+        onSuccess: () => {
+          sileo.success({ title: 'Mutter updated.' })
+          values.onSuccess?.()
+          onModalClose()
+        },
+        onError: error => {
+          sileo.error({ title: error.message })
+        },
+      },
+    )
   }
 
   return (
@@ -86,9 +87,7 @@ export default function UpdateMutterModal() {
           <Button
             type="button"
             className="cursor-pointer"
-            onClick={() => {
-              void onSubmit()
-            }}
+            onClick={onSubmit}
             disabled={values == null || isPending}
           >
             {isPending ? 'Updating...' : 'Confirm'}

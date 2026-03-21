@@ -4,7 +4,7 @@ import type { UpdateTagNameDTO } from '@/lib/api/tag'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import { useTagUpdateMutation } from '@/hooks/api/tag'
 import { UpdateTagNameSchema } from '@/lib/api/tag'
 import { useModalStore } from '@/store/use-modal-store'
@@ -24,7 +24,7 @@ export default function EditTagModal() {
   const isModalOpen = modalType === 'editTagModal'
   const { id, tagName, tagType } = payload != null ? (payload as UpdateTagNameDTO) : {}
 
-  const { mutateAsync: updateTagName, isPending } = useTagUpdateMutation()
+  const { mutate: updateTagName, isPending } = useTagUpdateMutation()
 
   const form = useForm<UpdateTagNameDTO>({
     resolver: zodResolver(UpdateTagNameSchema),
@@ -41,18 +41,16 @@ export default function EditTagModal() {
     }
   }, [isModalOpen, form, tagName, id, tagType])
 
-  async function onSubmit(values: UpdateTagNameDTO) {
-    try {
-      await updateTagName(values)
-      toast.success(`修改成功`)
-      onModalClose()
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(`修改标签出错 ${error.message}`)
-      } else {
-        toast.error(`修改标签出错`)
-      }
-    }
+  function onSubmit(values: UpdateTagNameDTO) {
+    updateTagName(values, {
+      onSuccess: () => {
+        sileo.success({ title: '修改成功' })
+        onModalClose()
+      },
+      onError: error => {
+        sileo.error({ title: `修改标签出错 ${error.message}` })
+      },
+    })
   }
 
   return (

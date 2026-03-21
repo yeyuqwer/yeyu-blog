@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { TagType } from '@prisma/client'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import { useTagCreateMutation } from '@/hooks/api/tag'
 import { CreateTagSchema } from '@/lib/api/tag'
 import { useModalStore } from '@/store/use-modal-store'
@@ -18,7 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 export default function CreateTagModal() {
   const { modalType, onModalClose } = useModalStore()
   const isModalOpen = modalType === 'createTagModal'
-  const { mutateAsync: createTag, isPending } = useTagCreateMutation()
+  const { mutate: createTag, isPending } = useTagCreateMutation()
 
   const form = useForm<CreateTagDTO>({
     resolver: zodResolver(CreateTagSchema),
@@ -35,18 +35,16 @@ export default function CreateTagModal() {
     }
   }, [isModalOpen, form])
 
-  async function onSubmit(values: CreateTagDTO) {
-    try {
-      await createTag(values)
-      toast.success(`创建成功`)
-      onModalClose()
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(`创建标签失败~ ${error.message}`)
-      } else {
-        toast.error(`创建标签失败~`)
-      }
-    }
+  function onSubmit(values: CreateTagDTO) {
+    createTag(values, {
+      onSuccess: () => {
+        sileo.success({ title: '创建成功' })
+        onModalClose()
+      },
+      onError: error => {
+        sileo.error({ title: `创建标签失败~ ${error.message}` })
+      },
+    })
   }
 
   return (

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useId, useRef, useState } from 'react'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import { customMarkdownTheme } from '@/lib/core/markdown'
 import { simpleProcessor } from '@/lib/core/markdown/simple-processor'
 import { MarkdownCodeBlockEnhancer } from '@/ui/components/shared/markdown-code-block-enhancer'
@@ -28,11 +28,11 @@ export default function MarkdownEditor({
         const imgUrl = res[0].url
         const markdownImage = `![](${imgUrl})`
         insertText(markdownImage)
-        toast.success('图片上传成功')
+        sileo.success({ title: '图片上传成功' })
       }
     },
     onUploadError: error => {
-      toast.error(`上传失败: ${error.message}`)
+      sileo.error({ title: `上传失败: ${error.message}` })
     },
   })
 
@@ -63,7 +63,7 @@ export default function MarkdownEditor({
     }
     if (files.length > 0) {
       e.preventDefault()
-      toast.info('正在上传图片...')
+      sileo.info({ title: '正在上传图片...' })
       await startUpload(files)
     }
   }
@@ -72,7 +72,7 @@ export default function MarkdownEditor({
     e.preventDefault()
     const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'))
     if (files.length > 0) {
-      toast.info('正在上传图片...')
+      sileo.info({ title: '正在上传图片...' })
       await startUpload(files)
     }
   }

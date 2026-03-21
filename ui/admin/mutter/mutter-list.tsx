@@ -2,7 +2,7 @@
 
 import { Edit2, Eye, EyeOff, Trash } from 'lucide-react'
 import { type ComponentProps, type FC, useState } from 'react'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import { useMutterPublishMutation, useMutterQuery } from '@/hooks/api/mutter'
 import { prettyDateTime } from '@/lib/utils/time'
 import { useModalStore } from '@/store/use-modal-store'
@@ -17,30 +17,34 @@ export const MutterList: FC<
 > = ({ query, onEditMutter }) => {
   const { data, isPending } = useMutterQuery({ q: query })
   const { setModalOpen } = useModalStore()
-  const { mutateAsync: toggleMutterPublish } = useMutterPublishMutation()
+  const { mutate: toggleMutterPublish } = useMutterPublishMutation()
   const [togglingMutterIds, setTogglingMutterIds] = useState<number[]>([])
   const mutters = data?.list ?? []
 
-  const handleTogglePublish = async (id: number, isPublished: boolean) => {
+  const handleTogglePublish = (id: number, isPublished: boolean) => {
     setTogglingMutterIds(previousIds =>
       previousIds.includes(id) ? previousIds : [...previousIds, id],
     )
 
-    try {
-      await toggleMutterPublish({
+    toggleMutterPublish(
+      {
         id,
         isPublished,
-      })
-      toast.success(isPublished ? 'Mutter is now visible.' : 'Mutter is now hidden.')
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message)
-      } else {
-        toast.error('Failed to update mutter publish status.')
-      }
-    } finally {
-      setTogglingMutterIds(previousIds => previousIds.filter(currentId => currentId !== id))
-    }
+      },
+      {
+        onSuccess: () => {
+          sileo.success({
+            title: isPublished ? 'Mutter is now visible.' : 'Mutter is now hidden.',
+          })
+        },
+        onError: error => {
+          sileo.error({ title: error.message })
+        },
+        onSettled: () => {
+          setTogglingMutterIds(previousIds => previousIds.filter(currentId => currentId !== id))
+        },
+      },
+    )
   }
 
   if (isPending) {
@@ -86,7 +90,7 @@ export const MutterList: FC<
                     aria-label={item.isPublished ? 'hide mutter' : 'show mutter'}
                     disabled={togglingMutterIds.includes(item.id)}
                     onClick={() => {
-                      void handleTogglePublish(item.id, !item.isPublished)
+                      handleTogglePublish(item.id, !item.isPublished)
                     }}
                   >
                     {item.isPublished ? <Eye className="size-3" /> : <EyeOff className="size-3" />}

@@ -4,7 +4,7 @@ import type { CreateEchoDTO } from '@/lib/api/echo'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import { useEchoCreateMutation } from '@/hooks/api/echo'
 import { CreateEchoSchema } from '@/lib/api/echo'
 import { useModalStore } from '@/store/use-modal-store'
@@ -25,7 +25,7 @@ import { Textarea } from '@/ui/shadcn/textarea'
 export default function CreateEchoModal() {
   const { modalType, onModalClose } = useModalStore()
   const isModalOpen = modalType === 'createEchoModal'
-  const { mutateAsync: createEcho, isPending } = useEchoCreateMutation()
+  const { mutate: createEcho, isPending } = useEchoCreateMutation()
 
   const form = useForm<CreateEchoDTO>({
     resolver: zodResolver(CreateEchoSchema),
@@ -43,18 +43,16 @@ export default function CreateEchoModal() {
     }
   }, [isModalOpen, form])
 
-  async function onSubmit(values: CreateEchoDTO) {
-    try {
-      await createEcho(values)
-      toast.success(`创建成功`)
-      onModalClose()
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(`创建引用失败~ ${error.message}`)
-      } else {
-        toast.error(`创建引用失败~`)
-      }
-    }
+  function onSubmit(values: CreateEchoDTO) {
+    createEcho(values, {
+      onSuccess: () => {
+        sileo.success({ title: '创建成功' })
+        onModalClose()
+      },
+      onError: error => {
+        sileo.error({ title: `创建引用失败~ ${error.message}` })
+      },
+    })
   }
 
   return (
