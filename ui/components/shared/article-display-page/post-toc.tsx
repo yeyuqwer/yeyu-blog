@@ -24,6 +24,9 @@ const variants = {
   }),
 }
 
+const tocProgressRadius = 34
+const tocProgressStrokeWidth = 10
+
 const TocProgressCircle = ({ container }: { container: HTMLElement }) => {
   const ref = useRef(container)
   const { scrollYProgress } = useScroll({
@@ -35,10 +38,11 @@ const TocProgressCircle = ({ container }: { container: HTMLElement }) => {
     <motion.circle
       cx="50"
       cy="50"
-      r="36"
+      r={tocProgressRadius}
       pathLength="1"
       className="fill-none stroke-black/70 dark:stroke-white/70"
-      strokeWidth="8"
+      strokeWidth={tocProgressStrokeWidth}
+      strokeLinecap="round"
       style={{
         pathLength: scrollYProgress,
       }}
@@ -214,10 +218,10 @@ export const PostToc: FC<{
                   <circle
                     cx="50"
                     cy="50"
-                    r="36"
+                    r={tocProgressRadius}
                     pathLength="1"
                     className="fill-none stroke-black/10 dark:stroke-white/10"
-                    strokeWidth="4"
+                    strokeWidth={tocProgressStrokeWidth}
                   />
 
                   {/* progress */}
@@ -227,10 +231,11 @@ export const PostToc: FC<{
                     <motion.circle
                       cx="50"
                       cy="50"
-                      r="36"
+                      r={tocProgressRadius}
                       pathLength="1"
                       className="fill-none stroke-black/70 dark:stroke-white/70"
-                      strokeWidth="4"
+                      strokeWidth={tocProgressStrokeWidth}
+                      strokeLinecap="round"
                       style={{ pathLength: 0 }}
                     />
                   )}
