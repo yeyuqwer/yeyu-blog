@@ -218,3 +218,183 @@ html.dark .markdown-content pre.shiki span.highlighted-word {
 .markdown-content pre.shiki::-webkit-scrollbar {
   background-color: transparent !important;
 }
+
+/* Highlight.js fallback theme for rehype-highlight */
+.markdown-content .hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  background: #f4f5f7 !important;
+  color: #4c4f69 !important;
+}
+
+.markdown-content pre > code.hljs {
+  background: transparent !important;
+}
+
+.markdown-content .hljs-emphasis {
+  font-style: italic;
+}
+
+.markdown-content .hljs-strong {
+  font-weight: bold;
+}
+
+.markdown-content .hljs-subst {
+  color: #4c4f69 !important;
+}
+
+.markdown-content .hljs-comment {
+  color: #9ca0b0 !important;
+}
+
+.markdown-content .hljs-keyword,
+.markdown-content .hljs-selector-tag,
+.markdown-content .hljs-meta .hljs-keyword,
+.markdown-content .hljs-doctag,
+.markdown-content .hljs-section {
+  color: #8839ef !important;
+}
+
+.markdown-content .hljs-attr {
+  color: #1e66f5 !important;
+}
+
+.markdown-content .hljs-attribute {
+  color: #40a02b !important;
+}
+
+.markdown-content .hljs-name,
+.markdown-content .hljs-type,
+.markdown-content .hljs-number,
+.markdown-content .hljs-selector-id,
+.markdown-content .hljs-quote,
+.markdown-content .hljs-template-tag {
+  color: #fe640b !important;
+}
+
+.markdown-content .hljs-selector-class {
+  color: #df8e1d !important;
+}
+
+.markdown-content .hljs-string,
+.markdown-content .hljs-regexp,
+.markdown-content .hljs-symbol,
+.markdown-content .hljs-variable,
+.markdown-content .hljs-template-variable,
+.markdown-content .hljs-link,
+.markdown-content .hljs-selector-attr {
+  color: #40a02b !important;
+}
+
+.markdown-content .hljs-meta,
+.markdown-content .hljs-selector-pseudo {
+  color: #209fb5 !important;
+}
+
+.markdown-content .hljs-built_in,
+.markdown-content .hljs-title,
+.markdown-content .hljs-literal {
+  color: #1e66f5 !important;
+}
+
+.markdown-content .hljs-bullet,
+.markdown-content .hljs-code {
+  color: #df8e1d !important;
+}
+
+.markdown-content .hljs-meta .hljs-string {
+  color: #40a02b !important;
+}
+
+.markdown-content .hljs-deletion {
+  color: #e64553 !important;
+}
+
+.markdown-content .hljs-addition {
+  color: #40a02b !important;
+}
+
+html.dark .markdown-content .hljs {
+  background: #1a1b26 !important;
+  color: #c0caf5 !important;
+}
+
+html.dark .markdown-content pre > code.hljs {
+  background: transparent !important;
+}
+
+html.dark .markdown-content .hljs-subst {
+  color: #c0caf5 !important;
+}
+
+html.dark .markdown-content .hljs-comment {
+  color: #6c7086 !important;
+}
+
+html.dark .markdown-content .hljs-keyword,
+html.dark .markdown-content .hljs-selector-tag,
+html.dark .markdown-content .hljs-meta .hljs-keyword,
+html.dark .markdown-content .hljs-doctag,
+html.dark .markdown-content .hljs-section {
+  color: #bb9af7 !important;
+}
+
+html.dark .markdown-content .hljs-attr {
+  color: #7dcfff !important;
+}
+
+html.dark .markdown-content .hljs-attribute {
+  color: #9ece6a !important;
+}
+
+html.dark .markdown-content .hljs-name,
+html.dark .markdown-content .hljs-type,
+html.dark .markdown-content .hljs-number,
+html.dark .markdown-content .hljs-selector-id,
+html.dark .markdown-content .hljs-quote,
+html.dark .markdown-content .hljs-template-tag {
+  color: #e0af68 !important;
+}
+
+html.dark .markdown-content .hljs-selector-class {
+  color: #e0af68 !important;
+}
+
+html.dark .markdown-content .hljs-string,
+html.dark .markdown-content .hljs-regexp,
+html.dark .markdown-content .hljs-symbol,
+html.dark .markdown-content .hljs-variable,
+html.dark .markdown-content .hljs-template-variable,
+html.dark .markdown-content .hljs-link,
+html.dark .markdown-content .hljs-selector-attr {
+  color: #9ece6a !important;
+}
+
+html.dark .markdown-content .hljs-meta,
+html.dark .markdown-content .hljs-selector-pseudo {
+  color: #7dcfff !important;
+}
+
+html.dark .markdown-content .hljs-built_in,
+html.dark .markdown-content .hljs-title,
+html.dark .markdown-content .hljs-literal {
+  color: #7aa2f7 !important;
+}
+
+html.dark .markdown-content .hljs-bullet,
+html.dark .markdown-content .hljs-code {
+  color: #e0af68 !important;
+}
+
+html.dark .markdown-content .hljs-meta .hljs-string {
+  color: #9ece6a !important;
+}
+
+html.dark .markdown-content .hljs-deletion {
+  color: #ff757f !important;
+}
+
+html.dark .markdown-content .hljs-addition {
+  color: #9ece6a !important;
+}

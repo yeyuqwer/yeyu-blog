@@ -2,10 +2,6 @@
 
 import { useEffect, useId, useRef, useState } from 'react'
 import { toast } from 'sonner'
-
-// * 高亮代码块
-import './hljs-theme.css'
-
 import { customMarkdownTheme } from '@/lib/core/markdown'
 import { simpleProcessor } from '@/lib/core/markdown/simple-processor'
 import { MarkdownCodeBlockEnhancer } from '@/ui/components/shared/markdown-code-block-enhancer'

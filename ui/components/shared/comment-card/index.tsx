@@ -3,11 +3,12 @@
 import type { CommentTargetType } from '@/lib/api/comment'
 import { MessageCircle } from 'lucide-react'
 import Image from 'next/image'
-import { type ComponentProps, useState } from 'react'
+import { type ComponentProps, useEffect, useState } from 'react'
 import { type Address, isAddress } from 'viem'
 import avatar from '@/config/img/avatar.webp'
 import { useCommentMutation, usePublicCommentQuery } from '@/hooks/api/comment'
 import { isAdminLoggedIn, isEmailLoggedIn, isWalletLoggedIn, useSession } from '@/lib/core'
+import { commentProcessor } from '@/lib/core/markdown/comment-processor'
 import { prettyDateTime, toRelativeDate } from '@/lib/utils/time'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
@@ -18,6 +19,55 @@ import Loading from '../loading'
 type CommentCardProps = ComponentProps<'section'> & {
   articleId: number
   articleType: CommentTargetType
+}
+
+const commentMarkdownTheme = [
+  'markdown-content prose prose-sm max-w-none prose-zinc dark:prose-invert',
+  'text-[15px] leading-7',
+  'prose-headings:mt-4 prose-headings:mb-2 prose-headings:text-left prose-headings:tracking-tight',
+  'prose-h1:text-xl prose-h2:text-lg prose-h3:text-base prose-h4:text-sm',
+  'prose-h5:text-sm prose-h6:text-sm',
+  'prose-p:my-0 prose-p:break-words [&_p+p]:mt-3 [&_p:last-child]:mb-0',
+  'prose-a:break-all prose-a:border-current prose-a:border-b prose-a:no-underline',
+  'prose-a:text-[#0f766e] prose-a:duration-200 prose-a:hover:text-[#0d9488]',
+  'dark:prose-a:text-[#f596aa] dark:prose-a:hover:text-[#f9a8d4]',
+  'prose-ul:my-3 prose-ol:my-3 prose-li:my-1',
+  'prose-blockquote:my-3 prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:font-normal',
+  'prose-pre:my-4 prose-pre:overflow-x-auto prose-pre:rounded-md',
+  'prose-img:my-3 prose-img:rounded-md',
+].join(' ')
+
+function CommentMarkdownContent({ content }: { content: string }) {
+  const [html, setHtml] = useState<string | null>(null)
+
+  useEffect(() => {
+    let active = true
+
+    const renderMarkdown = async () => {
+      try {
+        const file = await commentProcessor.process(content)
+        if (active) {
+          setHtml(String(file))
+        }
+      } catch {
+        if (active) {
+          setHtml(null)
+        }
+      }
+    }
+
+    void renderMarkdown()
+
+    return () => {
+      active = false
+    }
+  }, [content])
+
+  if (html == null) {
+    return <p className="whitespace-pre-wrap break-words">{content}</p>
+  }
+
+  return <div className={commentMarkdownTheme} dangerouslySetInnerHTML={{ __html: html }} />
 }
 
 export default function CommentCard({ articleId, articleType, className }: CommentCardProps) {
@@ -153,8 +203,8 @@ export default function CommentCard({ articleId, articleType, className }: Comme
                       </time>
                     </div>
 
-                    <article className="mt-2 text-[15px] text-zinc-900 leading-7 dark:text-zinc-100">
-                      <p className="wrap-break-word whitespace-pre-wrap">{comment.content}</p>
+                    <article className="mt-2 text-zinc-900 dark:text-zinc-100">
+                      <CommentMarkdownContent content={comment.content} />
                     </article>
                   </div>
                 </li>
