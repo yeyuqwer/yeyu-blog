@@ -1,6 +1,9 @@
 /* * markdown 渲染时的代码主题 */
 /* ! shiki 的双主题变量由 @shikijs/rehype 注入 */
 .markdown-content .md-code-block {
+  --md-code-radius: 0.5rem;
+  --md-code-copy-offset: 0.5rem;
+  --md-code-copy-radius: calc(var(--md-code-radius) - 0.125rem);
   position: relative;
   margin: 1.5rem 0;
 }
@@ -11,31 +14,16 @@
 
 .markdown-content .md-code-copy {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: var(--md-code-copy-offset);
+  right: var(--md-code-copy-offset);
   z-index: 3;
-  border: 1px solid color-mix(in srgb, var(--theme-indicator) 30%, transparent);
-  border-radius: 0.375rem;
-  padding: 0.24rem 0.55rem;
-  background: color-mix(in srgb, var(--theme-background) 72%, white);
-  color: color-mix(in srgb, var(--theme-primary) 82%, black);
-  font-size: 0.72rem;
-  line-height: 1;
-  cursor: pointer;
   opacity: 0;
-  transition:
-    opacity 0.2s ease,
-    border-color 0.2s ease,
-    background-color 0.2s ease;
+  transition: opacity 0.2s ease;
 }
 
-.markdown-content .md-code-block:hover .md-code-copy {
+.markdown-content .md-code-block:hover .md-code-copy,
+.markdown-content .md-code-copy:focus-visible {
   opacity: 1;
-}
-
-.markdown-content .md-code-copy[data-copied="true"] {
-  border-color: color-mix(in srgb, #22c55e 40%, transparent);
-  color: #15803d;
 }
 
 .markdown-content .md-code-lang {
@@ -50,17 +38,6 @@
   user-select: none;
 }
 
-html.dark .markdown-content .md-code-copy {
-  border-color: color-mix(in srgb, var(--border) 88%, transparent);
-  background: color-mix(in srgb, var(--background) 72%, var(--muted) 28%);
-  color: color-mix(in srgb, var(--foreground) 86%, transparent);
-}
-
-html.dark .markdown-content .md-code-copy[data-copied="true"] {
-  border-color: color-mix(in srgb, #22c55e 40%, transparent);
-  color: #86efac;
-}
-
 html.dark .markdown-content .md-code-lang {
   color: color-mix(in srgb, var(--muted-foreground) 84%, transparent);
 }
@@ -73,7 +50,7 @@ html.dark .markdown-content .md-code-lang {
 
 .markdown-content pre {
   border: 1px solid color-mix(in srgb, var(--theme-indicator) 30%, transparent);
-  border-radius: 0.5rem;
+  border-radius: var(--md-code-radius);
   background-color: color-mix(in srgb, var(--theme-background) 78%, white);
   font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
 }

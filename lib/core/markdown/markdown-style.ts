@@ -54,7 +54,7 @@ const className = `
   dark:prose-a:text-white dark:prose-a:hover:opacity-75
   [&_a.is-link]:text-inherit
 
-  prose-ul:my-4 prose-ol:my-4 prose-ol:pl-10! prose-li:my-2
+  prose-ul:my-4 prose-ol:my-4 prose-ol:pl-10 prose-li:my-2
 
   prose-blockquote:relative prose-blockquote:border-l-0 prose-blockquote:py-0 prose-blockquote:pl-6
   prose-blockquote:font-normal prose-blockquote:text-black/80 dark:prose-blockquote:text-white/80

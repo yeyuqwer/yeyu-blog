@@ -127,26 +127,14 @@ const isCodeBlockPre = (node: ElementLike): boolean => {
   return findCodeElement(node) != null
 }
 
-const createCopyButton = (): ElementLike => ({
+const createCopyButtonRoot = (): ElementLike => ({
   type: 'element',
-  tagName: 'button',
+  tagName: 'span',
   properties: {
-    type: 'button',
-    className: ['md-code-copy'],
-    'data-code-copy': 'true',
-    'aria-label': 'Copy code',
-    title: 'Copy code',
+    'data-code-copy-root': 'true',
+    'aria-hidden': 'true',
   },
-  children: [
-    {
-      type: 'element',
-      tagName: 'span',
-      properties: {
-        'data-copy-label': 'true',
-      },
-      children: [{ type: 'text', value: 'Copy' }],
-    },
-  ],
+  children: [],
 })
 
 const createLanguageBadge = (language: string): ElementLike => ({
@@ -161,7 +149,7 @@ const createLanguageBadge = (language: string): ElementLike => ({
 
 const decoratePreCodeBlock = (preNode: ElementLike): ElementLike => {
   const language = resolveCodeLanguage(preNode)
-  const wrapperChildren: NodeLike[] = [createCopyButton()]
+  const wrapperChildren: NodeLike[] = [createCopyButtonRoot()]
 
   if (language != null) {
     wrapperChildren.push(createLanguageBadge(language))

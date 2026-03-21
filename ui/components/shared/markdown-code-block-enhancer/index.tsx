@@ -1,20 +1,32 @@
 'use client'
 
 import type { ComponentProps, FC } from 'react'
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { CopyButton } from '@/ui/shadcn/copy-button'
 
-const copyResetMS = 1800
+type CopyTarget = {
+  content: string
+  element: HTMLElement
+  id: string
+}
 
 export const MarkdownCodeBlockEnhancer: FC<
   ComponentProps<'div'> & {
     rootSelector: string
   }
 > = ({ rootSelector }) => {
+  const [copyTargets, setCopyTargets] = useState<CopyTarget[]>([])
+  const nextCopyRootIdRef = useRef(0)
+  const signatureRef = useRef('')
+
   useEffect(() => {
     const root = document.querySelector<HTMLElement>(rootSelector)
-    if (root == null) return
-
-    const timers = new Map<HTMLButtonElement, number>()
+    if (root == null) {
+      signatureRef.current = ''
+      setCopyTargets([])
+      return
+    }
 
     const scrollToHeading = (anchor: HTMLAnchorElement) => {
       const href = anchor.getAttribute('href') ?? ''
@@ -33,13 +45,35 @@ export const MarkdownCodeBlockEnhancer: FC<
       window.history.pushState(null, '', `#${headingId}`)
     }
 
-    const resetButtonState = (button: HTMLButtonElement) => {
-      button.dataset.copied = 'false'
-      const label = button.querySelector<HTMLElement>('[data-copy-label]')
-      if (label != null) label.textContent = 'Copy'
+    const syncCopyTargets = () => {
+      const nextTargets = Array.from(
+        root.querySelectorAll<HTMLElement>('[data-code-copy-root="true"]'),
+      ).map(element => {
+        if (element.dataset.codeCopyRootId == null) {
+          element.dataset.codeCopyRootId = String(nextCopyRootIdRef.current++)
+        }
+
+        const content =
+          element.closest('.md-code-block')?.querySelector<HTMLElement>('pre code')?.textContent ??
+          ''
+
+        return {
+          content,
+          element,
+          id: element.dataset.codeCopyRootId,
+        }
+      })
+
+      const nextSignature = nextTargets
+        .map(target => `${target.id}:${target.content}`)
+        .join('\u0000')
+      if (nextSignature === signatureRef.current) return
+
+      signatureRef.current = nextSignature
+      setCopyTargets(nextTargets)
     }
 
-    const handleCopyClick = async (event: MouseEvent) => {
+    const handleRootClick = (event: MouseEvent) => {
       const target = event.target
       if (!(target instanceof Element)) return
 
@@ -55,48 +89,46 @@ export const MarkdownCodeBlockEnhancer: FC<
       ) {
         event.preventDefault()
         scrollToHeading(headingAnchor)
-        return
-      }
-
-      const button = target.closest<HTMLButtonElement>('button[data-code-copy]')
-      if (button == null || !root.contains(button)) return
-
-      event.preventDefault()
-      const codeElement = button.closest('.md-code-block')?.querySelector<HTMLElement>('pre code')
-      if (codeElement == null) return
-
-      const codeText = codeElement.textContent ?? ''
-      if (codeText.length === 0) return
-
-      try {
-        await navigator.clipboard.writeText(codeText)
-
-        button.dataset.copied = 'true'
-        const label = button.querySelector<HTMLElement>('[data-copy-label]')
-        if (label != null) label.textContent = 'Copied'
-
-        const previousTimer = timers.get(button)
-        if (previousTimer != null) window.clearTimeout(previousTimer)
-
-        const timer = window.setTimeout(() => {
-          resetButtonState(button)
-          timers.delete(button)
-        }, copyResetMS)
-        timers.set(button, timer)
-      } catch {
-        resetButtonState(button)
       }
     }
 
-    root.addEventListener('click', handleCopyClick)
+    syncCopyTargets()
+
+    const observer = new MutationObserver(() => {
+      syncCopyTargets()
+    })
+
+    observer.observe(root, {
+      childList: true,
+      subtree: true,
+    })
+
+    root.addEventListener('click', handleRootClick)
+
     return () => {
-      root.removeEventListener('click', handleCopyClick)
-      for (const timer of timers.values()) {
-        window.clearTimeout(timer)
-      }
-      timers.clear()
+      observer.disconnect()
+      root.removeEventListener('click', handleRootClick)
+      signatureRef.current = ''
+      setCopyTargets([])
     }
   }, [rootSelector])
 
-  return null
+  return (
+    <>
+      {copyTargets.map(target =>
+        createPortal(
+          <CopyButton
+            content={target.content}
+            variant="outline"
+            size="sm"
+            delay={1800}
+            disabled={target.content.length === 0}
+            className="md-code-copy rounded-[var(--md-code-copy-radius)] border-theme-border bg-theme-background/85 text-theme-primary hover:bg-theme-background/95 hover:text-theme-primary dark:border-input dark:bg-input/30 dark:text-inherit dark:hover:bg-input/50"
+          />,
+          target.element,
+          target.id,
+        ),
+      )}
+    </>
+  )
 }
