@@ -131,6 +131,77 @@ export default function CommentCard({ articleId, articleType, className }: Comme
         </div>
       </header>
 
+      <section className="mt-6 pt-5 dark:border-zinc-800/80">
+        {isLoggedIn ? (
+          <div className="flex flex-col gap-3">
+            <div className="flex min-w-0 flex-1 flex-col gap-2">
+              <Textarea
+                placeholder="写下你的评论..."
+                value={commentContent}
+                onChange={event => {
+                  setCommentContent(event.target.value)
+                }}
+                className="min-h-28 resize-y rounded-md border-zinc-200 bg-transparent text-sm shadow-none dark:border-zinc-700 dark:bg-transparent"
+              />
+              <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+                <span>评论提交后可能需要审核。</span>
+                <span className={inputExceeded ? 'text-red-500 dark:text-red-400' : undefined}>
+                  {trimmedComment.length}/500
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between gap-3">
+              {isAdminUser ? (
+                <Image
+                  src={avatar}
+                  alt="admin avatar"
+                  width={40}
+                  height={40}
+                  className="size-10 rounded-full border border-zinc-200 object-cover dark:border-zinc-700"
+                />
+              ) : isWalletUser || sessionAvatar == null ? (
+                <AccountIcon
+                  account={sessionAddress}
+                  className="size-10 rounded-full border border-zinc-200 dark:border-zinc-700"
+                />
+              ) : (
+                <Image
+                  src={sessionAvatar}
+                  alt="my avatar"
+                  width={40}
+                  height={40}
+                  className="size-10 rounded-full border border-zinc-200 object-cover dark:border-zinc-700"
+                />
+              )}
+
+              <Button
+                type="button"
+                className="shrink-0"
+                disabled={trimmedComment.length === 0 || inputExceeded || isCreatingComment}
+                onClick={() => {
+                  handleSubmitComment()
+                }}
+              >
+                {isCreatingComment ? '提交中...' : '发布'}
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">登录后即可参与评论。</p>
+            <Button
+              type="button"
+              onClick={() => {
+                setModalOpen('loginModal')
+              }}
+            >
+              登录后评论
+            </Button>
+          </div>
+        )}
+      </section>
+
       <section className="mt-6 min-h-24">
         {isPending ? (
           <div className="flex min-h-24 items-center justify-center">
@@ -148,6 +219,8 @@ export default function CommentCard({ articleId, articleType, className }: Comme
               const formattedDisplayName = isAddress(displayName)
                 ? `${displayName.slice(0, 6)}...${displayName.slice(-6)}`
                 : displayName
+              const isCurrentUserComment =
+                session?.user?.id != null && comment.userId === session.user.id
               const commentAvatar =
                 comment.user?.image?.trim() || comment.authorImage?.trim() || undefined
               const commentAddress = isAddress(comment.user?.name ?? '')
@@ -192,7 +265,12 @@ export default function CommentCard({ articleId, articleType, className }: Comme
                       </span>
                       {comment.isAdmin ? (
                         <span className="rounded-full bg-theme-indicator/12 px-2 py-0.5 font-medium text-theme-indicator">
-                          站长
+                          Admin
+                        </span>
+                      ) : null}
+                      {isCurrentUserComment ? (
+                        <span className="rounded-full bg-theme-indicator/8 px-2 py-0.5 font-medium text-theme-indicator/70">
+                          You
                         </span>
                       ) : null}
                       <time
@@ -211,77 +289,6 @@ export default function CommentCard({ articleId, articleType, className }: Comme
               )
             })}
           </ul>
-        )}
-      </section>
-
-      <section className="mt-6 border-zinc-200/80 border-t pt-5 dark:border-zinc-800/80">
-        {isLoggedIn ? (
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-            <div className="flex min-w-0 flex-1 flex-col gap-2">
-              <Textarea
-                placeholder="写下你的评论..."
-                value={commentContent}
-                onChange={event => {
-                  setCommentContent(event.target.value)
-                }}
-                className="min-h-28 resize-y rounded-md border-zinc-200 bg-transparent text-sm shadow-none dark:border-zinc-700 dark:bg-transparent"
-              />
-              <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
-                <span>评论提交后可能需要审核。</span>
-                <span className={inputExceeded ? 'text-red-500 dark:text-red-400' : undefined}>
-                  {trimmedComment.length}/500
-                </span>
-              </div>
-            </div>
-
-            <div className="flex shrink-0 items-center gap-3 sm:w-28 sm:flex-col sm:items-center sm:justify-between">
-              {isAdminUser ? (
-                <Image
-                  src={avatar}
-                  alt="admin avatar"
-                  width={40}
-                  height={40}
-                  className="size-10 rounded-full border border-zinc-200 object-cover dark:border-zinc-700"
-                />
-              ) : isWalletUser || sessionAvatar == null ? (
-                <AccountIcon
-                  account={sessionAddress}
-                  className="size-10 rounded-full border border-zinc-200 dark:border-zinc-700"
-                />
-              ) : (
-                <Image
-                  src={sessionAvatar}
-                  alt="my avatar"
-                  width={40}
-                  height={40}
-                  className="size-10 rounded-full border border-zinc-200 object-cover dark:border-zinc-700"
-                />
-              )}
-
-              <Button
-                type="button"
-                className="sm:w-full"
-                disabled={trimmedComment.length === 0 || inputExceeded || isCreatingComment}
-                onClick={() => {
-                  handleSubmitComment()
-                }}
-              >
-                {isCreatingComment ? '提交中...' : '发布'}
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">登录后即可参与评论。</p>
-            <Button
-              type="button"
-              onClick={() => {
-                setModalOpen('loginModal')
-              }}
-            >
-              登录后评论
-            </Button>
-          </div>
         )}
       </section>
     </section>

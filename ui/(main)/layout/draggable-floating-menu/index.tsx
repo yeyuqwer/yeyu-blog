@@ -98,7 +98,7 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, .
     <>
       <div
         ref={constraintsRef}
-        className="pointer-events-none fixed top-24 right-20 bottom-4 left-20 z-50"
+        className="pointer-events-none fixed top-24 right-20 bottom-4 left-20"
       />
       <motion.div
         ref={containerRef}
@@ -119,7 +119,7 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, .
             : { scale: 0.2, y: 100, opacity: 0, transition: { duration: 0 } }
         }
         className={cn(
-          'fixed bottom-20 left-1/2 z-50 -ml-6 cursor-grab active:cursor-grabbing',
+          'fixed bottom-20 left-1/2 z-100 -ml-6 cursor-grab active:cursor-grabbing',
           className,
         )}
         {...props}
