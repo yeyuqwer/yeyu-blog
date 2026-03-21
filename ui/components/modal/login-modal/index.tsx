@@ -2,7 +2,6 @@
 
 import type { ComponentProps, FC } from 'react'
 import type { Address } from 'viem'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Wallet2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -18,6 +17,7 @@ import {
   isWalletLoggedIn,
   signIn,
   signOut,
+  useSession,
   wagmiConfig,
 } from '@/lib/core'
 import { cn } from '@/lib/utils/common/shadcn'
@@ -52,15 +52,7 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
   const address = connection?.accounts[0]
   const currentChain = chains.find(c => c.id === chainId)
 
-  // TODO: 封装一层
-  const queryClient = useQueryClient()
-  const { data: session } = useQuery({
-    queryKey: ['session'],
-    queryFn: async () => {
-      const { data } = await authClient.getSession()
-      return data
-    },
-  })
+  const { data: session, refetch: refetchSession } = useSession()
   const isWalletUser = isWalletLoggedIn({ data: session ?? null })
   const isGithubUser = isEmailLoggedIn({ data: session ?? null })
 
@@ -119,7 +111,7 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
           return
         }
 
-        await queryClient.invalidateQueries({ queryKey: ['session'] })
+        await refetchSession()
         router.refresh()
       } catch {
         await disconnect(wagmiConfig)
@@ -128,7 +120,7 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
         await disconnect(wagmiConfig)
       }
     },
-    [address, chainId, queryClient, router],
+    [address, chainId, refetchSession, router],
   )
 
   return (
@@ -171,7 +163,7 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
                 onClick={async () => {
                   await disconnect(wagmiConfig).catch()
                   await signOut()
-                  await queryClient.invalidateQueries({ queryKey: ['session'] })
+                  await refetchSession()
                   router.refresh()
                 }}
                 className="mt-2 w-full"
@@ -205,7 +197,7 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
                   onClick={async () => {
                     await disconnect(wagmiConfig).catch()
                     await signOut()
-                    await queryClient.invalidateQueries({ queryKey: ['session'] })
+                    await refetchSession()
                     router.refresh()
                   }}
                   className="w-full"
