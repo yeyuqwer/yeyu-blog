@@ -152,7 +152,7 @@ UPLOADTHING_TOKEN=
   - 首页动画欢迎文案
 
 - ui/components/shared/comment-card/index.tsx
-  - 评论系统 repo / repoId 配置
+  - 博客 / 笔记评论组件
 
 - lib/core/auth/guard.ts + ui/components/modal/login-modal/index.tsx
   - 管理员邮箱与管理员钱包地址配置（来自环境变量）
@@ -166,21 +166,14 @@ UPLOADTHING_TOKEN=
 - components/shared/contact-me/index.tsx
   - 底部联系方式
 
-### 安装评论系统
+### 评论系统说明
 
-[评论系统官方文档](https://giscus.app/zh-CN)
+博客和笔记现在使用项目内置的评论系统，不再依赖 giscus / GitHub Discussions。
 
-首先按照上面官方文档的步骤来，去自己的 GitHub 创建一个仓库:
-
-- 该仓库是公开的，否则访客将无法查看 discussion。
-- giscus app 已安装，否则访客将无法评论和回应。
-- Discussions 功能已在你的仓库中启用。
-
-页面 ↔️ discussion 映射关系，选择 **Discussion 的标题包含特定字符串**，不需要填，只需要选择该选项就行了。
-
-最后在 「启用 giscus」下有一个代码片段，**不要直接复制**，只需要复制 `data-repo` 和 `data-repo-id` 的值就可以了，其他配置项可以自行研究~
-
-组件在 `ui/components/shared/comment-card/index.tsx` 下，配置 `data-repo` 和 `data-repo-id` 的值也在该文件内设置。
+- 前台评论组件在 `ui/components/shared/comment-card/index.tsx`
+- 评论接口位于 `app/api/(public)/comment/route.ts`
+- 后台审核与配置位于 `/admin/comment`
+- 首次接入后记得执行 Prisma migration，创建 `SiteComment` 与 `SiteCommentConfig` 表
 
 ## 特别感谢🙏🏻
 

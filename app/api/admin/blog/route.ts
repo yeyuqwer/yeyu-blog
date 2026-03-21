@@ -235,11 +235,19 @@ export const DELETE = withResponse(async request => {
     throw new BadRequestError('Blog 不存在', { data: { id } })
   }
 
-  await prisma.blog.delete({
-    where: {
-      id,
-    },
-  })
+  await prisma.$transaction([
+    prisma.siteComment.deleteMany({
+      where: {
+        targetType: 'BLOG',
+        targetId: id,
+      },
+    }),
+    prisma.blog.delete({
+      where: {
+        id,
+      },
+    }),
+  ])
 
   return {
     message: 'Deleted.',

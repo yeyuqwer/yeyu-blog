@@ -24,6 +24,7 @@ model User {
   accounts        Account[]
   walletAddresses WalletAddress[]
   mutterComments  MutterComment[]
+  siteComments    SiteComment[]
 
   @@map("user")
 }
@@ -177,6 +178,43 @@ model MutterComment {
 }
 
 model MutterCommentConfig {
+  id                     Int      @id @default(1)
+  autoApproveEmailUsers  Boolean  @default(true)
+  autoApproveWalletUsers Boolean  @default(false)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}
+
+enum SiteCommentTargetType {
+  BLOG
+  NOTE
+}
+
+enum SiteCommentState {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model SiteComment {
+  id          Int                   @id @default(autoincrement())
+  targetType  SiteCommentTargetType
+  targetId    Int
+  userId      String?
+  user        User?                 @relation(fields: [userId], references: [id], onDelete: SetNull)
+  authorName  String                @db.VarChar(120)
+  authorImage String?
+  content     String                @db.VarChar(500)
+  state       SiteCommentState      @default(PENDING)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  @@index([targetType, targetId, createdAt])
+  @@index([state, createdAt])
+  @@index([userId, createdAt])
+}
+
+model SiteCommentConfig {
   id                     Int      @id @default(1)
   autoApproveEmailUsers  Boolean  @default(true)
   autoApproveWalletUsers Boolean  @default(false)

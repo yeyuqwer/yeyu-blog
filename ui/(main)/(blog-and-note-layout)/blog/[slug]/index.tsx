@@ -29,7 +29,7 @@ export const BlogDetail: FC<
     content: blogHTML.toString(),
   }
 
-  const { content, title, createdAt, tags, id } = article
+  const { content, createdAt, tags, id } = article
 
   const tagNames = tags.map(v => v.tagName)
 
@@ -37,7 +37,7 @@ export const BlogDetail: FC<
     <div className="flex flex-col gap-4">
       <ArticleDisplayPage createdAt={createdAt} content={content} tags={tagNames} />
       <HorizontalDividingLine />
-      <CommentCard term={`${title}-blog-${id}`} />
+      <CommentCard articleType="BLOG" articleId={id} />
     </div>
   )
 }

@@ -235,11 +235,19 @@ export const DELETE = withResponse(async request => {
     throw new BadRequestError('Note 不存在', { data: { id } })
   }
 
-  await prisma.note.delete({
-    where: {
-      id,
-    },
-  })
+  await prisma.$transaction([
+    prisma.siteComment.deleteMany({
+      where: {
+        targetType: 'NOTE',
+        targetId: id,
+      },
+    }),
+    prisma.note.delete({
+      where: {
+        id,
+      },
+    }),
+  ])
 
   return {
     message: 'Deleted.',

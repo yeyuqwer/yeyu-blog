@@ -1,0 +1,207 @@
+import { BadRequestError } from '@/lib/common/errors/request'
+import { requireAdmin } from '@/lib/core/auth/guard'
+import { getSiteCommentTargetKey, getSiteCommentTargetMap } from '@/lib/core/site-comment/target'
+import { readJsonBody } from '@/lib/infra/http/read-json-body'
+import { withResponse } from '@/lib/infra/http/with-response'
+import { prisma } from '@/prisma/instance'
+import { deleteCommentQuerySchema, getAdminCommentsQuerySchema, updateCommentSchema } from './type'
+
+const isMissingTableError = (error: unknown) =>
+  typeof error === 'object' &&
+  error !== null &&
+  'code' in error &&
+  (error as { code?: unknown }).code === 'P2021'
+
+export const GET = withResponse(async request => {
+  await requireAdmin()
+
+  const queryResult = getAdminCommentsQuerySchema.safeParse({
+    q: request.nextUrl.searchParams.get('q') ?? undefined,
+    targetType: request.nextUrl.searchParams.get('targetType') ?? undefined,
+    targetId: request.nextUrl.searchParams.get('targetId') ?? undefined,
+    state: request.nextUrl.searchParams.get('state') ?? undefined,
+    take: request.nextUrl.searchParams.get('take') ?? undefined,
+    skip: request.nextUrl.searchParams.get('skip') ?? undefined,
+  })
+
+  if (!queryResult.success) {
+    throw new BadRequestError('Invalid query parameters.', { data: queryResult.error.flatten() })
+  }
+
+  const { q, targetType, targetId, state, take, skip } = queryResult.data
+
+  const where = {
+    ...(q != null && q.length > 0
+      ? {
+          content: {
+            contains: q,
+          },
+        }
+      : {}),
+    ...(targetType != null ? { targetType } : {}),
+    ...(targetId != null ? { targetId } : {}),
+    ...(state != null ? { state } : {}),
+  }
+
+  let rawList: Awaited<ReturnType<typeof prisma.siteComment.findMany>>
+  let total: number
+
+  try {
+    ;[rawList, total] = await Promise.all([
+      prisma.siteComment.findMany({
+        where,
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take,
+        skip,
+      }),
+      prisma.siteComment.count({ where }),
+    ])
+  } catch (error) {
+    if (isMissingTableError(error)) {
+      return {
+        list: [],
+        total: 0,
+        take,
+        skip,
+      }
+    }
+
+    throw error
+  }
+
+  const targetMap = await getSiteCommentTargetMap(rawList)
+
+  const list = rawList.map(comment => ({
+    ...comment,
+    target: targetMap.get(getSiteCommentTargetKey(comment.targetType, comment.targetId)) ?? null,
+  }))
+
+  return {
+    list,
+    total,
+    take,
+    skip,
+  }
+})
+
+export const PATCH = withResponse(async request => {
+  await requireAdmin()
+
+  const body = await readJsonBody(request)
+  const parseResult = updateCommentSchema.safeParse(body)
+
+  if (!parseResult.success) {
+    throw new BadRequestError('Invalid request body.', { data: parseResult.error.flatten() })
+  }
+
+  const payload = parseResult.data
+
+  let existing: Awaited<ReturnType<typeof prisma.siteComment.findUnique>>
+
+  try {
+    existing = await prisma.siteComment.findUnique({
+      where: {
+        id: payload.id,
+      },
+    })
+  } catch (error) {
+    if (isMissingTableError(error)) {
+      throw new BadRequestError('Comment system is not initialized. Please run Prisma migration.')
+    }
+
+    throw error
+  }
+
+  if (existing == null) {
+    throw new BadRequestError('Comment not found.', { data: { id: payload.id } })
+  }
+
+  let updated: Awaited<ReturnType<typeof prisma.siteComment.update>>
+
+  try {
+    updated = await prisma.siteComment.update({
+      where: {
+        id: payload.id,
+      },
+      data: {
+        state: payload.state,
+      },
+    })
+  } catch (error) {
+    if (isMissingTableError(error)) {
+      throw new BadRequestError('Comment system is not initialized. Please run Prisma migration.')
+    }
+
+    throw error
+  }
+
+  return {
+    message: 'Updated.',
+    data: updated,
+  }
+})
+
+export const DELETE = withResponse(async request => {
+  await requireAdmin()
+
+  const queryResult = deleteCommentQuerySchema.safeParse({
+    id: request.nextUrl.searchParams.get('id') ?? undefined,
+  })
+
+  if (!queryResult.success) {
+    throw new BadRequestError('Invalid query parameters.', { data: queryResult.error.flatten() })
+  }
+
+  const { id } = queryResult.data
+
+  let existing: Awaited<ReturnType<typeof prisma.siteComment.findUnique>>
+
+  try {
+    existing = await prisma.siteComment.findUnique({
+      where: {
+        id,
+      },
+    })
+  } catch (error) {
+    if (isMissingTableError(error)) {
+      throw new BadRequestError('Comment system is not initialized. Please run Prisma migration.')
+    }
+
+    throw error
+  }
+
+  if (existing == null) {
+    throw new BadRequestError('Comment not found.', { data: { id } })
+  }
+
+  try {
+    await prisma.siteComment.delete({
+      where: {
+        id,
+      },
+    })
+  } catch (error) {
+    if (isMissingTableError(error)) {
+      throw new BadRequestError('Comment system is not initialized. Please run Prisma migration.')
+    }
+
+    throw error
+  }
+
+  return {
+    message: 'Deleted.',
+    id,
+  }
+})

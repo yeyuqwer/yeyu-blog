@@ -25,14 +25,14 @@ export const NoteDetail: FC<ComponentProps<'div'> & { slug: string }> = async ({
     content: noteHTML.toString(),
   }
 
-  const { content, title, createdAt, tags, id } = article
+  const { content, createdAt, tags, id } = article
   const tagNames = tags.map(v => v.tagName)
 
   return (
     <div className="flex flex-col gap-4">
       <ArticleDisplayPage createdAt={createdAt} content={content} tags={tagNames} />
       <HorizontalDividingLine />
-      <CommentCard term={`${title}-note-${id}`} />
+      <CommentCard articleType="NOTE" articleId={id} />
     </div>
   )
 }

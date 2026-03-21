@@ -29,4 +29,9 @@ export const AdminRoutes: { path: string; pathName: string; pattern: RegExp }[] 
     pathName: '低语',
     pattern: /^\/admin\/mutter($|\/)/,
   },
+  {
+    path: '/admin/comment',
+    pathName: '评论',
+    pattern: /^\/admin\/comment($|\/)/,
+  },
 ]

@@ -5,8 +5,6 @@ const publicEnvSchema = z.object({
   NEXT_PUBLIC_ADMIN_EMAILS: z.string().default(''),
   // * 允许访问后台的钱包地址
   NEXT_PUBLIC_ADMIN_WALLET_ADDRESS: z.string().optional(),
-  // * 评论系统
-  NEXT_PUBLIC_COMMENT_CARD_REPO_ID: z.string().default(''),
   // * 网站地址 (Client side)
   NEXT_PUBLIC_SITE_URL: z.url().optional(),
 })
@@ -14,7 +12,6 @@ const publicEnvSchema = z.object({
 const publicEnvSource = {
   NEXT_PUBLIC_ADMIN_EMAILS: process.env.NEXT_PUBLIC_ADMIN_EMAILS,
   NEXT_PUBLIC_ADMIN_WALLET_ADDRESS: process.env.NEXT_PUBLIC_ADMIN_WALLET_ADDRESS,
-  NEXT_PUBLIC_COMMENT_CARD_REPO_ID: process.env.NEXT_PUBLIC_COMMENT_CARD_REPO_ID,
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
 }
 
