@@ -1,0 +1,63 @@
+.markdown-content {
+  --md-task-accent: var(--theme-indicator);
+  --md-task-border: color-mix(in srgb, var(--theme-indicator) 40%, rgb(113 113 122) 60%);
+}
+
+html.dark .markdown-content {
+  --md-task-border: color-mix(in srgb, var(--theme-indicator) 52%, rgb(228 228 231) 48%);
+}
+
+.markdown-content :is(ul, ol).contains-task-list {
+  padding-inline-start: 0;
+  margin-left: 0;
+}
+
+.markdown-content .task-list-item {
+  display: flex;
+  align-items: flex-start;
+  list-style: none;
+  gap: 0.625rem;
+}
+
+.markdown-content .task-list-item > input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0.38em 0 0;
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  border: 1.5px solid var(--md-task-border);
+  border-radius: 9999px;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 0.65rem 0.65rem;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, white 10%, transparent);
+  cursor: not-allowed;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+html.dark .markdown-content .task-list-item > input[type="checkbox"] {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, white 14%, transparent);
+}
+
+.markdown-content .task-list-item > input[type="checkbox"]:checked {
+  border-color: var(--md-task-accent);
+  background-color: var(--md-task-accent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3.75 8.4 6.65 11.15 12.25 5.35' stroke='white' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--md-task-accent) 18%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, white 16%, transparent);
+}
+
+.markdown-content .task-list-item > input[type="checkbox"]:disabled {
+  opacity: 1;
+}
+
+.markdown-content .task-list-item > p {
+  margin: 0;
+}

@@ -73,7 +73,7 @@ html.dark .markdown-content .md-code-lang {
 
 .markdown-content pre {
   border: 1px solid color-mix(in srgb, var(--theme-indicator) 30%, transparent);
-  border-radius: 0.25rem;
+  border-radius: 0.5rem;
   background-color: color-mix(in srgb, var(--theme-background) 78%, white);
   font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
 }
