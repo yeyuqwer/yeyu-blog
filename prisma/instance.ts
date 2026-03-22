@@ -1,6 +1,5 @@
 import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from '@prisma/client'
-import { Pool } from 'pg'
 import { serverEnv } from '@/config/env/server-env'
 
 const rawConnectionString = serverEnv.DATABASE_URL
@@ -21,8 +20,7 @@ const connectionString = rawConnectionString
   ? normalizeConnectionString(rawConnectionString)
   : undefined
 
-const pool = new Pool({ connectionString })
-const adapter = new PrismaPg(pool)
+const adapter = new PrismaPg({ connectionString })
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
