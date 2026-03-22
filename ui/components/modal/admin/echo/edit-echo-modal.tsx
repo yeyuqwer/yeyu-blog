@@ -44,7 +44,6 @@ export default function EditEchoModal() {
     if (isModalOpen) {
       form.reset(initialValues)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isModalOpen, form])
   const { mutate: updateEcho, isPending } = useEchoUpdateMutation()
 

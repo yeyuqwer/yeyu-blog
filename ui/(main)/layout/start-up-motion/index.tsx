@@ -35,7 +35,6 @@ export default function StartUpMotion() {
       duration: 2,
       ease: [0.65, 0, 0.35, 1],
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

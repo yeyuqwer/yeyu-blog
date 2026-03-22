@@ -29,7 +29,6 @@ export function BlogTagsContainer({
       setCurrent(api.selectedScrollSnap() + 1)
     }
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCount(api.scrollSnapList().length)
     updateCurrent()
 

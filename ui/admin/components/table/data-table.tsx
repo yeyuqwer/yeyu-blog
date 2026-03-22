@@ -1,6 +1,6 @@
 'use client'
 
-import type { ColumnDef, SortingState } from '@tanstack/react-table'
+import type { ColumnDef } from '@tanstack/react-table'
 import {
   flexRender,
   getCoreRowModel,
@@ -18,26 +18,23 @@ type DataTableProps<TData, TValue> = {
   data: TData[]
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([{ desc: true, id: 'count' }])
+export function DataTable<TData, TValue>({ columns, data = [] }: DataTableProps<TData, TValue>) {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 15,
   })
-  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
     state: {
-      sorting,
       pagination,
     },
   })
+  const rows = table.getRowModel().rows
 
   return (
     <motion.div
@@ -69,9 +66,10 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           </TableHeader>
 
           {/* 后序再骨架屏效果 */}
+          {/* 11 个月前说要做骨架屏效果🤣 */}
           <TableBody>
-            {table.getRowModel().rows?.length !== 0 ? (
-              table.getRowModel().rows.map(row => (
+            {rows.length > 0 ? (
+              rows.map(row => (
                 <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                   {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id}>
