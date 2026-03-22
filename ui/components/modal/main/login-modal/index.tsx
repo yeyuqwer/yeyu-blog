@@ -6,7 +6,7 @@ import { Wallet2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { SiweMessage } from 'siwe'
 import { useChainId, useChains, useConnect, useConnections, useConnectors } from 'wagmi'
 import { disconnect, signMessage } from 'wagmi/actions'
@@ -30,31 +30,30 @@ import { GitHubIcon } from './github-icon'
 
 const adminWalletAddress = clientEnv.NEXT_PUBLIC_ADMIN_WALLET_ADDRESS?.trim().toLowerCase()
 
-// TODO: 钱包签名认证
 // TODO: 全局状态管理存储钱包登录状态 ？
 // TODO: 之后再说吧，累了，在改 bug 要猝死了🥲
 export const LoginModal: FC<ComponentProps<'div'>> = () => {
   const { modalType, onModalClose } = useModalStore()
   const isModalOpen = modalType === 'loginModal'
   const connectors = useConnectors().filter(v => v.id !== 'injected')
-  const { mutate: connect, isPending } = useConnect()
+  const { mutateAsync: connectAsync, isPending } = useConnect()
   const router = useRouter()
+  const [isWalletSigningIn, setIsWalletSigningIn] = useState(false)
 
   const connections = useConnections()
   const chainId = useChainId()
   const chains = useChains()
 
-  const connection = connections[0]
   const isConnected = connections.length > 0
   // TODO: 这个就可以判断权限选择是否可以跳转到 /admin 了
   // TODO: 地址权限，样式不同
   // TODO: 钱包绑定 github
-  const address = connection?.accounts[0]
   const currentChain = chains.find(c => c.id === chainId)
 
   const { data: session, refetch: refetchSession } = useSession()
   const isWalletUser = isWalletLoggedIn({ data: session ?? null })
   const isGithubUser = isEmailLoggedIn({ data: session ?? null })
+  const isLoginPending = isPending || isWalletSigningIn
 
   // TODO: 普通用户登录后也要签名一次，然后存储身份信息，给予权限
   // * 现在仅使用钱包来登录后端
@@ -65,15 +64,23 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
     session?.user?.name !== undefined &&
     session.user.name.toLowerCase() === adminWalletAddress
 
-  const handleSignIn = useCallback(
-    async (params?: { address: string; chainId: number }) => {
-      const walletAddress = params?.address ?? address
-      const currentChainId = params?.chainId ?? chainId
+  useEffect(() => {
+    if (!isModalOpen || !isConnected || isWalletUser || isWalletSigningIn) {
+      return
+    }
 
-      // TODO: toast，才发觉原生的 toast 样式已经不太干净了，样式需要重写一下再添加 toast
-      if (walletAddress === undefined) {
-        return
-      }
+    void disconnect(wagmiConfig).catch(() => undefined)
+  }, [isConnected, isModalOpen, isWalletSigningIn, isWalletUser])
+
+  const handleSignIn = useCallback(
+    async ({
+      address: walletAddress,
+      chainId: currentChainId,
+    }: {
+      address: string
+      chainId: number
+    }) => {
+      setIsWalletSigningIn(true)
 
       try {
         const { data: nonceData, error: nonceError } = await authClient.siwe.nonce({
@@ -114,13 +121,38 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
         await refetchSession()
         router.refresh()
       } catch {
-        await disconnect(wagmiConfig)
-      } finally {
         //
-        await disconnect(wagmiConfig)
+      } finally {
+        await disconnect(wagmiConfig).catch(() => undefined)
+        setIsWalletSigningIn(false)
       }
     },
-    [address, chainId, refetchSession, router],
+    [refetchSession, router],
+  )
+
+  const handleWalletConnect = useCallback(
+    async (connector: (typeof connectors)[number]) => {
+      setIsWalletSigningIn(true)
+
+      try {
+        if (isConnected) {
+          await disconnect(wagmiConfig).catch(() => undefined)
+        }
+
+        const data = await connectAsync({ connector })
+        const walletAddress = data.accounts[0]
+
+        if (walletAddress === undefined) {
+          throw new Error('Wallet account not found')
+        }
+
+        await handleSignIn({ address: walletAddress, chainId: data.chainId })
+      } catch {
+        await disconnect(wagmiConfig).catch(() => undefined)
+        setIsWalletSigningIn(false)
+      }
+    },
+    [connectAsync, handleSignIn, isConnected],
   )
 
   return (
@@ -128,14 +160,14 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
       <DialogContent className="rounded-xl bg-theme-background/80 backdrop-blur-xl sm:max-w-96 dark:bg-black/70">
         <DialogHeader className="">
           <DialogTitle className="text-center font-bold text-xl">
-            {isConnected || isGithubUser || isWalletUser ? '用户信息' : '登录 (ゝ∀･)'}
+            {isGithubUser || isWalletUser ? '用户信息' : '登录 (ゝ∀･)'}
           </DialogTitle>
         </DialogHeader>
 
         <main
           className={cn(
             'grid gap-4 font-mono',
-            !isConnected && !isGithubUser && !isWalletUser && connectors.length > 0
+            !isLoginPending && !isGithubUser && !isWalletUser && connectors.length > 0
               ? 'grid-cols-2'
               : 'grid-cols-1',
           )}
@@ -206,7 +238,7 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
                 </Button>
               </div>
             </div>
-          ) : isConnected ? (
+          ) : isLoginPending ? (
             <div className="flex flex-col items-center justify-center gap-6 py-2">
               <div className="space-y-1 text-center">
                 <p className="text-muted-foreground text-xs">当前网络</p>
@@ -226,7 +258,7 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
                   'flex cursor-pointer items-center text-base',
                   connectors.length > 0 ? 'justify-baseline' : 'justify-center',
                 )}
-                disabled={isPending}
+                disabled={isLoginPending}
               >
                 <GitHubIcon className="size-5" />
                 GitHub
@@ -237,17 +269,8 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
                   key={connector.uid}
                   type="button"
                   className="justify-baseline flex cursor-pointer items-center px-3 text-base"
-                  onClick={() =>
-                    connect(
-                      { connector },
-                      {
-                        onSuccess: data => {
-                          handleSignIn({ address: data.accounts[0], chainId: data.chainId })
-                        },
-                      },
-                    )
-                  }
-                  disabled={isPending}
+                  onClick={() => handleWalletConnect(connector)}
+                  disabled={isLoginPending}
                 >
                   {typeof connector.icon === 'string' ? (
                     <Image
