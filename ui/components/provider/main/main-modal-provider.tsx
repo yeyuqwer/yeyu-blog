@@ -1,8 +1,6 @@
 'use client'
 
-import { LoginModal } from '../../modal/login-modal'
-import MutterCommentModal from '../../modal/mutter-comment-modal'
-import { SelectThemeModal } from '../../modal/select-theme-modal'
+import { LoginModal, MutterCommentModal, SelectThemeModal } from '@/ui/components/modal/main'
 
 export function MainModalProvider({ children }: { children: React.ReactNode }) {
   return (

@@ -2,7 +2,7 @@
 
 import { MessageCircle } from 'lucide-react'
 import Image from 'next/image'
-import { useMemo, useState } from 'react'
+import { type ComponentProps, type FC, useMemo, useState } from 'react'
 import { type Address, isAddress } from 'viem'
 import avatar from '@/config/img/avatar.webp'
 import { useMutterCommentMutation, usePublicMutterCommentQuery } from '@/hooks/api/mutter-comment'
@@ -15,7 +15,7 @@ import { Button } from '@/ui/shadcn/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/ui/shadcn/dialog'
 import { Textarea } from '@/ui/shadcn/textarea'
 
-export default function MutterCommentModal() {
+export const MutterCommentModal: FC<ComponentProps<'div'>> = () => {
   const { modalType, payload, onModalClose, setModalOpen } = useModalStore()
   const isModalOpen = modalType === 'mutterCommentModal'
   const values =
