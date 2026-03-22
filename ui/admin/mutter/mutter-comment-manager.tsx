@@ -17,6 +17,8 @@ import { Button } from '@/ui/shadcn/button'
 import { Input } from '@/ui/shadcn/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/shadcn/select'
 
+type BadgeVariant = NonNullable<ComponentProps<typeof Badge>['variant']>
+
 type CommentStateFilter = 'all' | MutterCommentState
 
 const COMMENT_STATE_OPTIONS: Array<{
@@ -35,14 +37,20 @@ const COMMENT_STATE_LABEL_MAP: Record<MutterCommentState, string> = {
   REJECTED: '已拒绝',
 }
 
+const COMMENT_STATE_BADGE_VARIANT_MAP: Record<MutterCommentState, BadgeVariant> = {
+  PENDING: 'warning',
+  APPROVED: 'success',
+  REJECTED: 'destructive',
+}
+
 export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
   const [draftQuery, setDraftQuery] = useState('')
   const [draftMutterId, setDraftMutterId] = useState('')
-  const [draftState, setDraftState] = useState<CommentStateFilter>('all')
+  const [draftState, setDraftState] = useState<CommentStateFilter>('PENDING')
 
   const [query, setQuery] = useState('')
   const [mutterIdInput, setMutterIdInput] = useState('')
-  const [state, setState] = useState<CommentStateFilter>('all')
+  const [state, setState] = useState<CommentStateFilter>('PENDING')
 
   const parsedMutterId = useMemo(() => {
     if (mutterIdInput.trim().length === 0) {
@@ -177,7 +185,9 @@ export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
                         {comment.user?.name ?? comment.authorName}
                       </h3>
                       <Badge variant="outline">#{comment.id}</Badge>
-                      <Badge variant="secondary">{COMMENT_STATE_LABEL_MAP[comment.state]}</Badge>
+                      <Badge variant={COMMENT_STATE_BADGE_VARIANT_MAP[comment.state]}>
+                        {COMMENT_STATE_LABEL_MAP[comment.state]}
+                      </Badge>
                       <Badge variant="outline">{`Mutter ${comment.mutterId}`}</Badge>
                     </div>
                     <p className="mt-2 whitespace-pre-wrap text-sm leading-6">{comment.content}</p>

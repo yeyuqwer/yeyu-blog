@@ -18,6 +18,8 @@ import { Button } from '@/ui/shadcn/button'
 import { Input } from '@/ui/shadcn/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/shadcn/select'
 
+type BadgeVariant = NonNullable<ComponentProps<typeof Badge>['variant']>
+
 type CommentStateFilter = 'all' | CommentState
 type TargetTypeFilter = 'all' | CommentTargetType
 
@@ -35,6 +37,12 @@ const COMMENT_STATE_LABEL_MAP: Record<CommentState, string> = {
   PENDING: '待审核',
   APPROVED: '已通过',
   REJECTED: '已拒绝',
+}
+
+const COMMENT_STATE_BADGE_VARIANT_MAP: Record<CommentState, BadgeVariant> = {
+  PENDING: 'warning',
+  APPROVED: 'success',
+  REJECTED: 'destructive',
 }
 
 const TARGET_TYPE_OPTIONS: Array<{
@@ -55,12 +63,12 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
   const [draftQuery, setDraftQuery] = useState('')
   const [draftTargetId, setDraftTargetId] = useState('')
   const [draftTargetType, setDraftTargetType] = useState<TargetTypeFilter>('all')
-  const [draftState, setDraftState] = useState<CommentStateFilter>('all')
+  const [draftState, setDraftState] = useState<CommentStateFilter>('PENDING')
 
   const [query, setQuery] = useState('')
   const [targetIdInput, setTargetIdInput] = useState('')
   const [targetType, setTargetType] = useState<TargetTypeFilter>('all')
-  const [state, setState] = useState<CommentStateFilter>('all')
+  const [state, setState] = useState<CommentStateFilter>('PENDING')
 
   const parsedTargetId = useMemo(() => {
     if (targetIdInput.trim().length === 0) {
@@ -213,7 +221,9 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
                         {comment.user?.name ?? comment.authorName}
                       </h3>
                       <Badge variant="outline">#{comment.id}</Badge>
-                      <Badge variant="secondary">{COMMENT_STATE_LABEL_MAP[comment.state]}</Badge>
+                      <Badge variant={COMMENT_STATE_BADGE_VARIANT_MAP[comment.state]}>
+                        {COMMENT_STATE_LABEL_MAP[comment.state]}
+                      </Badge>
                       <Badge variant="outline">
                         {`${TARGET_TYPE_LABEL_MAP[comment.targetType]} ${comment.targetId}`}
                       </Badge>
