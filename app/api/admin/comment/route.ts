@@ -1,10 +1,65 @@
 import { BadRequestError } from '@/lib/common/errors/request'
-import { requireAdmin } from '@/lib/core/auth/guard'
+import { isAdminUser, requireAdmin } from '@/lib/core/auth/guard'
 import { getSiteCommentTargetKey, getSiteCommentTargetMap } from '@/lib/core/site-comment/target'
 import { readJsonBody } from '@/lib/infra/http/read-json-body'
 import { withResponse } from '@/lib/infra/http/with-response'
 import { prisma } from '@/prisma/instance'
 import { deleteCommentQuerySchema, getAdminCommentsQuerySchema, updateCommentSchema } from './type'
+
+type AdminCommentUserRecord = {
+  id: string
+  name: string
+  email: string
+  image: string | null
+}
+
+type AdminCommentParentRecord = {
+  id: number
+  userId: string | null
+  authorName: string
+  authorImage: string | null
+  user: AdminCommentUserRecord | null
+}
+
+const adminCommentUserSelect = {
+  id: true,
+  name: true,
+  email: true,
+  image: true,
+} as const
+
+const adminCommentInclude = {
+  user: {
+    select: adminCommentUserSelect,
+  },
+  parent: {
+    select: {
+      id: true,
+      userId: true,
+      authorName: true,
+      authorImage: true,
+      user: {
+        select: adminCommentUserSelect,
+      },
+    },
+  },
+} as const
+
+const serializeAdminCommentParent = (comment: AdminCommentParentRecord) => ({
+  id: comment.id,
+  userId: comment.userId,
+  isAdmin: isAdminUser(comment.user),
+  authorName: comment.authorName,
+  authorImage: comment.authorImage,
+  user:
+    comment.user == null
+      ? null
+      : {
+          id: comment.user.id,
+          name: comment.user.name,
+          image: comment.user.image,
+        },
+})
 
 const isMissingTableError = (error: unknown) =>
   typeof error === 'object' &&
@@ -43,29 +98,23 @@ export const GET = withResponse(async request => {
     ...(state != null ? { state } : {}),
   }
 
-  let rawList: Awaited<ReturnType<typeof prisma.siteComment.findMany>>
+  const getAdminSiteCommentList = () =>
+    prisma.siteComment.findMany({
+      where,
+      include: adminCommentInclude,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take,
+      skip,
+    })
+
+  let rawList: Awaited<ReturnType<typeof getAdminSiteCommentList>>
   let total: number
 
   try {
     ;[rawList, total] = await Promise.all([
-      prisma.siteComment.findMany({
-        where,
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              image: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-        take,
-        skip,
-      }),
+      getAdminSiteCommentList(),
       prisma.siteComment.count({ where }),
     ])
   } catch (error) {
@@ -85,6 +134,7 @@ export const GET = withResponse(async request => {
 
   const list = rawList.map(comment => ({
     ...comment,
+    parent: comment.parent == null ? null : serializeAdminCommentParent(comment.parent),
     target: targetMap.get(getSiteCommentTargetKey(comment.targetType, comment.targetId)) ?? null,
   }))
 

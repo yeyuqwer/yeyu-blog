@@ -5,6 +5,7 @@ import { apiRequest } from '@/lib/infra/http/ky'
 export type CreateCommentParams = {
   targetType: CommentTargetType
   targetId: number
+  parentId?: number
   content: string
 }
 

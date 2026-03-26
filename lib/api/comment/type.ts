@@ -8,6 +8,15 @@ export type CommentUser = {
   image: string | null
 }
 
+export type CommentParent = {
+  id: number
+  userId: string | null
+  isAdmin: boolean
+  authorName: string
+  authorImage: string | null
+  user: CommentUser | null
+}
+
 export type CommentTarget = {
   id: number
   title: string

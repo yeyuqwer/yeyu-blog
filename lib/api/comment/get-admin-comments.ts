@@ -1,10 +1,12 @@
-import type { CommentState, CommentTarget, CommentTargetType } from './type'
+import type { CommentParent, CommentState, CommentTarget, CommentTargetType } from './type'
 import { apiRequest } from '@/lib/infra/http/ky'
 
 export type AdminCommentRecord = {
   id: number
   targetType: CommentTargetType
   targetId: number
+  parentId: number | null
+  parent: CommentParent | null
   userId: string | null
   authorName: string
   authorImage: string | null

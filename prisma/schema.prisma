@@ -200,6 +200,9 @@ model SiteComment {
   id          Int                   @id @default(autoincrement())
   targetType  SiteCommentTargetType
   targetId    Int
+  parentId    Int?
+  parent      SiteComment?          @relation("SiteCommentReplies", fields: [parentId], references: [id], onDelete: SetNull)
+  replies     SiteComment[]         @relation("SiteCommentReplies")
   userId      String?
   user        User?                 @relation(fields: [userId], references: [id], onDelete: SetNull)
   authorName  String                @db.VarChar(120)
@@ -210,6 +213,7 @@ model SiteComment {
   updatedAt   DateTime              @updatedAt
 
   @@index([targetType, targetId, createdAt])
+  @@index([parentId, createdAt])
   @@index([state, createdAt])
   @@index([userId, createdAt])
 }
