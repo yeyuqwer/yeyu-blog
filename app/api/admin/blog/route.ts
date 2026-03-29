@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache'
 import { BadRequestError } from '@/lib/common/errors/request'
 import { requireAdmin } from '@/lib/core/auth/guard'
 import { readJsonBody } from '@/lib/infra/http/read-json-body'
@@ -19,6 +20,21 @@ function parseTagNames(rawTagNames: string | undefined) {
     .split(',')
     .map(value => value.trim())
     .filter(value => value.length > 0)
+}
+
+function revalidateBlogPaths(...slugs: Array<string | undefined>) {
+  revalidatePath('/blog')
+  revalidatePath('/admin/blog')
+
+  const uniqueSlugs = new Set(
+    slugs
+      .map(slug => slug?.trim())
+      .filter((slug): slug is string => slug != null && slug.length > 0),
+  )
+
+  for (const slug of uniqueSlugs) {
+    revalidatePath(`/blog/${encodeURIComponent(slug)}`)
+  }
 }
 
 export const GET = withResponse(async request => {
@@ -121,6 +137,8 @@ export const POST = withResponse(async request => {
     },
   })
 
+  revalidateBlogPaths(created.slug)
+
   return {
     message: 'Created.',
     data: created,
@@ -207,6 +225,8 @@ export const PATCH = withResponse(async request => {
     },
   })
 
+  revalidateBlogPaths(existingBlog.slug, updated.slug)
+
   return {
     message: 'Updated.',
     data: updated,
@@ -248,6 +268,8 @@ export const DELETE = withResponse(async request => {
       },
     }),
   ])
+
+  revalidateBlogPaths(existingBlog.slug)
 
   return {
     message: 'Deleted.',
