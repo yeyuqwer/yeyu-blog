@@ -138,6 +138,8 @@ model Echo {
   isPublished Boolean  @default(true)
   content     String   @db.VarChar(100)
   createdAt   DateTime @default(now())
+
+  @@index([isPublished, id])
 }
 
 model Mutter {

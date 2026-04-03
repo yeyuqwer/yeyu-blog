@@ -1,6 +1,6 @@
 import { BadRequestError } from '@/lib/common/errors/request'
+import { getRandomPublicEcho } from '@/lib/core/echo/get-random-public-echo'
 import { withResponse } from '@/lib/infra/http/with-response'
-import { prisma } from '@/prisma/instance'
 import { getPublicEchosQuerySchema } from './type'
 
 export const GET = withResponse(async request => {
@@ -14,30 +14,5 @@ export const GET = withResponse(async request => {
 
   const { q } = queryResult.data
 
-  const where = {
-    isPublished: true,
-    ...(q != null && q.length > 0
-      ? {
-          content: {
-            contains: q,
-          },
-        }
-      : {}),
-  }
-
-  const total = await prisma.echo.count({ where })
-
-  if (total === 0) {
-    return null
-  }
-
-  const randomSkip = Math.floor(Math.random() * total)
-
-  return await prisma.echo.findFirst({
-    where,
-    orderBy: {
-      id: 'asc',
-    },
-    skip: randomSkip,
-  })
+  return await getRandomPublicEcho({ q })
 })

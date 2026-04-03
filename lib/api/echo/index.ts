@@ -1,6 +1,6 @@
 export * from './create-echo'
 export * from './delete-echo'
 export * from './get-echos'
-export * from './get-public-echos'
+export * from './get-public-echo'
 export * from './type'
 export * from './update-echo'

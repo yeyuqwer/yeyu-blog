@@ -1,14 +1,9 @@
 'use client'
 
+import type { PublicEchoCardData } from '@/lib/core/echo/type'
 import { motion, useReducedMotion, type Variants } from 'motion/react'
 
-export type EchoCardViewData = {
-  id: number
-  content: string
-  reference: string
-} | null
-
-export default function EchoCardContent({ echo }: { echo: EchoCardViewData }) {
+export default function EchoCardContent({ echo }: { echo: PublicEchoCardData }) {
   const shouldReduceMotion = useReducedMotion()
 
   const contentVariants: Variants = {
