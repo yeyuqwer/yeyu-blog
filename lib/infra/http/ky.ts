@@ -34,7 +34,7 @@ export async function httpRequest<T = unknown>(params: HttpRequestParams): Promi
 
 export async function apiRequest<T = unknown>(params: HttpRequestParams): Promise<T> {
   try {
-    return await httpRequest<T>({ prefixUrl: '/api', ...params })
+    return await httpRequest<T>({ prefix: '/api', ...params })
   } catch (error) {
     if (error instanceof HttpRequestError) {
       if (error.status != null && error.json != null) {
