@@ -1,5 +1,5 @@
-export const BRAND_THEME_STORAGE_KEY = 'yeyu-brand-theme'
-export const BRAND_THEME_ATTRIBUTE = 'data-brand-theme'
+export const brandThemeStorageKey = 'yeyu-brand-theme'
+export const brandThemeAttribute = 'data-brand-theme'
 
 export const brandThemeOptions = [
   {
@@ -16,7 +16,7 @@ export const brandThemeOptions = [
 
 export type BrandThemeId = (typeof brandThemeOptions)[number]['id']
 
-export const DEFAULT_BRAND_THEME: BrandThemeId = 'mint'
+export const defaultBrandTheme: BrandThemeId = 'mint'
 
 const brandThemeIds = brandThemeOptions.map(option => option.id)
 
@@ -26,29 +26,29 @@ export function isBrandThemeId(value: string | null): value is BrandThemeId {
 
 export function getStoredBrandTheme(): BrandThemeId | null {
   if (typeof window === 'undefined') return null
-  const raw = window.localStorage.getItem(BRAND_THEME_STORAGE_KEY)
+  const raw = window.localStorage.getItem(brandThemeStorageKey)
   return isBrandThemeId(raw) ? raw : null
 }
 
 export function getDomBrandTheme(): BrandThemeId | null {
   if (typeof document === 'undefined') return null
-  const raw = document.documentElement.getAttribute(BRAND_THEME_ATTRIBUTE)
+  const raw = document.documentElement.getAttribute(brandThemeAttribute)
   return isBrandThemeId(raw) ? raw : null
 }
 
 export function applyBrandTheme(theme: BrandThemeId) {
   if (typeof document === 'undefined') return
-  document.documentElement.setAttribute(BRAND_THEME_ATTRIBUTE, theme)
+  document.documentElement.setAttribute(brandThemeAttribute, theme)
 }
 
 export function setBrandTheme(theme: BrandThemeId) {
   applyBrandTheme(theme)
 
   if (typeof window !== 'undefined') {
-    window.localStorage.setItem(BRAND_THEME_STORAGE_KEY, theme)
+    window.localStorage.setItem(brandThemeStorageKey, theme)
   }
 }
 
 export function resolveBrandTheme(): BrandThemeId {
-  return getStoredBrandTheme() ?? getDomBrandTheme() ?? DEFAULT_BRAND_THEME
+  return getStoredBrandTheme() ?? getDomBrandTheme() ?? defaultBrandTheme
 }
