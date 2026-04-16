@@ -7,6 +7,7 @@ updates:
     schedule:
       interval: 'weekly'
       day: 'monday'
+      every: 2
     open-pull-requests-limit: 5
     versioning-strategy: increase
     commit-message:
