@@ -1,5 +1,5 @@
+import { getRandomPublicEcho } from '@/lib/api/echo/get-random-public-echo'
 import { BadRequestError } from '@/lib/common/errors/request'
-import { getRandomPublicEcho } from '@/lib/core/echo/get-random-public-echo'
 import { withResponse } from '@/lib/infra/http/with-response'
 import { getPublicEchosQuerySchema } from './type'
 

@@ -1,4 +1,4 @@
-import type { PublicEchoCardData } from '@/lib/core/echo/type'
+import type { PublicEchoCardData } from './type'
 import { apiRequest } from '@/lib/infra/http/ky'
 
 export async function getPublicEcho() {

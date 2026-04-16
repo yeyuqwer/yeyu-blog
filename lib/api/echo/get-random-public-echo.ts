@@ -1,3 +1,5 @@
+import 'server-only'
+
 import type { Prisma } from '@prisma/client'
 import type { PublicEchoCardData } from './type'
 import { prisma } from '@/prisma/instance'

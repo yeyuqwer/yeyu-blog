@@ -1,14 +1,8 @@
-import type { SiteCommentTargetType } from '@prisma/client'
-import { prisma } from '@/prisma/instance'
+import 'server-only'
 
-export type SiteCommentTargetRecord = {
-  id: number
-  title: string
-  slug: string
-  isPublished: boolean
-  targetType: SiteCommentTargetType
-  path: string
-}
+import type { SiteCommentTargetType } from '@prisma/client'
+import type { CommentTarget } from './type'
+import { prisma } from '@/prisma/instance'
 
 export const getSiteCommentTargetKey = (targetType: SiteCommentTargetType, targetId: number) =>
   `${targetType}:${targetId}`
@@ -16,7 +10,7 @@ export const getSiteCommentTargetKey = (targetType: SiteCommentTargetType, targe
 export async function getSiteCommentTarget(
   targetType: SiteCommentTargetType,
   targetId: number,
-): Promise<SiteCommentTargetRecord | null> {
+): Promise<CommentTarget | null> {
   switch (targetType) {
     case 'BLOG': {
       const blog = await prisma.blog.findUnique({
@@ -117,7 +111,7 @@ export async function getSiteCommentTargetMap(
         }),
   ])
 
-  const map = new Map<string, SiteCommentTargetRecord>()
+  const map = new Map<string, CommentTarget>()
 
   for (const blog of blogs) {
     map.set(getSiteCommentTargetKey('BLOG', blog.id), {

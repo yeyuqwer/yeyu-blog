@@ -1,6 +1,6 @@
 'use client'
 
-import type { PublicEchoCardData } from '@/lib/core/echo/type'
+import type { PublicEchoCardData } from '@/lib/api/echo/type'
 import { motion, useReducedMotion, type Variants } from 'motion/react'
 
 export default function EchoCardContent({ echo }: { echo: PublicEchoCardData }) {
