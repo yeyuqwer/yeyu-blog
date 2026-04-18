@@ -3,7 +3,7 @@
 import type { Heading } from './utils'
 import { useLenis } from 'lenis/react'
 import { ChevronDown, TextAlignJustify } from 'lucide-react'
-import { AnimatePresence, motion, useScroll } from 'motion/react'
+import { AnimatePresence, motion, useScroll, useTransform } from 'motion/react'
 import { type FC, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { cn } from '@/lib/utils/common/shadcn'
@@ -26,6 +26,34 @@ const variants = {
 
 const tocProgressRadius = 34
 const tocProgressStrokeWidth = 10
+
+const ArticleBottomShadow = ({
+  container,
+  visible,
+}: {
+  container: HTMLElement
+  visible: boolean
+}) => {
+  const ref = useRef(container)
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start start', 'end end'],
+  })
+  const shadowOpacity = useTransform(scrollYProgress, [0, 0.84, 0.96, 1], [0.95, 0.95, 0.3, 0])
+
+  if (!visible) return null
+
+  return (
+    <motion.div
+      aria-hidden
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-30 h-36"
+      style={{ opacity: shadowOpacity }}
+    >
+      <div className="absolute inset-0 bg-[linear-gradient(to_top,color-mix(in_srgb,var(--theme-200)_56%,white)_0%,color-mix(in_srgb,var(--theme-300)_24%,transparent)_58%,transparent_100%)] dark:bg-[linear-gradient(to_top,rgba(0,0,0,0.52)_0%,rgba(0,0,0,0.24)_58%,transparent_100%)]" />
+      <div className="absolute inset-x-4 bottom-0 h-32 rounded-full bg-[radial-gradient(ellipse_at_bottom,color-mix(in_srgb,var(--theme-400)_42%,white)_0%,color-mix(in_srgb,var(--theme-300)_26%,transparent)_54%,transparent_100%)] blur-3xl dark:bg-[radial-gradient(ellipse_at_bottom,rgba(0,0,0,0.46)_0%,rgba(0,0,0,0.22)_44%,transparent_78%)]" />
+    </motion.div>
+  )
+}
 
 const TocProgressCircle = ({ container }: { container: HTMLElement }) => {
   const ref = useRef(container)
@@ -164,6 +192,9 @@ export const PostToc: FC<{
 
   return createPortal(
     <>
+      {articleContent != null ? (
+        <ArticleBottomShadow container={articleContent} visible={isAnimationComplete} />
+      ) : null}
       <AnimatePresence>
         {isExpanded && (
           <motion.div
@@ -181,7 +212,7 @@ export const PostToc: FC<{
           'fixed bottom-8 left-1/2 z-50 -translate-x-1/2',
           'bg-theme-background/80 backdrop-blur-sm dark:bg-black/70',
           'border border-[#00000011] dark:border-white/10',
-          'shadow-[0px_4px_10px_0px_#0000001A]',
+          'shadow-[0_16px_46px_color-mix(in_srgb,var(--theme-400)_34%,transparent)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.58)]',
           'overflow-hidden',
           'max-w-[90vw]',
           isExpanded ? 'rounded-2xl' : 'rounded-full',
