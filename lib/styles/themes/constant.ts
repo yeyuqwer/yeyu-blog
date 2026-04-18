@@ -8,6 +8,11 @@ export const brandThemeOptions = [
     cssFile: 'mint.css',
   },
   {
+    id: 'mist',
+    label: '雾薄荷',
+    cssFile: 'mist.css',
+  },
+  {
     id: 'camellia',
     label: '茶花红',
     cssFile: 'camellia.css',

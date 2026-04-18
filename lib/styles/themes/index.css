@@ -1,6 +1,7 @@
 /*
  * Brand theme tokens.
- * Mint is default; Camellia overrides when data-brand-theme="camellia".
+ * Mint is default; other themes override via data-brand-theme.
  */
 @import "./mint.css";
+@import "./mist.css";
 @import "./camellia.css";

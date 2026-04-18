@@ -1,0 +1,35 @@
+:root[data-brand-theme="mist"] {
+  /* Theme scale (shadcn/tailwind style) */
+  --theme-50: hsl(0 0% 100%);
+  --theme-100: hsl(160 8% 93%);
+  --theme-200: hsl(178 37% 86%);
+  --theme-300: hsl(179 31% 77%);
+  --theme-400: hsl(180 31% 66%);
+  --theme-500: hsl(180 34% 53%);
+  --theme-600: hsl(181 39% 43%);
+  --theme-700: hsl(182 43% 33%);
+  --theme-800: hsl(183 40% 27%);
+  --theme-900: hsl(184 36% 21%);
+  --theme-950: hsl(186 31% 13%);
+
+  /* Semantic brand tokens */
+  --theme-primary: var(--theme-700);
+  --theme-primary-foreground: hsl(0 0% 100%);
+  --theme-background: var(--theme-100);
+  --theme-surface: var(--theme-50);
+  --theme-active-text: hsl(0 0% 100%);
+  --theme-indicator: var(--theme-500);
+  --theme-hover-background: var(--theme-200);
+  --theme-border: var(--theme-300);
+  --theme-muted: var(--theme-200);
+  --theme-muted-foreground: var(--theme-800);
+  --theme-ring: var(--theme-400);
+
+  /* Background animation tokens (light mode) */
+  --bg-animate-base-start: hsl(179 34% 78%);
+  --bg-animate-base-end: hsl(0 0% 100%);
+  --bg-animate-c-0-start: hsl(178 37% 86%);
+  --bg-animate-c-1-start: hsl(180 32% 72%);
+  --bg-animate-c-0-end: hsl(160 8% 95%);
+  --bg-animate-c-1-end: hsl(178 28% 82%);
+}
