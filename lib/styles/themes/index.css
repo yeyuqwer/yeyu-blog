@@ -1,6 +1,6 @@
 /*
  * Brand theme tokens.
- * Mint is default; Sakura overrides when data-brand-theme="sakura".
+ * Mint is default; Camellia overrides when data-brand-theme="camellia".
  */
 @import "./mint.css";
-@import "./sakura.css";
+@import "./camellia.css";

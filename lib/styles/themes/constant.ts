@@ -8,9 +8,9 @@ export const brandThemeOptions = [
     cssFile: 'mint.css',
   },
   {
-    id: 'sakura',
-    label: '樱花粉',
-    cssFile: 'sakura.css',
+    id: 'camellia',
+    label: '茶花红',
+    cssFile: 'camellia.css',
   },
 ] as const
 
