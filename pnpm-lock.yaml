@@ -168,8 +168,8 @@ importers:
         specifier: ~2.48.0
         version: 2.48.0(typescript@6.0.2)(zod@4.3.6)
       wagmi:
-        specifier: ^3.6.2
-        version: 3.6.2(@tanstack/query-core@5.99.2)(@tanstack/react-query@5.99.2(react@19.2.5))(@types/react@19.2.14)(ox@0.14.17(typescript@6.0.2)(zod@4.3.6))(react@19.2.5)(typescript@6.0.2)(viem@2.48.0(typescript@6.0.2)(zod@4.3.6))
+        specifier: ^3.6.3
+        version: 3.6.3(@tanstack/query-core@5.99.2)(@tanstack/react-query@5.99.2(react@19.2.5))(@types/react@19.2.14)(ox@0.14.17(typescript@6.0.2)(zod@4.3.6))(react@19.2.5)(typescript@6.0.2)(viem@2.48.0(typescript@6.0.2)(zod@4.3.6))
       zod:
         specifier: ^4.3.6
         version: 4.3.6
@@ -2073,15 +2073,15 @@ packages:
       vue-router:
         optional: true
 
-  '@wagmi/connectors@8.0.2':
-    resolution: {integrity: sha512-ckPlMz6090T359nTxzlkFuXRec1mvOTZAzzSQHmWbc+FM1znOb1S9V7QRRRsrO3diCEbgxtw7GUNNvWQkej4/Q==}
+  '@wagmi/connectors@8.0.3':
+    resolution: {integrity: sha512-hQz7ZZCcyi7D702UPcvjB78V6d3nPxuaGogmnnGNY3QQ91FlRItVPzUaEEh5ce8t0Mo1a7pgKj+koA7WaWubkA==}
     peerDependencies:
       '@base-org/account': ^2.5.1
       '@coinbase/wallet-sdk': ^4.3.6
       '@metamask/connect-evm': ~0.9.0
       '@safe-global/safe-apps-provider': ~0.18.6
       '@safe-global/safe-apps-sdk': ^9.1.0
-      '@wagmi/core': 3.4.3
+      '@wagmi/core': 3.4.4
       '@walletconnect/ethereum-provider': ^2.21.1
       accounts: 0.6.7
       porto: ~0.2.35
@@ -2107,8 +2107,8 @@ packages:
       typescript:
         optional: true
 
-  '@wagmi/core@3.4.3':
-    resolution: {integrity: sha512-VM6WEY6YaWLpW6XA4ATORBV5UkYuVTD/OmF0AgfOWfZPG981UsdKPr9T0+LuMFsRM9JKIT4vQtrz2mSuJPIlUw==}
+  '@wagmi/core@3.4.4':
+    resolution: {integrity: sha512-ErhuBA+78+CbvqGeGUMEEWTI4PQxQK79XzwSJ0YEVjbr5+XWNAiQ3jZdO+JSYbRYIR+cONmqcePcQa/Qm5HzBQ==}
     peerDependencies:
       '@tanstack/query-core': '>=5.0.0'
       accounts: 0.6.7
@@ -4062,8 +4062,8 @@ packages:
       typescript:
         optional: true
 
-  wagmi@3.6.2:
-    resolution: {integrity: sha512-O7+MyRGlSgvHHCw85SjP2v3a2WIFaYUkesZPq2MqYocMLyxT2oX1EBB/LgqkxfaEPd1Xn9GgkJN4Zq56xQCDIQ==}
+  wagmi@3.6.3:
+    resolution: {integrity: sha512-yUxocojPpzjgOGQebe0Mat0rnqwH4sQwYV2d844IJ85g19VJKbhCGKxTzQ0f3hxWDH/Z/N9ecuz9zE6agumX6A==}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
       react: '>=18'
@@ -5911,14 +5911,14 @@ snapshots:
       next: 16.2.4(@opentelemetry/api@1.9.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react: 19.2.5
 
-  '@wagmi/connectors@8.0.2(@wagmi/core@3.4.3(@tanstack/query-core@5.99.2)(@types/react@19.2.14)(ox@0.14.17(typescript@6.0.2)(zod@4.3.6))(react@19.2.5)(typescript@6.0.2)(use-sync-external-store@1.4.0(react@19.2.5))(viem@2.48.0(typescript@6.0.2)(zod@4.3.6)))(typescript@6.0.2)(viem@2.48.0(typescript@6.0.2)(zod@4.3.6))':
+  '@wagmi/connectors@8.0.3(@wagmi/core@3.4.4(@tanstack/query-core@5.99.2)(@types/react@19.2.14)(ox@0.14.17(typescript@6.0.2)(zod@4.3.6))(react@19.2.5)(typescript@6.0.2)(use-sync-external-store@1.4.0(react@19.2.5))(viem@2.48.0(typescript@6.0.2)(zod@4.3.6)))(typescript@6.0.2)(viem@2.48.0(typescript@6.0.2)(zod@4.3.6))':
     dependencies:
-      '@wagmi/core': 3.4.3(@tanstack/query-core@5.99.2)(@types/react@19.2.14)(ox@0.14.17(typescript@6.0.2)(zod@4.3.6))(react@19.2.5)(typescript@6.0.2)(use-sync-external-store@1.4.0(react@19.2.5))(viem@2.48.0(typescript@6.0.2)(zod@4.3.6))
+      '@wagmi/core': 3.4.4(@tanstack/query-core@5.99.2)(@types/react@19.2.14)(ox@0.14.17(typescript@6.0.2)(zod@4.3.6))(react@19.2.5)(typescript@6.0.2)(use-sync-external-store@1.4.0(react@19.2.5))(viem@2.48.0(typescript@6.0.2)(zod@4.3.6))
       viem: 2.48.0(typescript@6.0.2)(zod@4.3.6)
     optionalDependencies:
       typescript: 6.0.2
 
-  '@wagmi/core@3.4.3(@tanstack/query-core@5.99.2)(@types/react@19.2.14)(ox@0.14.17(typescript@6.0.2)(zod@4.3.6))(react@19.2.5)(typescript@6.0.2)(use-sync-external-store@1.4.0(react@19.2.5))(viem@2.48.0(typescript@6.0.2)(zod@4.3.6))':
+  '@wagmi/core@3.4.4(@tanstack/query-core@5.99.2)(@types/react@19.2.14)(ox@0.14.17(typescript@6.0.2)(zod@4.3.6))(react@19.2.5)(typescript@6.0.2)(use-sync-external-store@1.4.0(react@19.2.5))(viem@2.48.0(typescript@6.0.2)(zod@4.3.6))':
     dependencies:
       eventemitter3: 5.0.1
       mipd: 0.0.7(typescript@6.0.2)
@@ -8046,11 +8046,11 @@ snapshots:
       - utf-8-validate
       - zod
 
-  wagmi@3.6.2(@tanstack/query-core@5.99.2)(@tanstack/react-query@5.99.2(react@19.2.5))(@types/react@19.2.14)(ox@0.14.17(typescript@6.0.2)(zod@4.3.6))(react@19.2.5)(typescript@6.0.2)(viem@2.48.0(typescript@6.0.2)(zod@4.3.6)):
+  wagmi@3.6.3(@tanstack/query-core@5.99.2)(@tanstack/react-query@5.99.2(react@19.2.5))(@types/react@19.2.14)(ox@0.14.17(typescript@6.0.2)(zod@4.3.6))(react@19.2.5)(typescript@6.0.2)(viem@2.48.0(typescript@6.0.2)(zod@4.3.6)):
     dependencies:
       '@tanstack/react-query': 5.99.2(react@19.2.5)
-      '@wagmi/connectors': 8.0.2(@wagmi/core@3.4.3(@tanstack/query-core@5.99.2)(@types/react@19.2.14)(ox@0.14.17(typescript@6.0.2)(zod@4.3.6))(react@19.2.5)(typescript@6.0.2)(use-sync-external-store@1.4.0(react@19.2.5))(viem@2.48.0(typescript@6.0.2)(zod@4.3.6)))(typescript@6.0.2)(viem@2.48.0(typescript@6.0.2)(zod@4.3.6))
-      '@wagmi/core': 3.4.3(@tanstack/query-core@5.99.2)(@types/react@19.2.14)(ox@0.14.17(typescript@6.0.2)(zod@4.3.6))(react@19.2.5)(typescript@6.0.2)(use-sync-external-store@1.4.0(react@19.2.5))(viem@2.48.0(typescript@6.0.2)(zod@4.3.6))
+      '@wagmi/connectors': 8.0.3(@wagmi/core@3.4.4(@tanstack/query-core@5.99.2)(@types/react@19.2.14)(ox@0.14.17(typescript@6.0.2)(zod@4.3.6))(react@19.2.5)(typescript@6.0.2)(use-sync-external-store@1.4.0(react@19.2.5))(viem@2.48.0(typescript@6.0.2)(zod@4.3.6)))(typescript@6.0.2)(viem@2.48.0(typescript@6.0.2)(zod@4.3.6))
+      '@wagmi/core': 3.4.4(@tanstack/query-core@5.99.2)(@types/react@19.2.14)(ox@0.14.17(typescript@6.0.2)(zod@4.3.6))(react@19.2.5)(typescript@6.0.2)(use-sync-external-store@1.4.0(react@19.2.5))(viem@2.48.0(typescript@6.0.2)(zod@4.3.6))
       react: 19.2.5
       use-sync-external-store: 1.4.0(react@19.2.5)
       viem: 2.48.0(typescript@6.0.2)(zod@4.3.6)
