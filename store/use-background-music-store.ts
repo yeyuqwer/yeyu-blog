@@ -32,7 +32,6 @@ export const useBackgroundMusicStore = create<{
     const { audio } = get()
     if (audio !== null) {
       audio.pause()
-      audio.currentTime = 0
     }
     set({ isPlaying: false })
   },

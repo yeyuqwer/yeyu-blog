@@ -16,7 +16,11 @@ import { type IconsId, icons } from '../layout/draggable-floating-menu/constant'
 
 export default function YeAvatar() {
   const { setTransitionTheme, resolvedTheme } = useTransitionTheme()
-  const { isPlaying, play, pause } = useBackgroundMusicStore()
+
+  const isPlaying = useBackgroundMusicStore(s => s.isPlaying)
+  const play = useBackgroundMusicStore(s => s.play)
+  const pause = useBackgroundMusicStore(s => s.pause)
+
   const setModalOpen = useModalStore(s => s.setModalOpen)
   const [playClickSoft] = useSound(uChatScrollButtonSound)
   const [isDragging, setIsDragging] = useState(false)

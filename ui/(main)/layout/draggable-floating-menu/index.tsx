@@ -45,7 +45,11 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, .
   const pathname = usePathname()
   const { isAnimationComplete } = useStartupStore()
   const { setTransitionTheme, resolvedTheme } = useTransitionTheme()
-  const { isPlaying, play, pause } = useBackgroundMusicStore()
+
+  const isPlaying = useBackgroundMusicStore(s => s.isPlaying)
+  const play = useBackgroundMusicStore(s => s.play)
+  const pause = useBackgroundMusicStore(s => s.pause)
+
   const setModalOpen = useModalStore(s => s.setModalOpen)
   const [playClickSoft] = useSound(uChatScrollButtonSound)
   const [isOpen, setIsOpen] = useState(false)
