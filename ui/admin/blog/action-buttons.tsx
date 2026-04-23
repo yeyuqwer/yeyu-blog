@@ -14,7 +14,7 @@ export default function ActionButtons({
   slug: string
   title: string
 }) {
-  const { setModalOpen } = useModalStore()
+  const setModalOpen = useModalStore(s => s.setModalOpen)
 
   return (
     <section className="flex items-center gap-1">

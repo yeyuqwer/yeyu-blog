@@ -20,7 +20,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/ui/shadcn/input'
 
 export default function EditTagModal() {
-  const { modalType, onModalClose, payload } = useModalStore()
+  const modalType = useModalStore(s => s.modalType)
+  const onModalClose = useModalStore(s => s.onModalClose)
+  const payload = useModalStore(s => s.payload)
   const isModalOpen = modalType === 'editTagModal'
   const { id, tagName, tagType } = payload != null ? (payload as UpdateTagNameDTO) : {}
 

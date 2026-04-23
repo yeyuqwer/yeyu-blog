@@ -24,7 +24,8 @@ const inactiveTextShadowClass = '[text-shadow:0_0_0_transparent]'
 export default function Header() {
   const pathname = usePathname()
   const activeUrl = flatNavRoutes.find(route => route.pattern.test(pathname))?.path ?? pathname
-  const { modalType, onModalClose } = useModalStore()
+  const modalType = useModalStore(s => s.modalType)
+  const onModalClose = useModalStore(s => s.onModalClose)
   const refs = useRef(new Map<string, HTMLElement>())
   const [hoveredPath, setHoveredPath] = useState<string | null>(null)
   const [direction, setDirection] = useState(0)

@@ -16,7 +16,7 @@ export default function HomeContent({
   echoSlot: ReactNode
   techSlot: ReactNode
 }) {
-  const { isAnimationComplete } = useStartupStore()
+  const isAnimationComplete = useStartupStore(s => s.isAnimationComplete)
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },

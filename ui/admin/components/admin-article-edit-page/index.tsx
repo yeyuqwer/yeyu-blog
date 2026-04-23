@@ -78,7 +78,7 @@ export const AdminArticleEditPage: FC<{
   type: TagType
 }> = ({ article, relatedArticleTagNames, type }) => {
   const router = useRouter()
-  const { setModalOpen } = useModalStore()
+  const setModalOpen = useModalStore(s => s.setModalOpen)
   const strategy = STRATEGIES[type]
   const { data: blogTags } = useBlogTagsQuery({
     enabled: type === TagType.BLOG,

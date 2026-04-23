@@ -16,7 +16,8 @@ import { Input } from '@/ui/shadcn/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/shadcn/select'
 
 export default function CreateTagModal() {
-  const { modalType, onModalClose } = useModalStore()
+  const modalType = useModalStore(s => s.modalType)
+  const onModalClose = useModalStore(s => s.onModalClose)
   const isModalOpen = modalType === 'createTagModal'
   const { mutate: createTag, isPending } = useTagCreateMutation()
 

@@ -43,7 +43,7 @@ const flowTimesSecondary = [
 // TODO: 类似 ipad cursor ?
 export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, ...props }) => {
   const pathname = usePathname()
-  const { isAnimationComplete } = useStartupStore()
+  const isAnimationComplete = useStartupStore(s => s.isAnimationComplete)
   const { setTransitionTheme, resolvedTheme } = useTransitionTheme()
 
   const isPlaying = useBackgroundMusicStore(s => s.isPlaying)

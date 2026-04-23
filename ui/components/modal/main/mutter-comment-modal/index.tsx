@@ -16,7 +16,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/ui/shadcn/di
 import { Textarea } from '@/ui/shadcn/textarea'
 
 export const MutterCommentModal: FC<ComponentProps<'div'>> = () => {
-  const { modalType, payload, onModalClose, setModalOpen } = useModalStore()
+  const modalType = useModalStore(s => s.modalType)
+  const payload = useModalStore(s => s.payload)
+  const onModalClose = useModalStore(s => s.onModalClose)
+  const setModalOpen = useModalStore(s => s.setModalOpen)
   const isModalOpen = modalType === 'mutterCommentModal'
   const values =
     payload != null

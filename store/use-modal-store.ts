@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type IModalType =
+export type ModalType =
   | 'deleteArticleModal'
   | 'deleteMutterModal'
   | 'updateMutterModal'
@@ -16,16 +16,16 @@ export type IModalType =
   | null
 
 type IModalStore = {
-  modalType: IModalType
+  modalType: ModalType
   payload: unknown
-  setModalOpen: (modalType: IModalType, payload?: unknown) => void
+  setModalOpen: <T = unknown>(modalType: ModalType, payload?: T) => void
   onModalClose: () => void
 }
 
 export const useModalStore = create<IModalStore>(set => ({
   modalType: null,
   payload: null,
-  setModalOpen: (modalType, payload = {}) => {
+  setModalOpen: <T = unknown>(modalType: ModalType, payload: T = {} as T) => {
     set({
       modalType,
       payload,

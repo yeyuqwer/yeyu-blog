@@ -16,7 +16,7 @@ export const MutterList: FC<
   }
 > = ({ query, onEditMutter }) => {
   const { data, isPending } = useMutterQuery({ q: query })
-  const { setModalOpen } = useModalStore()
+  const setModalOpen = useModalStore(s => s.setModalOpen)
   const { mutate: toggleMutterPublish } = useMutterPublishMutation()
   const [togglingMutterIds, setTogglingMutterIds] = useState<number[]>([])
   const mutters = data?.list ?? []

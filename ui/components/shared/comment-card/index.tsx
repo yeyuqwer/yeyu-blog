@@ -455,7 +455,7 @@ export default function CommentCard({ articleId, articleType, className }: Comme
   const [commentContent, setCommentContent] = useState('')
   const [replyContent, setReplyContent] = useState('')
   const [activeReplyCommentId, setActiveReplyCommentId] = useState<number | null>(null)
-  const { setModalOpen } = useModalStore()
+  const setModalOpen = useModalStore(s => s.setModalOpen)
 
   const { data: session } = useSession()
   const isWalletUser = isWalletLoggedIn({ data: session ?? null })

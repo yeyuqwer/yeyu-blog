@@ -12,7 +12,8 @@ import { useModalStore } from '@/store/use-modal-store'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/ui/shadcn/dialog'
 
 export const SelectThemeModal: FC<ComponentProps<'div'>> = () => {
-  const { modalType, onModalClose } = useModalStore()
+  const modalType = useModalStore(s => s.modalType)
+  const onModalClose = useModalStore(s => s.onModalClose)
   const isModalOpen = modalType === 'selectThemeModal'
   const [activeTheme, setActiveTheme] = useState<BrandThemeId>(resolveBrandTheme)
 

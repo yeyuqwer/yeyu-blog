@@ -11,7 +11,9 @@ type DeleteMutterPayload = {
 }
 
 export default function DeleteMutterModal() {
-  const { modalType, payload, onModalClose } = useModalStore()
+  const modalType = useModalStore(s => s.modalType)
+  const payload = useModalStore(s => s.payload)
+  const onModalClose = useModalStore(s => s.onModalClose)
   const isModalOpen = modalType === 'deleteMutterModal'
   const values = payload != null ? (payload as DeleteMutterPayload) : null
   const { mutate: deleteMutterById, isPending } = useMutterDeleteMutation()

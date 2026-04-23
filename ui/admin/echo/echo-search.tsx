@@ -8,7 +8,7 @@ import { Button } from '@/ui/shadcn/button'
 import { Input } from '@/ui/shadcn/input'
 
 function EchoSearch({ setQuery }: { setQuery: Dispatch<SetStateAction<string>> }) {
-  const { setModalOpen } = useModalStore()
+  const setModalOpen = useModalStore(s => s.setModalOpen)
   const inputRef = useRef<HTMLInputElement>(null)
 
   return (

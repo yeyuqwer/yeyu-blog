@@ -21,7 +21,9 @@ type UpdateMutterPayload = {
 }
 
 export default function UpdateMutterModal() {
-  const { modalType, payload, onModalClose } = useModalStore()
+  const modalType = useModalStore(s => s.modalType)
+  const payload = useModalStore(s => s.payload)
+  const onModalClose = useModalStore(s => s.onModalClose)
   const isModalOpen = modalType === 'updateMutterModal'
   const values = payload != null ? (payload as UpdateMutterPayload) : null
   const { mutate: updateMutterById, isPending } = useMutterUpdateMutation()

@@ -5,7 +5,9 @@ import { useModalStore } from '@/store/use-modal-store'
 import { ConfirmDialog } from '@/ui/components/modal/base/confirm-dialog'
 
 export default function DeleteTagModal() {
-  const { modalType, payload, onModalClose } = useModalStore()
+  const modalType = useModalStore(s => s.modalType)
+  const payload = useModalStore(s => s.payload)
+  const onModalClose = useModalStore(s => s.onModalClose)
   const isModalOpen = modalType === 'deleteTagModal'
   const values = payload != null ? (payload as DeleteTagDTO) : null
 

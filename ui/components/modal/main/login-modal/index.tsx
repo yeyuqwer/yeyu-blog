@@ -33,7 +33,8 @@ const adminWalletAddress = clientEnv.NEXT_PUBLIC_ADMIN_WALLET_ADDRESS?.trim().to
 // TODO: 全局状态管理存储钱包登录状态 ？
 // TODO: 之后再说吧，累了，在改 bug 要猝死了🥲
 export const LoginModal: FC<ComponentProps<'div'>> = () => {
-  const { modalType, onModalClose } = useModalStore()
+  const modalType = useModalStore(s => s.modalType)
+  const onModalClose = useModalStore(s => s.onModalClose)
   const isModalOpen = modalType === 'loginModal'
   const connectors = useConnectors().filter(v => v.id !== 'injected')
   const { mutateAsync: connectAsync, isPending } = useConnect()

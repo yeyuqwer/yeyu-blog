@@ -1,4 +1,4 @@
-import type { IModalType } from '@/store/use-modal-store'
+import type { ModalType } from '@/store/use-modal-store'
 
 export type NavRoute = {
   path: string
@@ -6,7 +6,7 @@ export type NavRoute = {
   pattern: RegExp
   disabled?: boolean
   type?: 'link' | 'button'
-  modal?: IModalType
+  modal?: ModalType
 }
 
 export type NavGroup = {

@@ -16,7 +16,9 @@ import { Switch } from '@/ui/shadcn/switch'
 import { Textarea } from '@/ui/shadcn/textarea'
 
 export default function EditEchoModal() {
-  const { modalType, onModalClose, payload } = useModalStore()
+  const modalType = useModalStore(s => s.modalType)
+  const payload = useModalStore(s => s.payload)
+  const onModalClose = useModalStore(s => s.onModalClose)
   const isModalOpen = modalType === 'editEchoModal'
 
   const { id, content, isPublished, reference } = payload != null ? (payload as UpdateEchoDTO) : {}

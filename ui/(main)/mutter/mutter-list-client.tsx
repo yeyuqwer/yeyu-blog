@@ -25,7 +25,9 @@ export function MutterListClient({ mutters }: { mutters: MutterListItem[] }) {
     Object.fromEntries(mutters.map(item => [item.id, item.likeCount])),
   )
   const { mutateAsync: likeMutterById } = useMutterLikeMutation()
-  const { modalType, payload, setModalOpen } = useModalStore()
+  const modalType = useModalStore(s => s.modalType)
+  const payload = useModalStore(s => s.payload)
+  const setModalOpen = useModalStore(s => s.setModalOpen)
   const activeCommentPayload =
     modalType === 'mutterCommentModal' && payload != null
       ? (payload as {

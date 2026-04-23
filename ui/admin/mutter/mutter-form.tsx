@@ -19,7 +19,7 @@ type MutterFormProps = {
 }
 
 export const MutterForm: FC<MutterFormProps> = ({ editingMutter, clearEditingMutter }) => {
-  const { setModalOpen } = useModalStore()
+  const setModalOpen = useModalStore(s => s.setModalOpen)
   const [draft, setDraft] = useState('')
   const { mutate: createMutter, isPending: isCreating } = useMutterMutation()
   const trimmedDraft = draft.trim()

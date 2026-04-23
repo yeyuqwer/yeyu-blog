@@ -7,7 +7,7 @@ import { useStartupStore } from '@/store/use-startup-store'
 const initialWelcomeText = '业余'
 
 export default function StartUpMotion() {
-  const { setAnimationComplete } = useStartupStore()
+  const setAnimationComplete = useStartupStore(s => s.setAnimationComplete)
   const scaleY = useMotionValue(0)
 
   const toLeft = useMotionValue('0%')

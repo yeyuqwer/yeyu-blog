@@ -23,7 +23,9 @@ import { Switch } from '@/ui/shadcn/switch'
 import { Textarea } from '@/ui/shadcn/textarea'
 
 export default function CreateEchoModal() {
-  const { modalType, onModalClose } = useModalStore()
+  const modalType = useModalStore(s => s.modalType)
+  const onModalClose = useModalStore(s => s.onModalClose)
+
   const isModalOpen = modalType === 'createEchoModal'
   const { mutate: createEcho, isPending } = useEchoCreateMutation()
 

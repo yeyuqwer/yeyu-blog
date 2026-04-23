@@ -81,7 +81,7 @@ const TocProgressCircle = ({ container }: { container: HTMLElement }) => {
 export const PostToc: FC<{
   headings: Heading[]
 }> = ({ headings }) => {
-  const { isAnimationComplete } = useStartupStore()
+  const isAnimationComplete = useStartupStore(s => s.isAnimationComplete)
   const [activeId, setActiveId] = useState<string>('')
   const [isExpanded, setIsExpanded] = useState(false)
   const [mounted, setMounted] = useState(false)
