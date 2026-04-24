@@ -13,7 +13,7 @@ type DeleteMutterPayload = {
 export default function DeleteMutterModal() {
   const modalType = useModalStore(s => s.modalType)
   const payload = useModalStore(s => s.payload)
-  const onModalClose = useModalStore(s => s.onModalClose)
+  const closeModal = useModalStore(s => s.closeModal)
   const isModalOpen = modalType === 'deleteMutterModal'
   const values = payload != null ? (payload as DeleteMutterPayload) : null
   const { mutate: deleteMutterById, isPending } = useMutterDeleteMutation()
@@ -27,7 +27,7 @@ export default function DeleteMutterModal() {
     deleteMutterById(
       { id: values.id },
       {
-        onSuccess: onModalClose,
+        onSuccess: closeModal,
       },
     )
   }
@@ -35,7 +35,7 @@ export default function DeleteMutterModal() {
   return (
     <ConfirmDialog
       open={isModalOpen}
-      onClose={onModalClose}
+      onClose={closeModal}
       onConfirm={onSubmit}
       title="确定要删除这条说说吗？"
       description="该操作不可撤销。"

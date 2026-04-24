@@ -25,7 +25,7 @@ export default function Header() {
   const pathname = usePathname()
   const activeUrl = flatNavRoutes.find(route => route.pattern.test(pathname))?.path ?? pathname
   const modalType = useModalStore(s => s.modalType)
-  const onModalClose = useModalStore(s => s.onModalClose)
+  const closeModal = useModalStore(s => s.closeModal)
   const refs = useRef(new Map<string, HTMLElement>())
   const [hoveredPath, setHoveredPath] = useState<string | null>(null)
   const [direction, setDirection] = useState(0)
@@ -35,8 +35,8 @@ export default function Header() {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <TEMP TODO>
   useEffect(() => {
-    onModalClose()
-  }, [pathname, onModalClose])
+    closeModal()
+  }, [pathname, closeModal])
 
   const effectiveActiveUrl = useMemo(() => {
     if (modalType != null) {

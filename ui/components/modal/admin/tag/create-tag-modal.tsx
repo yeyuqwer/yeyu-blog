@@ -17,7 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 export default function CreateTagModal() {
   const modalType = useModalStore(s => s.modalType)
-  const onModalClose = useModalStore(s => s.onModalClose)
+  const closeModal = useModalStore(s => s.closeModal)
   const isModalOpen = modalType === 'createTagModal'
   const { mutate: createTag, isPending } = useTagCreateMutation()
 
@@ -40,7 +40,7 @@ export default function CreateTagModal() {
     createTag(values, {
       onSuccess: () => {
         sileo.success({ title: '创建成功' })
-        onModalClose()
+        closeModal()
       },
       onError: error => {
         sileo.error({ title: `创建标签失败~ ${error.message}` })
@@ -49,7 +49,7 @@ export default function CreateTagModal() {
   }
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={onModalClose}>
+    <Dialog open={isModalOpen} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>新建标签</DialogTitle>

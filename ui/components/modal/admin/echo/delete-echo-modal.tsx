@@ -6,7 +6,7 @@ import { ConfirmDialog } from '@/ui/components/modal/base/confirm-dialog'
 export default function DeleteEchoModal() {
   const modalType = useModalStore(s => s.modalType)
   const payload = useModalStore(s => s.payload)
-  const onModalClose = useModalStore(s => s.onModalClose)
+  const closeModal = useModalStore(s => s.closeModal)
   const isModalOpen = modalType === 'deleteEchoModal'
   const { id } = payload != null ? (payload as { id: number }) : {}
 
@@ -21,7 +21,7 @@ export default function DeleteEchoModal() {
     deleteEcho(
       { id },
       {
-        onSuccess: onModalClose,
+        onSuccess: closeModal,
       },
     )
   }
@@ -29,7 +29,7 @@ export default function DeleteEchoModal() {
   return (
     <ConfirmDialog
       open={isModalOpen}
-      onClose={onModalClose}
+      onClose={closeModal}
       onConfirm={onSubmit}
       title="确定要删除这个引用吗🥹"
       description="真的会直接删除的喵🥹"

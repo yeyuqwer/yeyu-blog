@@ -34,7 +34,7 @@ const adminWalletAddress = clientEnv.NEXT_PUBLIC_ADMIN_WALLET_ADDRESS?.trim().to
 // TODO: 之后再说吧，累了，在改 bug 要猝死了🥲
 export const LoginModal: FC<ComponentProps<'div'>> = () => {
   const modalType = useModalStore(s => s.modalType)
-  const onModalClose = useModalStore(s => s.onModalClose)
+  const closeModal = useModalStore(s => s.closeModal)
   const isModalOpen = modalType === 'loginModal'
   const connectors = useConnectors().filter(v => v.id !== 'injected')
   const { mutateAsync: connectAsync, isPending } = useConnect()
@@ -157,7 +157,7 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
   )
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={onModalClose}>
+    <Dialog open={isModalOpen} onOpenChange={closeModal}>
       <DialogContent className="rounded-xl bg-theme-background/80 backdrop-blur-xl sm:max-w-96 dark:bg-black/70">
         <DialogHeader className="">
           <DialogTitle className="text-center font-bold text-xl">
@@ -220,7 +220,7 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
               <div className="flex w-full flex-col gap-2">
                 {isSessionAdmin && (
                   <Button asChild variant="outline" className="w-full">
-                    <Link href="/admin" onClick={onModalClose}>
+                    <Link href="/admin" onClick={closeModal}>
                       进入后台
                     </Link>
                   </Button>

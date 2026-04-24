@@ -15,14 +15,12 @@ export type ModalType =
   | 'mutterCommentModal'
   | null
 
-type IModalStore = {
+export const useModalStore = create<{
   modalType: ModalType
   payload: unknown
   setModalOpen: <T = unknown>(modalType: ModalType, payload?: T) => void
-  onModalClose: () => void
-}
-
-export const useModalStore = create<IModalStore>(set => ({
+  closeModal: () => void
+}>(set => ({
   modalType: null,
   payload: null,
   setModalOpen: <T = unknown>(modalType: ModalType, payload: T = {} as T) => {
@@ -31,8 +29,7 @@ export const useModalStore = create<IModalStore>(set => ({
       payload,
     })
   },
-  // * 可以直接不用这个函数的, 直接使用 setModalOpen(null) 来替代, 但是我想更纯粹一点
-  onModalClose: () => {
-    set({ modalType: null })
+  closeModal: () => {
+    set({ modalType: null, payload: null })
   },
 }))

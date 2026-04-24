@@ -23,7 +23,7 @@ type UpdateMutterPayload = {
 export default function UpdateMutterModal() {
   const modalType = useModalStore(s => s.modalType)
   const payload = useModalStore(s => s.payload)
-  const onModalClose = useModalStore(s => s.onModalClose)
+  const closeModal = useModalStore(s => s.closeModal)
   const isModalOpen = modalType === 'updateMutterModal'
   const values = payload != null ? (payload as UpdateMutterPayload) : null
   const { mutate: updateMutterById, isPending } = useMutterUpdateMutation()
@@ -43,7 +43,7 @@ export default function UpdateMutterModal() {
         onSuccess: () => {
           sileo.success({ title: 'Mutter updated.' })
           values.onSuccess?.()
-          onModalClose()
+          closeModal()
         },
         onError: error => {
           sileo.error({ title: error.message })
@@ -53,7 +53,7 @@ export default function UpdateMutterModal() {
   }
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={onModalClose}>
+    <Dialog open={isModalOpen} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-[460px]">
         <DialogHeader>
           <DialogTitle>Confirm Update</DialogTitle>
@@ -81,7 +81,7 @@ export default function UpdateMutterModal() {
             type="button"
             variant="outline"
             className="cursor-pointer"
-            onClick={onModalClose}
+            onClick={closeModal}
             disabled={isPending}
           >
             Cancel

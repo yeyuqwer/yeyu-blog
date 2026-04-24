@@ -7,7 +7,7 @@ import { ConfirmDialog } from '@/ui/components/modal/base/confirm-dialog'
 export default function DeleteTagModal() {
   const modalType = useModalStore(s => s.modalType)
   const payload = useModalStore(s => s.payload)
-  const onModalClose = useModalStore(s => s.onModalClose)
+  const closeModal = useModalStore(s => s.closeModal)
   const isModalOpen = modalType === 'deleteTagModal'
   const values = payload != null ? (payload as DeleteTagDTO) : null
 
@@ -20,14 +20,14 @@ export default function DeleteTagModal() {
     }
 
     deleteTag(values, {
-      onSuccess: onModalClose,
+      onSuccess: closeModal,
     })
   }
 
   return (
     <ConfirmDialog
       open={isModalOpen}
-      onClose={onModalClose}
+      onClose={closeModal}
       onConfirm={onSubmit}
       title="确定要删除该标签吗🥹"
       description="不会删除关联的所有文章哦，只是断开标签和文章的连接。"

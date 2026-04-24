@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/ui/shadcn/di
 
 export const SelectThemeModal: FC<ComponentProps<'div'>> = () => {
   const modalType = useModalStore(s => s.modalType)
-  const onModalClose = useModalStore(s => s.onModalClose)
+  const closeModal = useModalStore(s => s.closeModal)
   const isModalOpen = modalType === 'selectThemeModal'
   const [activeTheme, setActiveTheme] = useState<BrandThemeId>(resolveBrandTheme)
 
@@ -23,7 +23,7 @@ export const SelectThemeModal: FC<ComponentProps<'div'>> = () => {
   }, [isModalOpen])
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={onModalClose}>
+    <Dialog open={isModalOpen} onOpenChange={closeModal}>
       <DialogContent className="rounded-xl bg-theme-background/80 backdrop-blur-xl sm:max-w-96 dark:bg-black/70">
         <DialogHeader>
           <DialogTitle className="text-center font-bold text-xl">切换主题</DialogTitle>
@@ -37,7 +37,7 @@ export const SelectThemeModal: FC<ComponentProps<'div'>> = () => {
               onClick={() => {
                 setBrandTheme(id)
                 setActiveTheme(id)
-                onModalClose()
+                closeModal()
               }}
             >
               <span className={activeTheme === id ? 'text-theme-indicator' : undefined}>

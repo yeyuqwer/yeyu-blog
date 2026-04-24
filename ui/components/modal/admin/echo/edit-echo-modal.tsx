@@ -18,7 +18,7 @@ import { Textarea } from '@/ui/shadcn/textarea'
 export default function EditEchoModal() {
   const modalType = useModalStore(s => s.modalType)
   const payload = useModalStore(s => s.payload)
-  const onModalClose = useModalStore(s => s.onModalClose)
+  const closeModal = useModalStore(s => s.closeModal)
   const isModalOpen = modalType === 'editEchoModal'
 
   const { id, content, isPublished, reference } = payload != null ? (payload as UpdateEchoDTO) : {}
@@ -53,7 +53,7 @@ export default function EditEchoModal() {
     updateEcho(values, {
       onSuccess: () => {
         sileo.success({ title: '修改成功' })
-        onModalClose()
+        closeModal()
       },
       onError: error => {
         sileo.error({ title: `更新引用失败~ ${error.message}` })
@@ -66,7 +66,7 @@ export default function EditEchoModal() {
       open={isModalOpen}
       onOpenChange={() => {
         form.reset(initialValues)
-        onModalClose()
+        closeModal()
       }}
     >
       <DialogContent className="sm:max-w-[425px]">

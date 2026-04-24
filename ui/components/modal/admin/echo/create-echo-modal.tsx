@@ -24,7 +24,7 @@ import { Textarea } from '@/ui/shadcn/textarea'
 
 export default function CreateEchoModal() {
   const modalType = useModalStore(s => s.modalType)
-  const onModalClose = useModalStore(s => s.onModalClose)
+  const closeModal = useModalStore(s => s.closeModal)
 
   const isModalOpen = modalType === 'createEchoModal'
   const { mutate: createEcho, isPending } = useEchoCreateMutation()
@@ -49,7 +49,7 @@ export default function CreateEchoModal() {
     createEcho(values, {
       onSuccess: () => {
         sileo.success({ title: '创建成功' })
-        onModalClose()
+        closeModal()
       },
       onError: error => {
         sileo.error({ title: `创建引用失败~ ${error.message}` })
@@ -58,7 +58,7 @@ export default function CreateEchoModal() {
   }
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={onModalClose}>
+    <Dialog open={isModalOpen} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>创建引用</DialogTitle>

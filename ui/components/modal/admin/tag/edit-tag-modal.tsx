@@ -21,7 +21,7 @@ import { Input } from '@/ui/shadcn/input'
 
 export default function EditTagModal() {
   const modalType = useModalStore(s => s.modalType)
-  const onModalClose = useModalStore(s => s.onModalClose)
+  const closeModal = useModalStore(s => s.closeModal)
   const payload = useModalStore(s => s.payload)
   const isModalOpen = modalType === 'editTagModal'
   const { id, tagName, tagType } = payload != null ? (payload as UpdateTagNameDTO) : {}
@@ -47,7 +47,7 @@ export default function EditTagModal() {
     updateTagName(values, {
       onSuccess: () => {
         sileo.success({ title: '修改成功' })
-        onModalClose()
+        closeModal()
       },
       onError: error => {
         sileo.error({ title: `修改标签出错 ${error.message}` })
@@ -56,7 +56,7 @@ export default function EditTagModal() {
   }
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={onModalClose}>
+    <Dialog open={isModalOpen} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>编辑标签</DialogTitle>

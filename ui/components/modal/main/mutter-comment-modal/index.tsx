@@ -18,7 +18,7 @@ import { Textarea } from '@/ui/shadcn/textarea'
 export const MutterCommentModal: FC<ComponentProps<'div'>> = () => {
   const modalType = useModalStore(s => s.modalType)
   const payload = useModalStore(s => s.payload)
-  const onModalClose = useModalStore(s => s.onModalClose)
+  const closeModal = useModalStore(s => s.closeModal)
   const setModalOpen = useModalStore(s => s.setModalOpen)
   const isModalOpen = modalType === 'mutterCommentModal'
   const values =
@@ -73,7 +73,7 @@ export const MutterCommentModal: FC<ComponentProps<'div'>> = () => {
   }
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={onModalClose}>
+    <Dialog open={isModalOpen} onOpenChange={closeModal}>
       <DialogContent className="max-h-[88vh] overflow-hidden rounded-2xl border-zinc-200 bg-theme-background/80 backdrop-blur-xl sm:max-w-[580px] dark:border-zinc-800 dark:bg-black/70">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-center gap-2 font-bold text-xl text-zinc-900 dark:text-zinc-100">
