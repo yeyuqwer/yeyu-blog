@@ -208,8 +208,8 @@ importers:
         specifier: ^4.3.1
         version: 4.3.1(@types/node@25.6.0)(typescript@6.0.3)
       cz-git:
-        specifier: ^1.12.0
-        version: 1.12.0
+        specifier: ^1.13.0
+        version: 1.13.0
       dotenv-cli:
         specifier: ^11.0.0
         version: 11.0.0
@@ -2474,8 +2474,8 @@ packages:
     resolution: {integrity: sha512-U466fIzU5U22eES5lTNiNbZ+d8dfcHcssH4o7QsdWaCcRs/feIPCxKYSWkYBNs5mny7MvEfwpTLWjvbm94hecw==}
     engines: {node: '>= 10'}
 
-  cz-git@1.12.0:
-    resolution: {integrity: sha512-LaZ+8whPPUOo6Y0Zy4nIbf6JOleV3ejp41sT6N4RPKiKKA+ICWf4ueeIlxIO8b6JtdlDxRzHH/EcRji07nDxcg==}
+  cz-git@1.13.0:
+    resolution: {integrity: sha512-oTxNSypCvhfHJF7KmnO8lSDup4lYa/s6bbF1700vyONepDIMTcMMXQweSxE/7ANIm7hcv1ckz4HLitZNM02fCw==}
     engines: {node: '>=v12.20.0'}
 
   dayjs@1.11.20:
@@ -6237,7 +6237,7 @@ snapshots:
       - '@types/node'
       - typescript
 
-  cz-git@1.12.0: {}
+  cz-git@1.13.0: {}
 
   dayjs@1.11.20: {}
 
