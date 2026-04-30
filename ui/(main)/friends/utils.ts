@@ -1,0 +1,56 @@
+import type { PlaneMotion, PlaneOffset, PlaneVelocity } from './types'
+import {
+  defaultPlaneMotion,
+  friendApplyPlaneItem,
+  friends,
+  planeHeight,
+  planeLayout,
+  planeWidth,
+} from './constants'
+
+export const normalizeOffset = (value: number, size: number) => {
+  let nextValue = value % size
+
+  if (nextValue > size / 2) {
+    nextValue -= size
+  }
+
+  if (nextValue < -size / 2) {
+    nextValue += size
+  }
+
+  return nextValue
+}
+
+export const clamp = (value: number, min: number, max: number) =>
+  Math.min(Math.max(value, min), max)
+
+export const getPlaneTransform = (
+  { x, y }: PlaneOffset,
+  motion: PlaneMotion = defaultPlaneMotion,
+) =>
+  `translate3d(calc(-50% + ${x}px), calc(-50% + ${y}px), 0) rotate(${motion.rotate}deg) scale(${motion.scale})`
+
+export const getPlaneMotionFromVelocity = (velocity: PlaneVelocity, isDragging: boolean) => {
+  const speed = Math.hypot(velocity.x, velocity.y)
+
+  return {
+    rotate: clamp(velocity.x * 2.4, -2.8, 2.8),
+    scale: 1 + Math.min(speed, 1.2) * (isDragging ? 0.012 : 0.008),
+  }
+}
+
+export const createPlaneItems = () => [
+  ...planeLayout.map((layoutItem, index) => ({
+    ...friends[index % friends.length],
+    ...layoutItem,
+    id: `${friends[index % friends.length].name}-${index}`,
+    type: 'friend' as const,
+  })),
+  friendApplyPlaneItem,
+]
+
+export const getNormalizedPlaneOffset = (offset: PlaneOffset) => ({
+  x: normalizeOffset(offset.x, planeWidth),
+  y: normalizeOffset(offset.y, planeHeight),
+})
