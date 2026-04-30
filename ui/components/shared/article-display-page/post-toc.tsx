@@ -46,12 +46,9 @@ const ArticleBottomShadow = ({
   return (
     <motion.div
       aria-hidden
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-30 h-36"
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-30 h-24 select-none bg-[linear-gradient(transparent,rgb(249,250,250))] backdrop-blur-[16px] [-webkit-mask-image:linear-gradient(to_top,rgb(249,250,250)_50%,transparent)] [mask-image:linear-gradient(to_top,rgb(249,250,250)_50%,transparent)] dark:bg-[linear-gradient(transparent,rgb(9,9,11))] dark:[-webkit-mask-image:linear-gradient(to_top,rgb(9,9,11)_50%,transparent)] dark:[mask-image:linear-gradient(to_top,rgb(9,9,11)_50%,transparent)]"
       style={{ opacity: shadowOpacity }}
-    >
-      <div className="absolute inset-0 bg-[linear-gradient(to_top,color-mix(in_srgb,var(--theme-200)_56%,white)_0%,color-mix(in_srgb,var(--theme-300)_24%,transparent)_58%,transparent_100%)] dark:bg-[linear-gradient(to_top,rgba(0,0,0,0.52)_0%,rgba(0,0,0,0.24)_58%,transparent_100%)]" />
-      <div className="absolute inset-x-4 bottom-0 h-32 rounded-full bg-[radial-gradient(ellipse_at_bottom,color-mix(in_srgb,var(--theme-400)_42%,white)_0%,color-mix(in_srgb,var(--theme-300)_26%,transparent)_54%,transparent_100%)] blur-3xl dark:bg-[radial-gradient(ellipse_at_bottom,rgba(0,0,0,0.46)_0%,rgba(0,0,0,0.22)_44%,transparent_78%)]" />
-    </motion.div>
+    />
   )
 }
 
