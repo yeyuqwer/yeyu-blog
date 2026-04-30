@@ -12,6 +12,7 @@ import { useBackgroundMusicStore } from '@/store/use-background-music-store'
 import { useModalStore } from '@/store/use-modal-store'
 import { useStartupStore } from '@/store/use-startup-store'
 import { type IconsId, icons } from './constant'
+import { FloatingMenuActionButton } from './floating-menu-action-button'
 
 const menuRadius = 82
 const menuAngles: Record<IconsId, number> = {
@@ -195,7 +196,7 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, .
                 const y = -menuRadius * Math.sin(radian)
 
                 return (
-                  <motion.div
+                  <FloatingMenuActionButton
                     key={id}
                     initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
                     animate={{
@@ -206,20 +207,15 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, .
                     }}
                     exit={{ opacity: 0, scale: 0, x: 0, y: 0 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                    className={cn(
-                      'absolute top-1 left-1 flex size-10 cursor-pointer items-center justify-center rounded-full shadow-md shadow-theme-indicator/15 backdrop-blur-md transition-[color,background-color,border-color,box-shadow] duration-300 dark:shadow-black/35',
-                      'border border-border/90 bg-background/95 dark:border-neutral-800 dark:bg-black dark:shadow-sm',
-                      isFunctionActive
-                        ? 'text-theme-indicator dark:text-white'
-                        : 'text-zinc-500 dark:text-neutral-500',
-                    )}
+                    className="absolute top-1 left-1 cursor-pointer"
+                    isActive={isFunctionActive}
                     onClick={e => {
                       e.stopPropagation()
                       handleSelect(id)
                     }}
                   >
                     <Icon className="relative z-10 size-5" />
-                  </motion.div>
+                  </FloatingMenuActionButton>
                 )
               })}
             </>

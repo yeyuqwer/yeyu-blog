@@ -7,12 +7,12 @@ import { useRef, useState } from 'react'
 import avatar from '@/config/img/avatar.webp'
 import { useTransitionTheme } from '@/hooks/animation'
 import { useSound } from '@/hooks/common/use-sound'
-import { cn } from '@/lib/utils/common/shadcn'
 import { uChatScrollButtonSound } from '@/lib/utils/sound/u-chat-scroll-button'
 import { typedEntries } from '@/lib/utils/typed'
 import { useBackgroundMusicStore } from '@/store/use-background-music-store'
 import { useModalStore } from '@/store/use-modal-store'
 import { type IconsId, icons } from '../layout/draggable-floating-menu/constant'
+import { FloatingMenuActionButton } from '../layout/draggable-floating-menu/floating-menu-action-button'
 
 export default function YeAvatar() {
   const { setTransitionTheme, resolvedTheme } = useTransitionTheme()
@@ -82,7 +82,7 @@ export default function YeAvatar() {
                 (id === 'br' && resolvedTheme === 'dark')
 
               return (
-                <motion.div
+                <FloatingMenuActionButton
                   key={id}
                   initial={{ opacity: 0, scale: 0, ...initial }}
                   animate={{
@@ -93,20 +93,12 @@ export default function YeAvatar() {
                   }}
                   exit={{ opacity: 0, scale: 0, ...initial }}
                   transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  className={cn(
-                    'absolute z-50 flex size-10 items-center justify-center rounded-full shadow-md shadow-theme-indicator/15 backdrop-blur-md transition-[color,background-color,border-color,box-shadow] duration-300 dark:shadow-black/35',
-                    className,
-                    'border border-border/90 bg-background/95 dark:border-neutral-800 dark:bg-black dark:shadow-sm',
-                    activeIcon === id || isFunctionActive
-                      ? 'text-theme-indicator dark:text-white'
-                      : 'text-zinc-500 dark:text-neutral-500',
-                  )}
+                  className={`absolute z-50 ${className}`}
+                  isActive={activeIcon === id || isFunctionActive}
+                  showPing={activeIcon === id}
                 >
-                  {activeIcon === id && (
-                    <span className="absolute inset-0 animate-ye-ping-one-dot-one rounded-full ring-2 ring-theme-indicator ring-offset-2 ring-offset-theme-400 dark:ring-white dark:ring-offset-black" />
-                  )}
                   <Icon className="relative z-10 size-5" />
-                </motion.div>
+                </FloatingMenuActionButton>
               )
             })}
           </>
