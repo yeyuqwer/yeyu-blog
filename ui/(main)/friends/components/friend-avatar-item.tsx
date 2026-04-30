@@ -91,15 +91,15 @@ export function FriendAvatarItem({ item, copy, onClick, setItemRef }: FriendAvat
         onClick={onClick}
         className="flex h-full w-full max-w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] cursor-pointer items-center overflow-hidden rounded-full border border-theme-muted/70 bg-theme-background/95 p-1.5 text-left shadow-md backdrop-blur-md transition-[width,filter,border-color] duration-[260ms] ease-out hover:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] hover:border-theme-indicator/35 hover:brightness-110 focus-visible:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] focus-visible:outline-2 focus-visible:outline-theme-ring group-focus-within:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] group-hover:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)]"
       >
-        <span className="grid aspect-square h-full shrink-0 place-items-center overflow-hidden rounded-full">
+        <span className="relative aspect-square h-full shrink-0 overflow-hidden rounded-full bg-theme-muted/20">
           <Image
             src={item.avatarUrl}
             alt={item.name}
-            width={104}
-            height={104}
+            fill
+            sizes="(max-width: 768px) 58px, 104px"
             draggable={false}
             unoptimized
-            className="size-full rounded-full object-cover"
+            className="object-cover object-center"
           />
         </span>
         <span className="w-[min(14rem,calc(78vw_-_var(--friend-tile-size)))] shrink-0 overflow-hidden pr-5 pl-3 opacity-0 transition-[clip-path,opacity] duration-200 ease-out [clip-path:inset(0_100%_0_0)] group-focus-within:opacity-100 group-hover:opacity-100 group-focus-within:[clip-path:inset(0_0_0_0)] group-hover:[clip-path:inset(0_0_0_0)]">

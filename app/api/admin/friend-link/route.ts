@@ -96,7 +96,11 @@ export const PATCH = withResponse(async request => {
       id: payload.id,
     },
     data: {
-      state: payload.state,
+      ...(payload.name != null ? { name: payload.name } : {}),
+      ...(payload.description != null ? { description: payload.description } : {}),
+      ...(payload.avatarUrl != null ? { avatarUrl: payload.avatarUrl } : {}),
+      ...(payload.siteUrl != null ? { siteUrl: payload.siteUrl } : {}),
+      ...(payload.state != null ? { state: payload.state } : {}),
     },
   })
 

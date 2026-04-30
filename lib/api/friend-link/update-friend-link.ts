@@ -3,7 +3,11 @@ import { apiRequest } from '@/lib/infra/http/ky'
 
 export type UpdateFriendLinkParams = {
   id: number
-  state: FriendLinkState
+  name?: string
+  description?: string
+  avatarUrl?: string
+  siteUrl?: string
+  state?: FriendLinkState
 }
 
 export async function updateFriendLink(params: UpdateFriendLinkParams) {
