@@ -1,4 +1,5 @@
 export type Friend = {
+  id: number
   name: string
   description: string
   avatarUrl: string
@@ -13,8 +14,9 @@ export type PlaneItemBase = {
   scale: number
 }
 
-export type FriendPlaneItem = Friend &
+export type FriendPlaneItem = Omit<Friend, 'id'> &
   PlaneItemBase & {
+    friendLinkId: number
     type: 'friend'
   }
 

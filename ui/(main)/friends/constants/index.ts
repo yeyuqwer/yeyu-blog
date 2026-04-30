@@ -1,43 +1,4 @@
-import type { Friend, PlaneMotion } from '../types'
-
-export const friends: Friend[] = [
-  {
-    name: 'Aki',
-    description: '记录前端、摄影和一些生活里发亮的小事。',
-    avatarUrl: 'https://api.dicebear.com/9.x/lorelei/svg?seed=Aki&backgroundColor=b6e3f4',
-    siteUrl: 'https://example.com/aki',
-  },
-  {
-    name: 'Mio',
-    description: '喜欢 TypeScript，也喜欢把复杂问题写得温柔一点。',
-    avatarUrl: 'https://api.dicebear.com/9.x/lorelei/svg?seed=Mio&backgroundColor=c0aede',
-    siteUrl: 'https://example.com/mio',
-  },
-  {
-    name: 'Nana',
-    description: '在博客里放技术笔记、读书摘录和偶尔的碎碎念。',
-    avatarUrl: 'https://api.dicebear.com/9.x/lorelei/svg?seed=Nana&backgroundColor=ffd5dc',
-    siteUrl: 'https://example.com/nana',
-  },
-  {
-    name: 'Rin',
-    description: '做设计系统，也写一点关于独立开发的观察。',
-    avatarUrl: 'https://api.dicebear.com/9.x/lorelei/svg?seed=Rin&backgroundColor=d1d4f9',
-    siteUrl: 'https://example.com/rin',
-  },
-  {
-    name: 'Sora',
-    description: '热衷折腾 Next.js、动画和漂亮但实用的交互。',
-    avatarUrl: 'https://api.dicebear.com/9.x/lorelei/svg?seed=Sora&backgroundColor=c0e8d5',
-    siteUrl: 'https://example.com/sora',
-  },
-  {
-    name: 'Yuki',
-    description: '分享 Web3 学习记录，以及一些认真生活的证据。',
-    avatarUrl: 'https://api.dicebear.com/9.x/lorelei/svg?seed=Yuki&backgroundColor=ffdfbf',
-    siteUrl: 'https://example.com/yuki',
-  },
-]
+import type { PlaneMotion } from '../types'
 
 export const planeWidth = 720
 

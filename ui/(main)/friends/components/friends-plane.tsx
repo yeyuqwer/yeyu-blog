@@ -1,6 +1,7 @@
 'use client'
 
 import type { CSSProperties } from 'react'
+import type { Friend } from '../types'
 import { cn } from '@/lib/utils/common/shadcn'
 import { planeCopies, planeHeight, planeWidth } from '../constants'
 import { useFriendsPlaneController } from '../hooks/use-friends-plane-controller'
@@ -8,7 +9,11 @@ import { getPlaneTransform } from '../utils'
 import { FriendAvatarItem } from './friend-avatar-item'
 import { FriendsPlaneStyle } from './friends-plane-style'
 
-export function FriendsPlane() {
+type FriendsPlaneProps = {
+  friends: Friend[]
+}
+
+export function FriendsPlane({ friends }: FriendsPlaneProps) {
   const {
     handleFriendClick,
     handlePointerDown,
@@ -19,7 +24,7 @@ export function FriendsPlane() {
     planeRef,
     setPlaneItemRef,
     stageRef,
-  } = useFriendsPlaneController()
+  } = useFriendsPlaneController(friends)
 
   return (
     <>

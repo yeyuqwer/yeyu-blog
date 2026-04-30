@@ -1,6 +1,7 @@
 import type { MouseEvent, PointerEvent } from 'react'
 import type {
   DragState,
+  Friend,
   PlaneCopy,
   PlaneItem,
   PlaneItemElement,
@@ -35,7 +36,7 @@ const initialDragState: DragState = {
   time: 0,
 }
 
-export function useFriendsPlaneController() {
+export function useFriendsPlaneController(friendLinks: Friend[]) {
   const stageRef = useRef<HTMLDivElement>(null)
   const planeRef = useRef<HTMLDivElement>(null)
   const itemElementMapRef = useRef(new Map<string, PlaneItemElement>())
@@ -47,7 +48,7 @@ export function useFriendsPlaneController() {
   const momentumFrameRef = useRef(0)
   const lastDragAtRef = useRef(0)
   const dragStateRef = useRef<DragState>(initialDragState)
-  const planeItems = useMemo(createPlaneItems, [])
+  const planeItems = useMemo(() => createPlaneItems(friendLinks), [friendLinks])
 
   const updateStageMetrics = useCallback(() => {
     const stage = stageRef.current

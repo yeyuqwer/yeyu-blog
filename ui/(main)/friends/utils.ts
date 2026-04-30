@@ -1,5 +1,5 @@
-import type { PlaneMotion, PlaneOffset, PlaneVelocity } from './types'
-import { defaultPlaneMotion, friends, planeHeight, planeLayout, planeWidth } from './constants'
+import type { Friend, PlaneMotion, PlaneOffset, PlaneVelocity } from './types'
+import { defaultPlaneMotion, planeHeight, planeLayout, planeWidth } from './constants'
 
 export const normalizeOffset = (value: number, size: number) => {
   let nextValue = value % size
@@ -42,11 +42,35 @@ const applyPlaneItem = {
   scale: 0.94,
 } as const
 
-export const createPlaneItems = () => [
-  ...planeLayout.map((layoutItem, index) => ({
-    ...friends[index % friends.length],
-    ...layoutItem,
-    id: `${friends[index % friends.length].name}-${index}`,
+const wrapPlaneCoordinate = (value: number, size: number, padding: number) => {
+  const contentSize = size - padding * 2
+  const wrappedValue = ((((value - padding) % contentSize) + contentSize) % contentSize) + padding
+
+  return wrappedValue
+}
+
+const getFriendLayout = (index: number) => {
+  const baseLayout = planeLayout[index % planeLayout.length]
+  const cycle = Math.floor(index / planeLayout.length)
+
+  if (cycle === 0) {
+    return baseLayout
+  }
+
+  return {
+    x: wrapPlaneCoordinate(baseLayout.x + cycle * 113 + (index % 2) * 32, planeWidth, 64),
+    y: wrapPlaneCoordinate(baseLayout.y + cycle * 71 + (index % 3) * 28, planeHeight, 64),
+    rotate: clamp(baseLayout.rotate + cycle * 5 - (index % 4) * 3, -9, 9),
+    scale: clamp(baseLayout.scale - cycle * 0.03, 0.84, 1.08),
+  }
+}
+
+export const createPlaneItems = (friendLinks: Friend[]) => [
+  ...friendLinks.map((friend, index) => ({
+    ...friend,
+    ...getFriendLayout(index),
+    friendLinkId: friend.id,
+    id: `${friend.id}-${index}`,
     type: 'friend' as const,
   })),
   applyPlaneItem,

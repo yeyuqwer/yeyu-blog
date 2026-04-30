@@ -1,8 +1,9 @@
 'use client'
 
-import type { ComponentProps, FC } from 'react'
-import type { Friend } from '@/ui/(main)/friends/types'
+import type { ComponentProps, FC, FormEvent } from 'react'
+import type { CreateFriendLinkParams } from '@/lib/api/friend-link'
 import { useEffect, useRef, useState } from 'react'
+import { useFriendLinkMutation } from '@/hooks/api/friend-link'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
 import { CheckIcon } from '@/ui/shadcn/check'
@@ -46,7 +47,7 @@ const friendLinkApplyFields = [
     type: 'url',
   },
 ] satisfies {
-  name: keyof Friend
+  name: keyof CreateFriendLinkParams
   label: string
   placeholder: string
   type?: ComponentProps<'input'>['type']
@@ -65,6 +66,7 @@ export const FriendLinkApplyModal: FC<ComponentProps<'div'>> = () => {
   const copyStatusIconRef = useRef<SendIconHandle>(null)
   const copyResetTimerRef = useRef<number | null>(null)
   const [isSiteInfoCopied, setIsSiteInfoCopied] = useState(false)
+  const { mutate: createFriendLink, isPending: isSubmitting } = useFriendLinkMutation()
 
   useEffect(() => {
     return () => {
@@ -87,6 +89,27 @@ export const FriendLinkApplyModal: FC<ComponentProps<'div'>> = () => {
     }, 2000)
   }
 
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const form = event.currentTarget
+    const formData = new FormData(form)
+    const payload = friendLinkApplyFields.reduce(
+      (result, field) => ({
+        ...result,
+        [field.name]: String(formData.get(field.name) ?? ''),
+      }),
+      {} as CreateFriendLinkParams,
+    )
+
+    createFriendLink(payload, {
+      onSuccess: () => {
+        form.reset()
+        closeModal()
+      },
+    })
+  }
+
   return (
     <Dialog open={isModalOpen} onOpenChange={closeModal}>
       <DialogContent className="max-h-[88vh] overflow-hidden rounded-xl border-black/10 bg-theme-background/80 p-0 shadow-[0_18px_54px_rgba(15,23,42,0.10)] backdrop-blur-xl sm:max-w-[500px] dark:border-white/10 dark:bg-black/70 dark:shadow-[0_18px_60px_rgba(0,0,0,0.38)]">
@@ -101,12 +124,7 @@ export const FriendLinkApplyModal: FC<ComponentProps<'div'>> = () => {
             </DialogDescription>
           </DialogHeader>
 
-          <form
-            className="mt-5 grid gap-5"
-            onSubmit={event => {
-              event.preventDefault()
-            }}
-          >
+          <form className="mt-5 grid gap-5" onSubmit={handleSubmit}>
             <div className="grid gap-4">
               {friendLinkApplyFields.map(field => {
                 const fieldId = `friend-link-apply-${field.name}`
@@ -123,6 +141,7 @@ export const FriendLinkApplyModal: FC<ComponentProps<'div'>> = () => {
                       id={fieldId}
                       name={field.name}
                       type={field.type}
+                      required
                       placeholder={field.placeholder}
                       className="h-10 rounded-xl border-black/10 bg-theme-background/65 text-sm shadow-none placeholder:text-zinc-400 focus-visible:border-zinc-400 focus-visible:ring-zinc-400/25 dark:border-white/10 dark:bg-zinc-900/70 dark:focus-visible:border-zinc-500 dark:focus-visible:ring-zinc-500/25 dark:placeholder:text-zinc-500"
                     />
@@ -166,6 +185,7 @@ export const FriendLinkApplyModal: FC<ComponentProps<'div'>> = () => {
                 </Button>
                 <Button
                   type="submit"
+                  disabled={isSubmitting}
                   className="h-10 cursor-pointer rounded-xl bg-theme-indicator px-4 text-theme-active-text shadow-none hover:bg-[color-mix(in_srgb,var(--theme-indicator)_92%,black)] hover:text-theme-active-text focus-visible:ring-theme-ring/35"
                   onMouseEnter={() => {
                     sendIconRef.current?.startAnimation()
@@ -175,7 +195,7 @@ export const FriendLinkApplyModal: FC<ComponentProps<'div'>> = () => {
                   }}
                 >
                   <SendIcon ref={sendIconRef} className="size-4" />
-                  提交申请
+                  {isSubmitting ? '提交中...' : '提交申请'}
                 </Button>
               </div>
             </DialogFooter>
