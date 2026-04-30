@@ -19,6 +19,7 @@ const copyButtonVariants = cva(
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
         muted: 'bg-muted text-muted-foreground hover:bg-muted/80',
+        code: 'border border-transparent bg-transparent text-zinc-500 shadow-none hover:bg-zinc-800/70 hover:text-zinc-100 focus-visible:border-zinc-500 focus-visible:ring-zinc-500/20 data-[copied=true]:text-emerald-300 data-[copied=true]:hover:text-emerald-200',
       },
       size: {
         sm: 'size-6 [&_svg]:size-3',
@@ -44,26 +45,7 @@ type CopyButtonProps = Omit<React.ComponentProps<'button'>, 'children'> &
   };
 
 async function copyToClipboard(value: string) {
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(value);
-    return;
-  }
-
-  const textArea = document.createElement('textarea');
-  textArea.value = value;
-  textArea.setAttribute('readonly', '');
-  textArea.style.position = 'absolute';
-  textArea.style.left = '-9999px';
-
-  document.body.append(textArea);
-  textArea.select();
-
-  const copied = document.execCommand('copy');
-  textArea.remove();
-
-  if (!copied) {
-    throw new Error('copy_failed');
-  }
+  await navigator.clipboard.writeText(value);
 }
 
 function CopyButton({
@@ -92,30 +74,26 @@ function CopyButton({
   }, []);
 
   const handleCopy = async () => {
-    try {
-      await copyToClipboard(content);
+    await copyToClipboard(content);
 
-      if (resetTimerRef.current !== null) {
-        window.clearTimeout(resetTimerRef.current);
-      }
+    if (resetTimerRef.current !== null) {
+      window.clearTimeout(resetTimerRef.current);
+    }
 
-      if (!isControlled) {
-        setInternalCopied(true);
-      }
+    if (!isControlled) {
+      setInternalCopied(true);
+    }
 
-      onCopyChange?.(true);
-      onCopy?.(content);
+    onCopyChange?.(true);
+    onCopy?.(content);
 
-      if (delay > 0) {
-        resetTimerRef.current = window.setTimeout(() => {
-          if (!isControlled) {
-            setInternalCopied(false);
-          }
-          onCopyChange?.(false);
-        }, delay);
-      }
-    } catch {
-      // Clipboard access failed silently
+    if (delay > 0) {
+      resetTimerRef.current = window.setTimeout(() => {
+        if (!isControlled) {
+          setInternalCopied(false);
+        }
+        onCopyChange?.(false);
+      }, delay);
     }
   };
 
@@ -123,6 +101,7 @@ function CopyButton({
     <button
       type="button"
       data-slot="copy-button"
+      data-copied={copied ? 'true' : undefined}
       aria-label={copied ? '已复制' : '复制'}
       className={cn(copyButtonVariants({ variant, size, className }))}
       onClick={handleCopy}
@@ -132,10 +111,10 @@ function CopyButton({
         {copied ? (
           <motion.span
             key="check"
-            initial={{ scale: 0.5, opacity: 0 }}
+            initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.5, opacity: 0 }}
-            transition={{ type: 'spring', duration: 0.25, bounce: 0.2 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
             className="inline-flex items-center justify-center"
           >
             <Check />
@@ -143,10 +122,10 @@ function CopyButton({
         ) : (
           <motion.span
             key="copy"
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.5, opacity: 0 }}
-            transition={{ type: 'spring', duration: 0.25, bounce: 0.2 }}
+            initial={{ y: 2, scale: 0.92, opacity: 0 }}
+            animate={{ y: 0, scale: 1, opacity: 1 }}
+            exit={{ y: -2, scale: 0.92, opacity: 0 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
             className="inline-flex items-center justify-center"
           >
             <Copy />

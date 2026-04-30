@@ -19,6 +19,7 @@ import remarkRehype from 'remark-rehype'
 import { unified } from 'unified'
 import { rehypeCodeBlockRenderer } from './rehype-code-block-renderer'
 import { rehypeHeadingAnchorRenderer } from './rehype-heading-anchor-renderer'
+import { rehypeImageFrameRenderer } from './rehype-image-frame-renderer'
 
 export const processor = unified()
   .use(remarkParse)
@@ -28,7 +29,7 @@ export const processor = unified()
   .use(rehypeShiki, {
     themes: {
       dark: 'catppuccin-mocha',
-      light: 'catppuccin-latte',
+      light: 'catppuccin-mocha',
     } satisfies Record<'dark' | 'light', BuiltinTheme>,
     defaultColor: false,
     addLanguageClass: true,
@@ -45,5 +46,6 @@ export const processor = unified()
     ],
   })
   .use(rehypeCodeBlockRenderer as never)
+  .use(rehypeImageFrameRenderer as never)
   .use(rehypeHeadingAnchorRenderer as never)
   .use(rehypeStringify)

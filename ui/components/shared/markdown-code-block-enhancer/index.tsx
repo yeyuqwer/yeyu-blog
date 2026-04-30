@@ -119,11 +119,11 @@ export const MarkdownCodeBlockEnhancer: FC<
         createPortal(
           <CopyButton
             content={target.content}
-            variant="outline"
+            variant="code"
             size="sm"
             delay={1800}
             disabled={target.content.length === 0}
-            className="md-code-copy rounded-[var(--md-code-copy-radius)] border-theme-border bg-theme-background/85 text-theme-primary hover:bg-theme-background/95 hover:text-theme-primary dark:border-input dark:bg-input/30 dark:text-inherit dark:hover:bg-input/50"
+            className="md-code-copy"
           />,
           target.element,
           target.id,

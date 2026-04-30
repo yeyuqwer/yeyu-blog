@@ -17,6 +17,7 @@
   top: var(--md-code-copy-offset);
   right: var(--md-code-copy-offset);
   z-index: 3;
+  border-radius: var(--md-code-copy-radius);
   opacity: 0;
   transition: opacity 0.2s ease;
 }
@@ -28,18 +29,20 @@
 
 .markdown-content .md-code-lang {
   position: absolute;
-  right: 0.75rem;
-  bottom: 0.65rem;
+  right: 0.85rem;
+  bottom: 0.8rem;
   z-index: 2;
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  color: color-mix(in srgb, var(--theme-primary) 52%, transparent);
+  display: inline-flex;
+  align-items: center;
+  color: #71717a;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+  font-size: calc(0.64rem + 2px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  opacity: 0.78;
   pointer-events: none;
   user-select: none;
-}
-
-html.dark .markdown-content .md-code-lang {
-  color: color-mix(in srgb, var(--muted-foreground) 84%, transparent);
 }
 
 @media (hover: none) {
@@ -49,15 +52,15 @@ html.dark .markdown-content .md-code-lang {
 }
 
 .markdown-content pre {
-  border: 1px solid color-mix(in srgb, var(--theme-indicator) 30%, transparent);
+  border: 1px solid #3f3f46;
   border-radius: var(--md-code-radius);
-  background-color: color-mix(in srgb, var(--theme-background) 78%, white);
+  background-color: var(--tw-prose-pre-bg);
   font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
 }
 
 html.dark .markdown-content pre {
-  border-color: color-mix(in srgb, var(--border) 88%, transparent);
-  background-color: color-mix(in srgb, var(--background) 72%, var(--muted) 28%);
+  border-color: transparent;
+  background-color: var(--tw-prose-invert-pre-bg);
 }
 
 .markdown-content pre code,
@@ -71,13 +74,21 @@ html.dark .markdown-content pre {
   background-color: transparent !important;
 }
 
-.markdown-content pre.shiki,
+.markdown-content pre.shiki {
+  color: var(--shiki-dark);
+  background-color: var(--tw-prose-pre-bg) !important;
+}
+
 .markdown-content pre.shiki span {
-  color: var(--shiki-light);
+  color: var(--shiki-dark);
   background-color: transparent !important;
 }
 
-html.dark .markdown-content pre.shiki,
+html.dark .markdown-content pre.shiki {
+  color: var(--shiki-dark);
+  background-color: var(--tw-prose-invert-pre-bg) !important;
+}
+
 html.dark .markdown-content pre.shiki span {
   color: var(--shiki-dark);
   background-color: transparent !important;
@@ -196,13 +207,13 @@ html.dark .markdown-content pre.shiki span.highlighted-word {
   background-color: transparent !important;
 }
 
-/* Highlight.js fallback theme for rehype-highlight */
+/* Highlight.js theme for rehype-highlight */
 .markdown-content .hljs {
   display: block;
   overflow-x: auto;
   padding: 0.5em;
-  background: #f4f5f7 !important;
-  color: #4c4f69 !important;
+  background: #1a1b26 !important;
+  color: #c0caf5 !important;
 }
 
 .markdown-content pre > code.hljs {
@@ -218,11 +229,11 @@ html.dark .markdown-content pre.shiki span.highlighted-word {
 }
 
 .markdown-content .hljs-subst {
-  color: #4c4f69 !important;
+  color: #c0caf5 !important;
 }
 
 .markdown-content .hljs-comment {
-  color: #9ca0b0 !important;
+  color: #6c7086 !important;
 }
 
 .markdown-content .hljs-keyword,
@@ -230,15 +241,15 @@ html.dark .markdown-content pre.shiki span.highlighted-word {
 .markdown-content .hljs-meta .hljs-keyword,
 .markdown-content .hljs-doctag,
 .markdown-content .hljs-section {
-  color: #8839ef !important;
+  color: #bb9af7 !important;
 }
 
 .markdown-content .hljs-attr {
-  color: #1e66f5 !important;
+  color: #7dcfff !important;
 }
 
 .markdown-content .hljs-attribute {
-  color: #40a02b !important;
+  color: #9ece6a !important;
 }
 
 .markdown-content .hljs-name,
@@ -247,11 +258,11 @@ html.dark .markdown-content pre.shiki span.highlighted-word {
 .markdown-content .hljs-selector-id,
 .markdown-content .hljs-quote,
 .markdown-content .hljs-template-tag {
-  color: #fe640b !important;
+  color: #e0af68 !important;
 }
 
 .markdown-content .hljs-selector-class {
-  color: #df8e1d !important;
+  color: #e0af68 !important;
 }
 
 .markdown-content .hljs-string,
@@ -261,35 +272,35 @@ html.dark .markdown-content pre.shiki span.highlighted-word {
 .markdown-content .hljs-template-variable,
 .markdown-content .hljs-link,
 .markdown-content .hljs-selector-attr {
-  color: #40a02b !important;
+  color: #9ece6a !important;
 }
 
 .markdown-content .hljs-meta,
 .markdown-content .hljs-selector-pseudo {
-  color: #209fb5 !important;
+  color: #7dcfff !important;
 }
 
 .markdown-content .hljs-built_in,
 .markdown-content .hljs-title,
 .markdown-content .hljs-literal {
-  color: #1e66f5 !important;
+  color: #7aa2f7 !important;
 }
 
 .markdown-content .hljs-bullet,
 .markdown-content .hljs-code {
-  color: #df8e1d !important;
+  color: #e0af68 !important;
 }
 
 .markdown-content .hljs-meta .hljs-string {
-  color: #40a02b !important;
+  color: #9ece6a !important;
 }
 
 .markdown-content .hljs-deletion {
-  color: #e64553 !important;
+  color: #ff757f !important;
 }
 
 .markdown-content .hljs-addition {
-  color: #40a02b !important;
+  color: #9ece6a !important;
 }
 
 html.dark .markdown-content .hljs {

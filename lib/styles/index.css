@@ -21,6 +21,8 @@
 
 @import "./markdown-code.css";
 
+@import "./markdown-media.css";
+
 @import "./markdown-task-list.css";
 
 @import "./root.css";

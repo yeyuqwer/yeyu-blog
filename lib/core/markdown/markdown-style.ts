@@ -1,6 +1,3 @@
-// * markdown 主题配置（参考 refer 项目）
-// * 采用中性排版 + 单一强调色（链接、引用条、标记）
-// * 统一覆盖 prose、markdown 元素和代码高亮（hljs / shiki）配色
 const className = `
   markdown-content prose prose-base sm:prose-lg max-w-none dark:prose-invert relative
   text-[1.1rem] [text-autospace:normal]
@@ -17,8 +14,8 @@ const className = `
   [--tw-prose-quote-borders:#000000]
   [--tw-prose-captions:#71717a]
   [--tw-prose-code:#115e59]
-  [--tw-prose-pre-code:#27272a]
-  [--tw-prose-pre-bg:#f4f4f5]
+  [--tw-prose-pre-code:#e4e4e7]
+  [--tw-prose-pre-bg:#18181b]
   [--tw-prose-th-borders:#d4d4d8]
   [--tw-prose-td-borders:#e4e4e7]
 
@@ -63,13 +60,17 @@ const className = `
   [&_blockquote]:before:bg-black dark:[&_blockquote]:before:bg-white
   [&_blockquote]:before:content-['']
 
-  prose-hr:mx-0 prose-hr:w-full prose-hr:border-zinc-400/20 dark:prose-hr:border-zinc-200/20
+  prose-hr:mx-0 prose-hr:h-px prose-hr:w-full prose-hr:border-0
+  prose-hr:bg-theme-border dark:prose-hr:bg-zinc-200/20
   prose-table:my-5 prose-table:w-full prose-table:overflow-hidden prose-table:rounded-lg
-  prose-table:border prose-table:border-separate prose-table:border-spacing-0 prose-table:border-zinc-200
-  dark:prose-table:border-zinc-700
-  prose-th:align-middle prose-th:border-0 prose-th:border-b prose-th:border-r prose-th:border-zinc-200
-  prose-th:text-left prose-th:font-medium dark:prose-th:border-zinc-700
-  prose-td:border-0 prose-td:border-r prose-td:border-b prose-td:border-zinc-200 dark:prose-td:border-zinc-700
+  prose-table:border prose-table:border-separate prose-table:border-spacing-0 prose-table:border-theme-border
+  prose-table:bg-theme-surface/90 dark:prose-table:border-zinc-600 dark:prose-table:bg-zinc-950/35
+  prose-th:align-middle prose-th:border-0 prose-th:border-b prose-th:border-r prose-th:border-theme-border
+  prose-th:bg-theme-background/70 prose-th:text-left prose-th:font-medium prose-th:text-theme-primary
+  dark:prose-th:border-zinc-600 dark:prose-th:bg-zinc-900/85 dark:prose-th:text-zinc-100
+  prose-td:border-0 prose-td:border-r prose-td:border-b prose-td:border-theme-border dark:prose-td:border-zinc-600
+  [&_tbody_tr]:bg-theme-surface/75 dark:[&_tbody_tr]:bg-zinc-950/20
+  [&_tbody_tr:nth-child(even)]:bg-theme-background/45 dark:[&_tbody_tr:nth-child(even)]:bg-zinc-900/45
   [&_thead_th]:align-middle [&_thead_th]:py-2 [&_thead_th]:text-left [&_thead_th]:leading-normal
   [&_thead_th_*]:my-0
   [&_th:first-child]:pl-4 [&_td:first-child]:pl-4
@@ -78,9 +79,9 @@ const className = `
   prose-code:rounded-md prose-code:bg-zinc-900/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:font-mono
   prose-code:text-[0.85em] prose-code:text-zinc-700 dark:prose-code:bg-zinc-50/10 dark:prose-code:text-zinc-200
   prose-code:before:content-[''] prose-code:after:content-['']
-  prose-pre:my-6 prose-pre:overflow-hidden prose-pre:rounded-lg prose-pre:border prose-pre:border-transparent
-  prose-pre:bg-transparent prose-pre:p-0 prose-pre:py-0 prose-pre:leading-relaxed prose-pre:text-zinc-800
-  dark:prose-pre:text-zinc-100
+  prose-pre:my-6 prose-pre:overflow-hidden prose-pre:rounded-lg prose-pre:border prose-pre:border-zinc-700
+  prose-pre:bg-[var(--tw-prose-pre-bg)] prose-pre:p-0 prose-pre:py-0 prose-pre:leading-relaxed prose-pre:text-zinc-100
+  dark:prose-pre:border-transparent dark:prose-pre:bg-[var(--tw-prose-invert-pre-bg)] dark:prose-pre:text-zinc-100
   [&_pre_code]:bg-transparent! [&_pre_code]:p-0 [&_pre_code]:py-4 [&_pre_code]:rounded-none
   [&_pre_code]:text-inherit [&_pre_code]:before:content-none [&_pre_code]:after:content-none
 
@@ -88,8 +89,7 @@ const className = `
   [&_kbd]:px-1.5 [&_kbd]:py-0.5 [&_kbd]:font-mono [&_kbd]:text-sm [&_kbd]:text-zinc-700
   dark:[&_kbd]:border-zinc-700 dark:[&_kbd]:bg-zinc-900 dark:[&_kbd]:text-zinc-200
 
-  prose-img:m-auto prose-img:w-[92%] md:prose-img:w-[96%] prose-img:rounded-lg prose-img:border prose-img:border-zinc-200
-  dark:prose-img:border-zinc-700 prose-img:transition-transform prose-img:duration-300 prose-img:hover:scale-[1.01]
+  prose-img:m-0 prose-img:block prose-img:w-full prose-img:bg-transparent prose-img:p-0
 
   [&_summary]:list-none [&_summary]:cursor-pointer [&_summary]:font-semibold [&_summary]:duration-200
   [&_summary:hover]:opacity-80 [&_summary::-webkit-details-marker]:hidden
@@ -97,8 +97,8 @@ const className = `
   [&_mark]:rounded-sm [&_mark]:bg-[#33a6b8]/30 [&_mark]:px-1 [&_mark]:text-current
   dark:[&_mark]:bg-[#f596aa]/35
 
-  [&_.hljs]:rounded-none [&_.hljs]:border-0 [&_.hljs]:bg-transparent! [&_.hljs]:px-5 [&_.hljs]:py-0
-  [&_pre.shiki]:rounded-none [&_pre.shiki]:border-0 [&_pre.shiki]:bg-transparent! [&_pre.shiki]:py-0
+  [&_.hljs]:px-5 [&_.hljs]:py-0
+  [&_pre.shiki]:py-0
   [&_pre.shiki_code]:flex [&_pre.shiki_code]:flex-col
   [&_pre.shiki_.line]:block
   [&_pre.shiki_.line:first-child:empty]:hidden
