@@ -30,6 +30,11 @@ export const AdminRoutes: { path: string; pathName: string; pattern: RegExp }[] 
     pattern: /^\/admin\/mutter($|\/)/,
   },
   {
+    path: '/admin/friend-link',
+    pathName: '友链',
+    pattern: /^\/admin\/friend-link($|\/)/,
+  },
+  {
     path: '/admin/comment',
     pathName: '评论',
     pattern: /^\/admin\/comment($|\/)/,

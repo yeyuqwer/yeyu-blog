@@ -4,6 +4,7 @@ import type { ComponentProps, FC } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useAdminCommentQuery } from '@/hooks/api/comment'
+import { useAdminFriendLinkQuery } from '@/hooks/api/friend-link'
 import { useAdminMutterCommentQuery } from '@/hooks/api/mutter-comment'
 import { formatPendingCount } from '@/lib/utils/common/format-pending-count'
 import { cn } from '@/lib/utils/common/shadcn'
@@ -25,10 +26,16 @@ export const AdminNavbar: FC<ComponentProps<'header'>> = () => {
     take: 1,
     skip: 0,
   })
+  const { data: friendLinkData } = useAdminFriendLinkQuery({
+    state: 'PENDING',
+    take: 1,
+    skip: 0,
+  })
 
   const pendingCountByPath: Partial<Record<(typeof AdminRoutes)[number]['path'], number>> = {
     '/admin/comment': commentData?.total ?? 0,
     '/admin/mutter': mutterCommentData?.total ?? 0,
+    '/admin/friend-link': friendLinkData?.total ?? 0,
   }
 
   return (
