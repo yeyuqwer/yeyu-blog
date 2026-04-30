@@ -14,6 +14,7 @@ import {
   useAdminFriendLinkUpdateMutation,
 } from '@/hooks/api/friend-link'
 import { prettyDateTime } from '@/lib/utils/time'
+import { ConfirmDialog } from '@/ui/components/modal/base/confirm-dialog'
 import Loading from '@/ui/components/shared/loading'
 import { Badge } from '@/ui/shadcn/badge'
 import { Button } from '@/ui/shadcn/button'
@@ -93,6 +94,7 @@ export const FriendLinkManager: FC<ComponentProps<'main'>> = () => {
   const [query, setQuery] = useState('')
   const [state, setState] = useState<FriendLinkStateFilter>('PENDING')
   const [editingFriendLink, setEditingFriendLink] = useState<AdminFriendLinkRecord | null>(null)
+  const [deletingFriendLink, setDeletingFriendLink] = useState<AdminFriendLinkRecord | null>(null)
   const [editForm, setEditForm] = useState<FriendLinkEditForm>(initialFriendLinkEditForm)
 
   const { data, isPending } = useAdminFriendLinkQuery({
@@ -169,16 +171,18 @@ export const FriendLinkManager: FC<ComponentProps<'main'>> = () => {
     )
   }
 
-  const handleDelete = (id: number) => {
-    if (!window.confirm('确认删除这条友链申请吗？此操作不可撤销。')) {
+  const handleDelete = () => {
+    if (deletingFriendLink == null) {
+      sileo.error({ title: '友链信息不存在，删除失败。' })
       return
     }
 
     deleteById(
-      { id },
+      { id: deletingFriendLink.id },
       {
         onSuccess: () => {
           sileo.success({ title: '友链申请已删除。' })
+          setDeletingFriendLink(null)
         },
         onError: error => {
           sileo.error({ title: error.message })
@@ -342,7 +346,7 @@ export const FriendLinkManager: FC<ComponentProps<'main'>> = () => {
                         className="cursor-pointer"
                         disabled={isDeletingFriendLink}
                         onClick={() => {
-                          handleDelete(friendLink.id)
+                          setDeletingFriendLink(friendLink)
                         }}
                       >
                         <Trash2 className="size-4" />
@@ -410,6 +414,26 @@ export const FriendLinkManager: FC<ComponentProps<'main'>> = () => {
           </form>
         </DialogContent>
       </Dialog>
+
+      <ConfirmDialog
+        open={deletingFriendLink != null}
+        onClose={() => {
+          setDeletingFriendLink(null)
+        }}
+        onConfirm={handleDelete}
+        title="确定要删除这条友链申请吗？"
+        description="该操作不可撤销。"
+        isPending={isDeletingFriendLink}
+      >
+        {deletingFriendLink != null ? (
+          <div className="rounded-md border bg-muted/30 p-3 text-sm">
+            <p className="font-medium">{deletingFriendLink.name}</p>
+            <p className="mt-1 line-clamp-1 text-muted-foreground text-xs">
+              {deletingFriendLink.siteUrl}
+            </p>
+          </div>
+        ) : null}
+      </ConfirmDialog>
     </>
   )
 }
