@@ -29,6 +29,26 @@ model User {
   @@map("user")
 }
 
+enum FriendLinkState {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model FriendLink {
+  id          Int             @id @default(autoincrement())
+  name        String          @db.VarChar(50)
+  description String          @db.VarChar(120)
+  avatarUrl   String
+  siteUrl     String
+  state       FriendLinkState @default(PENDING)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([state, createdAt])
+  @@index([state, updatedAt])
+}
+
 model Session {
   id        String   @id
   expiresAt DateTime
