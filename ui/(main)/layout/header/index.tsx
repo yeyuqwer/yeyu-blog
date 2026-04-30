@@ -3,7 +3,7 @@
 import type { NavGroup, RouteItem } from './constant'
 import { AnimatePresence, motion } from 'motion/react'
 import { usePathname } from 'next/navigation'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useIndicatorPosition } from '@/hooks/animation'
 import { useIsMounted } from '@/hooks/common'
@@ -27,6 +27,7 @@ export default function Header() {
   const modalType = useModalStore(s => s.modalType)
   const closeModal = useModalStore(s => s.closeModal)
   const refs = useRef(new Map<string, HTMLElement>())
+  const routePathnameRef = useRef(pathname)
   const [hoveredPath, setHoveredPath] = useState<string | null>(null)
   const [direction, setDirection] = useState(0)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -106,10 +107,26 @@ export default function Header() {
     setHoveredPath(path)
   }
 
+  const closeSubmenu = useCallback(() => {
+    if (timeoutRef.current != null) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
+
+    setHoveredPath(null)
+    setDirection(0)
+  }, [])
+
+  useEffect(() => {
+    if (routePathnameRef.current === pathname) return
+
+    routePathnameRef.current = pathname
+    closeSubmenu()
+  }, [pathname, closeSubmenu])
+
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => {
-      setHoveredPath(null)
-      setDirection(0)
+      closeSubmenu()
     }, 150)
   }
 
