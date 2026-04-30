@@ -66,9 +66,9 @@ export function FriendAvatarItem({ item, copy, onClick, setItemRef }: FriendAvat
           onClick={() => {
             setModalOpen('friendLinkApplyModal')
           }}
-          className="grid size-full cursor-pointer place-items-center rounded-full border border-theme-muted/70 p-1.5 shadow-md transition-[filter,border-color] duration-200 hover:border-theme-indicator/35 hover:brightness-110 focus-visible:outline-2 focus-visible:outline-theme-ring"
+          className="grid size-full cursor-pointer place-items-center rounded-full border border-[color:var(--friend-plane-border)] bg-[var(--friend-plane-card)] p-1.5 shadow-[var(--friend-plane-shadow)] backdrop-blur-xl transition-[background-color,border-color,filter] duration-200 hover:border-[color:var(--friend-plane-hover-border)] hover:bg-[var(--friend-plane-card-highlight)] hover:brightness-[1.02] focus-visible:outline-2 focus-visible:outline-theme-ring dark:hover:brightness-[1.03]"
         >
-          <span className="grid size-full place-items-center rounded-full border border-theme-muted/80 border-dashed text-theme-indicator">
+          <span className="grid size-full place-items-center rounded-full border border-[color:var(--friend-plane-inner-border)] border-dashed text-[color:var(--friend-plane-icon)]">
             <Plus className="size-1/2" strokeWidth={1.8} />
           </span>
         </button>
@@ -89,9 +89,9 @@ export function FriendAvatarItem({ item, copy, onClick, setItemRef }: FriendAvat
         tabIndex={copy.x === 0 && copy.y === 0 ? 0 : -1}
         aria-label={`${item.name}: ${item.description}`}
         onClick={onClick}
-        className="flex h-full w-full max-w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] cursor-pointer items-center overflow-hidden rounded-full border border-theme-muted/70 bg-theme-background/95 p-1.5 text-left shadow-md backdrop-blur-md transition-[width,filter,border-color] duration-[260ms] ease-out hover:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] hover:border-theme-indicator/35 hover:brightness-110 focus-visible:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] focus-visible:outline-2 focus-visible:outline-theme-ring group-focus-within:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] group-hover:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)]"
+        className="flex h-full w-full max-w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] cursor-pointer items-center overflow-hidden rounded-full border border-[color:var(--friend-plane-border)] bg-[var(--friend-plane-card)] p-1.5 text-left shadow-[var(--friend-plane-shadow)] backdrop-blur-xl transition-[width,background-color,filter,border-color] duration-[260ms] ease-out hover:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] hover:border-[color:var(--friend-plane-hover-border)] hover:bg-[var(--friend-plane-card-highlight)] hover:brightness-[1.02] focus-visible:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] focus-visible:outline-2 focus-visible:outline-theme-ring group-focus-within:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] group-hover:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] dark:hover:brightness-[1.03]"
       >
-        <span className="relative aspect-square h-full shrink-0 overflow-hidden rounded-full bg-theme-muted/20">
+        <span className="relative aspect-square h-full shrink-0 overflow-hidden rounded-full bg-[var(--friend-plane-avatar-bg)] ring-1 ring-[color:var(--friend-plane-inner-border)]">
           <Image
             src={item.avatarUrl}
             alt={item.name}
@@ -103,8 +103,10 @@ export function FriendAvatarItem({ item, copy, onClick, setItemRef }: FriendAvat
           />
         </span>
         <span className="w-[min(14rem,calc(78vw_-_var(--friend-tile-size)))] shrink-0 overflow-hidden pr-5 pl-3 opacity-0 transition-[clip-path,opacity] duration-200 ease-out [clip-path:inset(0_100%_0_0)] group-focus-within:opacity-100 group-hover:opacity-100 group-focus-within:[clip-path:inset(0_0_0_0)] group-hover:[clip-path:inset(0_0_0_0)]">
-          <span className="block truncate font-semibold text-theme-primary">{item.name}</span>
-          <span className="mt-0.5 line-clamp-2 block text-theme-muted-foreground text-xs leading-4">
+          <span className="block truncate font-semibold text-[color:var(--friend-plane-text)]">
+            {item.name}
+          </span>
+          <span className="mt-0.5 line-clamp-2 block text-[color:var(--friend-plane-muted-text)] text-xs leading-4">
             {item.description}
           </span>
         </span>
