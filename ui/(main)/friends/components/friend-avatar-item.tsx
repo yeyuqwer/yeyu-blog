@@ -3,10 +3,10 @@
 import type { CSSProperties, MouseEvent } from 'react'
 import type { PlaneCopy, PlaneItem } from '../types'
 import { Plus } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useModalStore } from '@/store/use-modal-store'
 import { planeHeight, planeWidth } from '../constants'
+import { FriendAvatarImage } from './friend-avatar-image'
 
 type FriendAvatarItemProps = {
   item: PlaneItem
@@ -91,17 +91,7 @@ export function FriendAvatarItem({ item, copy, onClick, setItemRef }: FriendAvat
         onClick={onClick}
         className="flex h-full w-full max-w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] cursor-pointer items-center overflow-hidden rounded-full border border-[color:var(--friend-plane-border)] bg-[var(--friend-plane-card)] p-1.5 text-left shadow-[var(--friend-plane-shadow)] backdrop-blur-xl transition-[width,background-color,filter,border-color] duration-[260ms] ease-out hover:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] hover:border-[color:var(--friend-plane-hover-border)] hover:bg-[var(--friend-plane-card-highlight)] hover:brightness-[1.02] focus-visible:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] focus-visible:outline-2 focus-visible:outline-theme-ring group-focus-within:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] group-hover:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] dark:hover:brightness-[1.03]"
       >
-        <span className="relative aspect-square h-full shrink-0 overflow-hidden rounded-full bg-[var(--friend-plane-avatar-bg)] ring-1 ring-[color:var(--friend-plane-inner-border)]">
-          <Image
-            src={item.avatarUrl}
-            alt={item.name}
-            fill
-            sizes="(max-width: 768px) 58px, 104px"
-            draggable={false}
-            unoptimized
-            className="object-cover object-center"
-          />
-        </span>
+        <FriendAvatarImage key={item.avatarUrl} avatarUrl={item.avatarUrl} name={item.name} />
         <span className="w-[min(14rem,calc(78vw_-_var(--friend-tile-size)))] shrink-0 overflow-hidden pr-5 pl-3 opacity-0 transition-[clip-path,opacity] duration-200 ease-out [clip-path:inset(0_100%_0_0)] group-focus-within:opacity-100 group-hover:opacity-100 group-focus-within:[clip-path:inset(0_0_0_0)] group-hover:[clip-path:inset(0_0_0_0)]">
           <span className="block truncate font-semibold text-[color:var(--friend-plane-text)]">
             {item.name}
