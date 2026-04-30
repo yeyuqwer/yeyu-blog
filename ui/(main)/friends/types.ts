@@ -20,8 +20,6 @@ export type FriendPlaneItem = Friend &
 
 export type ApplyPlaneItem = PlaneItemBase & {
   type: 'apply'
-  name: string
-  description: string
 }
 
 export type PlaneItem = FriendPlaneItem | ApplyPlaneItem

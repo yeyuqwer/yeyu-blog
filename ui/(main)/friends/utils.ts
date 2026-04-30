@@ -1,12 +1,5 @@
 import type { PlaneMotion, PlaneOffset, PlaneVelocity } from './types'
-import {
-  defaultPlaneMotion,
-  friendApplyPlaneItem,
-  friends,
-  planeHeight,
-  planeLayout,
-  planeWidth,
-} from './constants'
+import { defaultPlaneMotion, friends, planeHeight, planeLayout, planeWidth } from './constants'
 
 export const normalizeOffset = (value: number, size: number) => {
   let nextValue = value % size
@@ -40,6 +33,15 @@ export const getPlaneMotionFromVelocity = (velocity: PlaneVelocity, isDragging: 
   }
 }
 
+const applyPlaneItem = {
+  id: 'friend-apply',
+  type: 'apply',
+  x: 326,
+  y: 392,
+  rotate: 3,
+  scale: 0.94,
+} as const
+
 export const createPlaneItems = () => [
   ...planeLayout.map((layoutItem, index) => ({
     ...friends[index % friends.length],
@@ -47,7 +49,7 @@ export const createPlaneItems = () => [
     id: `${friends[index % friends.length].name}-${index}`,
     type: 'friend' as const,
   })),
-  friendApplyPlaneItem,
+  applyPlaneItem,
 ]
 
 export const getNormalizedPlaneOffset = (offset: PlaneOffset) => ({

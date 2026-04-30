@@ -65,17 +65,6 @@ export const planeLayout = [
   { x: 604, y: 346, rotate: 4, scale: 0.9 },
 ]
 
-export const friendApplyPlaneItem = {
-  id: 'friend-apply',
-  type: 'apply',
-  name: '申请友链',
-  description: '提交你的友链申请',
-  x: 326,
-  y: 392,
-  rotate: 3,
-  scale: 0.94,
-} as const
-
 export const planeCopies = [-1, 0, 1].flatMap(copyY =>
   [-1, 0, 1].map(copyX => ({
     x: copyX,

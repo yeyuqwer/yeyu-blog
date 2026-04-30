@@ -1,8 +1,11 @@
+'use client'
+
 import type { CSSProperties, MouseEvent } from 'react'
 import type { PlaneCopy, PlaneItem } from '../types'
 import { Plus } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useModalStore } from '@/store/use-modal-store'
 import { planeHeight, planeWidth } from '../constants'
 
 type FriendAvatarItemProps = {
@@ -47,6 +50,7 @@ const getItemStyle = (item: PlaneItem, copy: PlaneCopy) => {
 
 export function FriendAvatarItem({ item, copy, onClick, setItemRef }: FriendAvatarItemProps) {
   const itemKey = `${copy.x}-${copy.y}-${item.id}`
+  const setModalOpen = useModalStore(s => s.setModalOpen)
 
   if (item.type === 'apply') {
     return (
@@ -58,7 +62,10 @@ export function FriendAvatarItem({ item, copy, onClick, setItemRef }: FriendAvat
         <button
           type="button"
           tabIndex={copy.x === 0 && copy.y === 0 ? 0 : -1}
-          aria-label={item.description}
+          aria-label="申请友链"
+          onClick={() => {
+            setModalOpen('friendLinkApplyModal')
+          }}
           className="grid size-full cursor-pointer place-items-center rounded-full border border-theme-muted/70 p-1.5 shadow-md transition-[filter,border-color] duration-200 hover:border-theme-indicator/35 hover:brightness-110 focus-visible:outline-2 focus-visible:outline-theme-ring"
         >
           <span className="grid size-full place-items-center rounded-full border border-theme-muted/80 border-dashed text-theme-indicator">

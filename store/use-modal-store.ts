@@ -13,6 +13,7 @@ export type ModalType =
   | 'loginModal'
   | 'selectThemeModal'
   | 'mutterCommentModal'
+  | 'friendLinkApplyModal'
   | null
 
 export const useModalStore = create<{

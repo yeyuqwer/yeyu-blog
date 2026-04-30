@@ -194,7 +194,6 @@ export function useFriendsPlaneController() {
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
     stopMomentum()
-    event.currentTarget.setPointerCapture(event.pointerId)
     event.currentTarget.dataset.dragging = 'true'
     event.currentTarget.dataset.moving = 'false'
     velocityRef.current = { x: 0, y: 0 }
@@ -233,6 +232,10 @@ export function useFriendsPlaneController() {
     if (Math.hypot(startDeltaX, startDeltaY) > 4) {
       dragState.hasMoved = true
       event.currentTarget.dataset.moving = 'true'
+
+      if (!event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.setPointerCapture(event.pointerId)
+      }
     }
 
     dragState.pointerX = event.clientX
