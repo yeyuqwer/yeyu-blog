@@ -24,7 +24,7 @@ export async function FriendsPage() {
   })
 
   return (
-    <section className="relative h-[calc(100dvh-180px)] min-h-[520px] overflow-hidden py-4">
+    <section className="relative h-[calc(100dvh-194px)] min-h-[520px] overflow-hidden py-4">
       <div className="relative h-full w-full overflow-hidden">
         <FriendsPlane friends={friends} />
       </div>
