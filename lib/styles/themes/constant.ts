@@ -1,5 +1,4 @@
 export const brandThemeAttribute = 'data-brand-theme'
-export const brandThemeRequestHeader = 'x-yeyu-brand-theme'
 
 export const brandThemeOptions = [
   {
