@@ -25,10 +25,3 @@ export const planeLayout = [
   { x: 398, y: 264, rotate: -6, scale: 1 },
   { x: 604, y: 346, rotate: 4, scale: 0.9 },
 ]
-
-export const planeCopies = [-1, 0, 1].flatMap(copyY =>
-  [-1, 0, 1].map(copyX => ({
-    x: copyX,
-    y: copyY,
-  })),
-)

@@ -3,7 +3,7 @@
 import type { CSSProperties } from 'react'
 import type { Friend } from '../types'
 import { cn } from '@/lib/utils/common/shadcn'
-import { planeCopies, planeHeight, planeWidth } from '../constants'
+import { planeHeight, planeWidth } from '../constants'
 import { useFriendsPlaneController } from '../hooks/use-friends-plane-controller'
 import { getPlaneTransform } from '../utils'
 import { FriendAvatarItem } from './friend-avatar-item'
@@ -19,7 +19,6 @@ export function FriendsPlane({ friends }: FriendsPlaneProps) {
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
-    offsetRef,
     planeItems,
     planeRef,
     setPlaneItemRef,
@@ -60,21 +59,18 @@ export function FriendsPlane({ friends }: FriendsPlaneProps) {
             {
               width: `${planeWidth}px`,
               height: `${planeHeight}px`,
-              transform: getPlaneTransform(offsetRef.current),
+              transform: getPlaneTransform({ x: 0, y: 0 }),
             } as CSSProperties
           }
         >
-          {planeCopies.flatMap(copy =>
-            planeItems.map(item => (
-              <FriendAvatarItem
-                key={`${copy.x}-${copy.y}-${item.id}`}
-                item={item}
-                copy={copy}
-                onClick={handleFriendClick}
-                setItemRef={setPlaneItemRef}
-              />
-            )),
-          )}
+          {planeItems.map(item => (
+            <FriendAvatarItem
+              key={item.id}
+              item={item}
+              onClick={handleFriendClick}
+              setItemRef={setPlaneItemRef}
+            />
+          ))}
         </div>
       </div>
     </>

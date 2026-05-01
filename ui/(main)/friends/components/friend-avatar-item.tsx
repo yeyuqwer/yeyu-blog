@@ -1,7 +1,7 @@
 'use client'
 
 import type { CSSProperties, MouseEvent } from 'react'
-import type { PlaneCopy, PlaneItem } from '../types'
+import type { PlaneItem } from '../types'
 import { Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useModalStore } from '@/store/use-modal-store'
@@ -10,14 +10,13 @@ import { FriendAvatarImage } from './friend-avatar-image'
 
 type FriendAvatarItemProps = {
   item: PlaneItem
-  copy: PlaneCopy
   onClick: (event: MouseEvent<HTMLAnchorElement>) => void
-  setItemRef: (key: string, element: HTMLElement | null, item: PlaneItem, copy: PlaneCopy) => void
+  setItemRef: (key: string, element: HTMLElement | null, item: PlaneItem) => void
 }
 
-const getItemIntroOffset = (item: PlaneItem, copy: PlaneCopy) => {
-  const x = item.x + copy.x * planeWidth - planeWidth / 2
-  const y = item.y + copy.y * planeHeight - planeHeight / 2
+const getItemIntroOffset = (item: PlaneItem) => {
+  const x = item.x - planeWidth / 2
+  const y = item.y - planeHeight / 2
   const distance = Math.max(Math.hypot(x, y), 1)
 
   return {
@@ -26,42 +25,45 @@ const getItemIntroOffset = (item: PlaneItem, copy: PlaneCopy) => {
   }
 }
 
-const getItemIntroDelay = (item: PlaneItem, copy: PlaneCopy) => {
-  const copyDistance = Math.abs(copy.x) + Math.abs(copy.y)
+const getItemIntroDelay = (item: PlaneItem) => {
   const itemDistance = Math.hypot(item.x - planeWidth / 2, item.y - planeHeight / 2)
 
-  return copyDistance * 80 + itemDistance * 0.18
+  return itemDistance * 0.18
 }
 
-const getItemStyle = (item: PlaneItem, copy: PlaneCopy) => {
-  const introOffset = getItemIntroOffset(item, copy)
+const getItemStyle = (item: PlaneItem) => {
+  const introOffset = getItemIntroOffset(item)
+  const x = item.x - planeWidth / 2
+  const y = item.y - planeHeight / 2
 
   return {
-    left: `${item.x + copy.x * planeWidth}px`,
-    top: `${item.y + copy.y * planeHeight}px`,
+    left: '50%',
+    top: '50%',
+    '--item-x': `${x}px`,
+    '--item-y': `${y}px`,
     '--item-rotate': `${item.rotate}deg`,
     '--item-scale': item.scale,
     '--friend-intro-x': `${introOffset.x}px`,
     '--friend-intro-y': `${introOffset.y}px`,
-    '--friend-intro-delay': `${getItemIntroDelay(item, copy)}ms`,
-    transform: `translate(-50%, -50%) rotate(var(--item-rotate)) scale(var(--item-scale))`,
+    '--friend-intro-delay': `${getItemIntroDelay(item)}ms`,
+    transform:
+      'translate3d(calc(-50% + var(--item-x)), calc(-50% + var(--item-y)), 0) rotate(var(--item-rotate)) scale(var(--item-scale))',
   } as CSSProperties
 }
 
-export function FriendAvatarItem({ item, copy, onClick, setItemRef }: FriendAvatarItemProps) {
-  const itemKey = `${copy.x}-${copy.y}-${item.id}`
+export function FriendAvatarItem({ item, onClick, setItemRef }: FriendAvatarItemProps) {
+  const itemKey = item.id
   const setModalOpen = useModalStore(s => s.setModalOpen)
 
   if (item.type === 'apply') {
     return (
       <div
-        ref={element => setItemRef(itemKey, element, item, copy)}
+        ref={element => setItemRef(itemKey, element, item)}
         className="friend-plane-item group hover:!z-[200] focus-within:!z-[200] absolute will-change-transform [height:var(--friend-tile-size)] [width:var(--friend-tile-size)]"
-        style={getItemStyle(item, copy)}
+        style={getItemStyle(item)}
       >
         <button
           type="button"
-          tabIndex={copy.x === 0 && copy.y === 0 ? 0 : -1}
           aria-label="申请友链"
           onClick={() => {
             setModalOpen('friendLinkApplyModal')
@@ -78,15 +80,14 @@ export function FriendAvatarItem({ item, copy, onClick, setItemRef }: FriendAvat
 
   return (
     <div
-      ref={element => setItemRef(itemKey, element, item, copy)}
+      ref={element => setItemRef(itemKey, element, item)}
       className="friend-plane-item group hover:!z-[200] focus-within:!z-[200] absolute will-change-transform [height:var(--friend-tile-size)] [width:var(--friend-tile-size)]"
-      style={getItemStyle(item, copy)}
+      style={getItemStyle(item)}
     >
       <Link
         href={item.siteUrl}
         target="_blank"
         rel="noreferrer"
-        tabIndex={copy.x === 0 && copy.y === 0 ? 0 : -1}
         aria-label={`${item.name}: ${item.description}`}
         onClick={onClick}
         className="flex h-full w-full max-w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] cursor-pointer items-center overflow-hidden rounded-full border border-[color:var(--friend-plane-border)] bg-[var(--friend-plane-card)] p-1.5 text-left shadow-[var(--friend-plane-shadow)] backdrop-blur-xl transition-[width,background-color,filter,border-color] duration-[260ms] ease-out hover:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] hover:border-[color:var(--friend-plane-hover-border)] hover:bg-[var(--friend-plane-card-highlight)] hover:brightness-[1.02] focus-visible:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] focus-visible:outline-2 focus-visible:outline-theme-ring group-focus-within:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] group-hover:w-[min(calc(var(--friend-tile-size)_+_14rem),78vw)] dark:hover:brightness-[1.03]"

@@ -13,9 +13,10 @@ export function FriendsPlaneStyle() {
             opacity: 0;
             filter: blur(6px);
             transform:
-              translate(
-                calc(-50% + var(--friend-intro-x)),
-                calc(-50% + var(--friend-intro-y))
+              translate3d(
+                calc(-50% + var(--item-x) + var(--friend-intro-x)),
+                calc(-50% + var(--item-y) + var(--friend-intro-y)),
+                0
               )
               rotate(calc(var(--item-rotate) - 8deg))
               scale(calc(var(--item-scale) * 0.68));
@@ -30,7 +31,11 @@ export function FriendsPlaneStyle() {
             opacity: 1;
             filter: blur(0);
             transform:
-              translate(-50%, -50%)
+              translate3d(
+                calc(-50% + var(--item-x)),
+                calc(-50% + var(--item-y)),
+                0
+              )
               rotate(var(--item-rotate))
               scale(var(--item-scale));
           }

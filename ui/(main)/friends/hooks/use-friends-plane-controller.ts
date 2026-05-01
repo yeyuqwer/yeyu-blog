@@ -2,11 +2,11 @@ import type { MouseEvent, PointerEvent } from 'react'
 import type {
   DragState,
   Friend,
-  PlaneCopy,
   PlaneItem,
   PlaneItemElement,
   PlaneMotion,
   PlaneOffset,
+  PlaneSize,
   PlaneVelocity,
 } from '../types'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
@@ -22,6 +22,7 @@ import {
 import {
   createPlaneItems,
   getNormalizedPlaneOffset,
+  getPlaneItemPosition,
   getPlaneMotionFromVelocity,
   getPlaneTransform,
 } from '../utils'
@@ -36,11 +37,14 @@ const initialDragState: DragState = {
   time: 0,
 }
 
+const planeEdgePadding = 160
+
 export function useFriendsPlaneController(friendLinks: Friend[]) {
   const stageRef = useRef<HTMLDivElement>(null)
   const planeRef = useRef<HTMLDivElement>(null)
   const itemElementMapRef = useRef(new Map<string, PlaneItemElement>())
   const offsetRef = useRef<PlaneOffset>({ x: 0, y: 0 })
+  const planeSizeRef = useRef<PlaneSize>({ width: planeWidth, height: planeHeight })
   const motionRef = useRef<PlaneMotion>(defaultPlaneMotion)
   const velocityRef = useRef<PlaneVelocity>({ x: 0, y: 0 })
   const focusRadiusRef = useRef(260)
@@ -56,18 +60,35 @@ export function useFriendsPlaneController(friendLinks: Friend[]) {
     if (!stage) return
 
     const stageRect = stage.getBoundingClientRect()
+    const planeSize = {
+      width: Math.max(planeWidth, stageRect.width + planeEdgePadding),
+      height: Math.max(planeHeight, stageRect.height + planeEdgePadding),
+    }
+
+    planeSizeRef.current = planeSize
+    offsetRef.current = getNormalizedPlaneOffset(offsetRef.current, planeSize)
     focusRadiusRef.current = Math.max(180, Math.min(stageRect.width, stageRect.height) * 0.46)
   }, [])
 
-  const updatePlaneItemFocus = useCallback((offset: PlaneOffset) => {
+  const updatePlaneItems = useCallback((offset: PlaneOffset) => {
     const focusRadius = focusRadiusRef.current
+    const planeSize = planeSizeRef.current
 
     itemElementMapRef.current.forEach(item => {
-      const x = offset.x + item.x - planeWidth / 2
-      const y = offset.y + item.y - planeHeight / 2
-      const focus = Math.max(0, 1 - Math.hypot(x, y) / focusRadius)
+      const position = getPlaneItemPosition(item, offset, planeSize)
+      const focus = Math.max(0, 1 - Math.hypot(position.x, position.y) / focusRadius)
       const scale = item.baseScale * (1 + focus * focus * centerFocusScale)
       const zIndex = Math.round(focus * 100)
+
+      if (Math.abs(position.x - item.renderedX) > 0.1) {
+        item.renderedX = position.x
+        item.element.style.setProperty('--item-x', `${position.x.toFixed(2)}px`)
+      }
+
+      if (Math.abs(position.y - item.renderedY) > 0.1) {
+        item.renderedY = position.y
+        item.element.style.setProperty('--item-y', `${position.y.toFixed(2)}px`)
+      }
 
       if (Math.abs(scale - item.scale) > 0.002) {
         item.scale = scale
@@ -85,11 +106,11 @@ export function useFriendsPlaneController(friendLinks: Friend[]) {
     renderFrameRef.current = 0
 
     if (planeRef.current) {
-      planeRef.current.style.transform = getPlaneTransform(offsetRef.current, motionRef.current)
+      planeRef.current.style.transform = getPlaneTransform({ x: 0, y: 0 }, motionRef.current)
     }
 
-    updatePlaneItemFocus(offsetRef.current)
-  }, [updatePlaneItemFocus])
+    updatePlaneItems(offsetRef.current)
+  }, [updatePlaneItems])
 
   const schedulePlaneRender = useCallback(() => {
     if (renderFrameRef.current) return
@@ -102,7 +123,7 @@ export function useFriendsPlaneController(friendLinks: Friend[]) {
     motion: PlaneMotion = motionRef.current,
     shouldRenderNow = false,
   ) => {
-    offsetRef.current = getNormalizedPlaneOffset(offset)
+    offsetRef.current = getNormalizedPlaneOffset(offset, planeSizeRef.current)
     motionRef.current = motion
 
     if (shouldRenderNow) {
@@ -155,17 +176,18 @@ export function useFriendsPlaneController(friendLinks: Friend[]) {
     momentumFrameRef.current = requestAnimationFrame(tick)
   }
 
-  const setPlaneItemRef = (
-    key: string,
-    element: HTMLElement | null,
-    item: PlaneItem,
-    copy: PlaneCopy,
-  ) => {
+  const setPlaneItemRef = (key: string, element: HTMLElement | null, item: PlaneItem) => {
     if (element) {
+      const position = getPlaneItemPosition(item, offsetRef.current, planeSizeRef.current)
+
+      element.style.setProperty('--item-x', `${position.x.toFixed(2)}px`)
+      element.style.setProperty('--item-y', `${position.y.toFixed(2)}px`)
       itemElementMapRef.current.set(key, {
         element,
-        x: item.x + copy.x * planeWidth,
-        y: item.y + copy.y * planeHeight,
+        x: item.x,
+        y: item.y,
+        renderedX: position.x,
+        renderedY: position.y,
         baseScale: item.scale,
         scale: item.scale,
         zIndex: 0,
@@ -290,7 +312,6 @@ export function useFriendsPlaneController(friendLinks: Friend[]) {
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
-    offsetRef,
     planeItems,
     planeRef,
     setPlaneItemRef,

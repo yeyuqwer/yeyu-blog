@@ -1,4 +1,4 @@
-import type { Friend, PlaneMotion, PlaneOffset, PlaneVelocity } from './types'
+import type { Friend, PlaneMotion, PlaneOffset, PlaneSize, PlaneVelocity } from './types'
 import { defaultPlaneMotion, planeHeight, planeLayout, planeWidth } from './constants'
 
 export const normalizeOffset = (value: number, size: number) => {
@@ -76,7 +76,22 @@ export const createPlaneItems = (friendLinks: Friend[]) => [
   applyPlaneItem,
 ]
 
-export const getNormalizedPlaneOffset = (offset: PlaneOffset) => ({
-  x: normalizeOffset(offset.x, planeWidth),
-  y: normalizeOffset(offset.y, planeHeight),
+export const getNormalizedPlaneOffset = (offset: PlaneOffset, planeSize: PlaneSize) => ({
+  x: normalizeOffset(offset.x, planeSize.width),
+  y: normalizeOffset(offset.y, planeSize.height),
+})
+
+export const getPlaneItemPosition = (
+  itemPosition: PlaneOffset,
+  offset: PlaneOffset,
+  planeSize: PlaneSize,
+) => ({
+  x: normalizeOffset(
+    offset.x + ((itemPosition.x - planeWidth / 2) * planeSize.width) / planeWidth,
+    planeSize.width,
+  ),
+  y: normalizeOffset(
+    offset.y + ((itemPosition.y - planeHeight / 2) * planeSize.height) / planeHeight,
+    planeSize.height,
+  ),
 })

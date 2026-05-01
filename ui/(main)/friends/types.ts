@@ -41,15 +41,17 @@ export type PlaneVelocity = {
   y: number
 }
 
-export type PlaneCopy = {
-  x: number
-  y: number
+export type PlaneSize = {
+  width: number
+  height: number
 }
 
 export type PlaneItemElement = {
   element: HTMLElement
   x: number
   y: number
+  renderedX: number
+  renderedY: number
   baseScale: number
   scale: number
   zIndex: number
