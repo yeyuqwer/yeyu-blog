@@ -1,45 +1,51 @@
 # yeyu-blog
 
-个人开发的全栈博客项目，部署在 vercel 上，只有域名花了钱，感谢/感恩 vercel
+个人开发的全栈博客项目，部署在 Vercel。
 
-博客地址 [叶鱼 | 业余](https://www.useyeyu.cc)
+博客地址：[叶鱼 | 业余](https://www.useyeyu.cc)
 
-> 国内访问速度不确定，可能需要「出国留学」才能访问（逃），我在手机上测试过，好像访问速度还挺快的，还没有失败过，不确保以后~
+> 国内访问速度不确定，可能需要网络环境支持。
 
-## 主要技术栈
+## 功能
 
-- Nextjs
-- React
-- TypeScript
-- Tailwind CSS
-- Shadcnui
-- Motion
-- Zustand
-- Prisma
+- 前台：主页、博客、笔记、低语、友链、关于、主题切换
+- 内容：Markdown 渲染、代码高亮、标签分类、评论与回复
+- 后台：博客、笔记、标签、引用、低语、友链、评论管理
+- 登录：Better Auth、GitHub OAuth、Google OAuth、SIWE 钱包登录
+- 上传：UploadThing 图片上传
+
+## 技术栈
+
+- Next.js 16 / React 19 / TypeScript 6
+- Tailwind CSS 4 / shadcn/ui / Radix UI / Motion
+- Better Auth / Wagmi / Viem / SIWE
+- Prisma 7 / PostgreSQL / `@prisma/adapter-pg`
+- TanStack Query / TanStack Table / Zustand
+- UploadThing / Shiki / Unified / Remark / Rehype
+- Biome / Husky / Commitizen
 
 ## 截图展示
 
-![light-mode-home-preview](.github/assets/light-home.png)
+![首页浅色预览](.github/assets/home-light-preview.png)
 
-![dark-mode-note-preview](.github/assets/dark-note.png)
+![主题切换弹窗预览](.github/assets/theme-dialog-preview.png)
 
-![light-mode-admin-preview](.github/assets/light-admin.png)
+![后台管理预览](.github/assets/admin-dashboard-preview.png)
+
+![首页深色预览](.github/assets/home-dark-preview.png)
 
 ## 本地运行
 
 确保你已安装：
 
 - Git
-- Pnpm
+- pnpm
 - Node.js >= 20
-
-### 部署的视频教程
-
-[vercel部署视频教程](https://www.bilibili.com/video/BV1LJ7ozmECq)
+- PostgreSQL 数据库，使用本地数据库、Neon 或 Vercel Storage 都可以
 
 ### 获取项目代码
 
-**首先 fork 仓库源代码到你的仓库，然后 clone 你 fork 的仓库代码**
+先 fork 仓库到你自己的账号，再 clone 你 fork 后的仓库：
 
 ```shell
 git clone {REPO}
@@ -50,131 +56,114 @@ git clone {REPO}
 ```shell
 pnpm install
 ```
-将项目根目录下的 `.env.example` 的 `example` 去掉:
 
-现在你应该有一个 `.env` 文件，按照要求填写字段~
+### 配置环境变量
 
-其实就两个，数据库的之后再填写：
-
-```shell
-SITE_URL=
-NEXT_PUBLIC_ADMIN_EMAILS=
-```
-
-### 创建/白嫖数据库
-
-> 为了测试方便，建议本地运行也直接使用白嫖的数据库，就没必要本地折腾数据库了~
-
-- 注册 vercel 帐号 -> [vercel官网](https://vercel.com/)
-- 点击导航按扭的 `Storage` 选项，创建数据库
-- 选择 `Marketplace Database Providers` 下面的 `Neon` ~
-  - 建议选择 Washington, D.C., USA (East) 地区
-
-至此数据库已经白嫖成功了，接着我们来和数据库建立连接~
-
-### 连接数据库
-
-将 `Quickstart` 下的 `.env.local` 面板下的所有环境变量复制到 `.env` 文件中~
-
-初始化表
-```shell
-npx prisma migrate dev --name init --config ./prisma/prisma.config.ts
-```
-
-启动！
-```shell
-pnpm install
-pnpm dev
-```
-
-至此项目的前端展示是可以跑起来了，数据库也创建好了~
-
-但控制台大概还在报错，问题不大，接下来会解决~
-
-### admin 拦截
-
-现在环境变量还有一些没有填写，控制台也在报错，如果此时直接访问 `http://localhost:3000/admin` 是可以直接访问的，没有任何拦截~
-
-接下来就是配置 oauth 登录了。
-
-运行生成 AUTH_SECRET:
+复制一份环境变量文件：
 
 ```shell
-npx auth secret
+cp .env.example .env
 ```
 
-执行完后，多了一个 `.env.local` 文件，多了环境变量 `AUTH_SECRET`，现在再访问 `/admin` 页面，会直接重定向到登录页面~
-
-### admin 登录/创建 oauth 应用
-
-前往 [oauth app](https://github.com/settings/applications/new) 创建你的 oauth 应用。
-
-表单填写：
-Homepage URL: http://localhost:3000
-
-Authorization callback URL: http://localhost:3000/api/auth/callback/github
-
-获取 CLIENT_ID 和 CLIENT_SECRET，填写到 `.env.local` 文件中。
-
-可以参考 [auth官网](https://authjs.dev/getting-started/authentication/oauth)
+按 `.env.example` 填写下面这些变量：
 
 ```env
-AUTH_GITHUB_ID={CLIENT_ID}
-AUTH_GITHUB_SECRET={CLIENT_SECRET}
+SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+
+BETTER_AUTH_SECRET=
+BETTER_AUTH_URL=http://localhost:3000
+
+NEXT_PUBLIC_ADMIN_EMAILS="example@gmail.com"
+NEXT_PUBLIC_ADMIN_WALLET_ADDRESS=""
+
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+UPLOADTHING_TOKEN=
+DATABASE_URL=
 ```
 
-就完成登录功能了~
+`BETTER_AUTH_SECRET` 可以用下面的命令生成：
 
-### 图片存储
+```shell
+openssl rand -base64 32
+```
 
-前往 [uploadthing](https://uploadthing.com/) 注册帐号，新建 app，在 `env` 文件中填写 API Keys。
+当前服务端环境变量校验要求 GitHub 和 Google 两组 OAuth 都填写。`NEXT_PUBLIC_ADMIN_WALLET_ADDRESS` 是可选项，不需要钱包登录后台时可以留空。
+
+### 配置数据库
+
+项目使用 PostgreSQL。创建数据库后，把连接地址填到 `DATABASE_URL`。
+
+初始化数据库表：
+
+```shell
+pnpm exec prisma migrate dev --config ./prisma/prisma.config.ts
+```
+
+### 配置 OAuth
+
+GitHub OAuth App：
+
+- Homepage URL：`http://localhost:3000`
+- Authorization callback URL：`http://localhost:3000/api/auth/callback/github`
+
+Google OAuth Client：
+
+- Authorized JavaScript origins：`http://localhost:3000`
+- Authorized redirect URI：`http://localhost:3000/api/auth/callback/google`
+
+部署到线上时，把上面的 `localhost` 替换成你的线上域名。
+
+### 配置图片上传
+
+前往 [UploadThing](https://uploadthing.com/) 创建 app，把 API Token 填到：
+
 ```env
 UPLOADTHING_TOKEN=
 ```
 
-### 修改网站信息
+### 启动开发服务
 
-> 肥肠抱歉，由于本人技术太菜，所以很多地方都需要你手动去修改代码才能更新自己的配置，我会尽量告诉你各个文件的位置。
+```shell
+pnpm dev
+```
 
-- config
-  - env
-    - 客户端和服务端环境变量校验
-  - img
-    - 首页展示的个人头像，建议图片采用 webp 格式，再压缩一下~
-    - [推荐图片处理工具](https://imagestool.com/)
-  - svg
-    - 存放底部的技术栈展示的 svg
+前台地址：`http://localhost:3000`
 
-- config/seo/index.ts
-  - metadata（SEO 信息）
+后台地址：`http://localhost:3000/admin`
 
-- ui/(main)/layout/start-up-motion/index.tsx
-  - 首页动画欢迎文案
+## 部署
 
-- ui/components/shared/comment-card/index.tsx
-  - 博客 / 笔记评论组件
+推荐部署到 Vercel。部署前确认：
 
-- lib/core/auth/guard.ts + ui/components/modal/login-modal/index.tsx
-  - 管理员邮箱与管理员钱包地址配置（来自环境变量）
+- Vercel 环境变量已按 `.env.example` 配置完整
+- 线上数据库已经执行过 Prisma migration
+- GitHub / Google OAuth callback URL 已改成线上域名
+- `SITE_URL`、`NEXT_PUBLIC_SITE_URL`、`BETTER_AUTH_URL` 都是线上站点地址
 
-- modules/main/page/main-home-page/internal/bio-section.tsx
-  - 首页个人简介
+## 修改网站信息
 
-- modules/main/page/about-page/index.tsx
-  - /about 页面的简介
+- `config/seo/index.ts`：站点 metadata 和 SEO 信息
+- `config/env/server-env.ts`、`config/env/client-env.ts`：服务端和客户端环境变量校验
+- `config/img/avatar.webp`：首页头像图片
+- `ui/(main)/(home)/bio-section.tsx`：首页个人简介
+- `ui/(main)/about/index.tsx`：关于页内容
+- `ui/(main)/layout/contact-me/index.tsx`：底部联系方式
+- `ui/(main)/(home)/tech-stack.tsx`：首页技术栈展示
+- `lib/core/auth/guard.ts`、`lib/core/auth/utils.ts`：后台管理员权限判断
+- `ui/components/modal/main/login-modal/index.tsx`：登录弹窗
 
-- components/shared/contact-me/index.tsx
-  - 底部联系方式
-
-### 评论系统说明
-
-博客和笔记现在使用项目内置的评论系统，不再依赖 giscus / GitHub Discussions。
-
-- 前台评论组件在 `ui/components/shared/comment-card/index.tsx`
-- 评论接口位于 `app/api/(public)/comment/route.ts`
-- 后台审核与配置位于 `/admin/comment`
-- 首次接入后记得执行 Prisma migration，创建 `SiteComment` 与 `SiteCommentConfig` 表
-
-## 特别感谢🙏🏻
+## 设计参考
 
 - [fuxiaochen](https://github.com/aifuxi/fuxiaochen)
+- [Shiro](https://github.com/Innei/Shiro)
+- [Arthals' Ink](https://arthals.ink/)
+- [grtblog](https://github.com/grtsinry43/grtblog)
+- [Arthals-Ink](https://github.com/zhuozhiyongde/Arthals-Ink)
+- [Anthony Fu](https://antfu.me/)
+- [Victor Williams](https://www.victorwilliams.me/)
+- [Vercel Fonts](https://vercel.com/font)
