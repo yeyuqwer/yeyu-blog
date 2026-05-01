@@ -26,6 +26,7 @@ import Loading from '@/ui/components/shared/loading'
 import { Button } from '@/ui/shadcn/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/ui/shadcn/dialog'
 import { GitHubIcon } from './github-icon'
+import { GoogleIcon } from './google-icon'
 
 const adminWalletAddress = clientEnv.NEXT_PUBLIC_ADMIN_WALLET_ADDRESS?.trim().toLowerCase()
 
@@ -51,7 +52,7 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
 
   const { data: session, refetch: refetchSession } = useSession()
   const isWalletUser = isWalletLoggedIn({ data: session ?? null })
-  const isGithubUser = isEmailLoggedIn({ data: session ?? null })
+  const isEmailUser = isEmailLoggedIn({ data: session ?? null })
   const isLoginPending = isPending || isWalletSigningIn
 
   // TODO: 普通用户登录后也要签名一次，然后存储身份信息，给予权限
@@ -158,19 +159,19 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
       <DialogContent className="rounded-xl bg-theme-background/80 backdrop-blur-xl sm:max-w-96 dark:bg-black/70">
         <DialogHeader className="">
           <DialogTitle className="text-center font-bold text-xl">
-            {isGithubUser || isWalletUser ? '用户信息' : '登录 (ゝ∀･)'}
+            {isEmailUser || isWalletUser ? '用户信息' : '登录 (ゝ∀･)'}
           </DialogTitle>
         </DialogHeader>
 
         <main
           className={cn(
             'grid gap-4 font-mono',
-            !isLoginPending && !isGithubUser && !isWalletUser && connectors.length > 0
+            !isLoginPending && !isEmailUser && !isWalletUser && connectors.length > 0
               ? 'grid-cols-2'
               : 'grid-cols-1',
           )}
         >
-          {isGithubUser ? (
+          {isEmailUser ? (
             <div className="flex flex-col items-center justify-center gap-6 py-2">
               <div className="flex flex-col items-center gap-2">
                 {session?.user?.image != null ? (
@@ -258,6 +259,19 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
               >
                 <GitHubIcon className="size-5" />
                 GitHub
+              </Button>
+
+              <Button
+                type="button"
+                onClick={() => signIn.social({ provider: 'google', callbackURL: '/admin' })}
+                className={cn(
+                  'flex cursor-pointer items-center text-base',
+                  connectors.length > 0 ? 'justify-baseline' : 'justify-center',
+                )}
+                disabled={isLoginPending}
+              >
+                <GoogleIcon className="size-5" />
+                Google
               </Button>
 
               {connectors.map(connector => (

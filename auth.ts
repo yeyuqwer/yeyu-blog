@@ -48,21 +48,22 @@ const trustedOrigins = (() => {
 
 const domain = new URL(trustedOrigins[0]).host
 
-const githubAuthConfig =
-  env.GITHUB_CLIENT_ID != null && env.GITHUB_CLIENT_SECRET != null
-    ? {
-        github: {
-          clientId: env.GITHUB_CLIENT_ID,
-          clientSecret: env.GITHUB_CLIENT_SECRET,
-        },
-      }
-    : {}
+const socialProviders = {
+  github: {
+    clientId: env.GITHUB_CLIENT_ID,
+    clientSecret: env.GITHUB_CLIENT_SECRET,
+  },
+  google: {
+    clientId: env.GOOGLE_CLIENT_ID,
+    clientSecret: env.GOOGLE_CLIENT_SECRET,
+  },
+}
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
   }),
-  socialProviders: githubAuthConfig,
+  socialProviders,
   trustedOrigins,
   plugins: [
     siwe({

@@ -3,10 +3,10 @@ import { z } from 'zod'
 const publicEnvSchema = z.object({
   // * 允许访问后台的邮箱
   NEXT_PUBLIC_ADMIN_EMAILS: z.string().default(''),
-  // * 允许访问后台的钱包地址
+  // * 允许访问后台的钱包
   NEXT_PUBLIC_ADMIN_WALLET_ADDRESS: z.string().optional(),
   // * 网站地址 (Client side)
-  NEXT_PUBLIC_SITE_URL: z.url().optional(),
+  NEXT_PUBLIC_SITE_URL: z.url(),
 })
 
 const publicEnvSource = {
