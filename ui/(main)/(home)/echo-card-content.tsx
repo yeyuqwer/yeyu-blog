@@ -2,11 +2,16 @@
 
 import type { PublicEchoCardData } from '@/lib/api/echo/type'
 import { motion, useReducedMotion, type Variants } from 'motion/react'
+import { useMemo } from 'react'
 
-export default function EchoCardContent({ echo }: { echo: PublicEchoCardData }) {
-  const shouldReduceMotion = useReducedMotion()
+type ReducedMotionPreference = ReturnType<typeof useReducedMotion>
 
-  const contentVariants: Variants = {
+type EchoCardContentProps = {
+  echo?: PublicEchoCardData
+}
+
+function getContentVariants(shouldReduceMotion: ReducedMotionPreference): Variants {
+  return {
     hidden: shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 12, filter: 'blur(2px)' },
     visible: {
       opacity: 1,
@@ -27,8 +32,10 @@ export default function EchoCardContent({ echo }: { echo: PublicEchoCardData }) 
           transition: { duration: 0.2, ease: 'easeIn' },
         },
   }
+}
 
-  const lineVariants: Variants = {
+function getLineVariants(shouldReduceMotion: ReducedMotionPreference): Variants {
+  return {
     hidden: shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 6 },
     visible: {
       opacity: 1,
@@ -36,6 +43,15 @@ export default function EchoCardContent({ echo }: { echo: PublicEchoCardData }) 
       transition: { duration: shouldReduceMotion ? 0.18 : 0.28, ease: 'easeOut' },
     },
   }
+}
+
+export default function EchoCardContent({ echo }: EchoCardContentProps) {
+  const shouldReduceMotion = useReducedMotion()
+  const contentVariants = useMemo(
+    () => getContentVariants(shouldReduceMotion),
+    [shouldReduceMotion],
+  )
+  const lineVariants = useMemo(() => getLineVariants(shouldReduceMotion), [shouldReduceMotion])
 
   return (
     <motion.section layout className="mt-4 flex w-2/3 flex-col">
@@ -50,14 +66,14 @@ export default function EchoCardContent({ echo }: { echo: PublicEchoCardData }) 
         <motion.p
           suppressHydrationWarning
           variants={lineVariants}
-          className="underline drop-shadow-[0_0_0.75rem_#1babbb] dark:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+          className="underline decoration-black drop-shadow-[0_0_0.75rem_var(--theme-indicator)] dark:decoration-white dark:drop-shadow-[0_0_10px_var(--theme-400)]"
         >
           {echo?.content ?? '虚无。'}
         </motion.p>
         <motion.footer
           suppressHydrationWarning
           variants={lineVariants}
-          className="ml-auto text-pink-600 text-sm drop-shadow-[0_0_0.75rem_#1babbb] dark:text-white dark:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+          className="ml-auto text-sm text-theme-primary drop-shadow-[0_0_0.75rem_var(--theme-indicator)] dark:text-theme-400 dark:drop-shadow-[0_0_10px_var(--theme-400)]"
         >
           「{echo?.reference ?? '无名。'}」
         </motion.footer>
