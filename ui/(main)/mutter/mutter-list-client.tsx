@@ -1,15 +1,15 @@
 'use client'
 
-import { Heart, MessageCircle } from 'lucide-react'
 import * as motion from 'motion/react-client'
 import Image from 'next/image'
 import { useState } from 'react'
 import avatar from '@/config/img/avatar.webp'
 import { useMutterLikeMutation } from '@/hooks/api/mutter'
-import { cn } from '@/lib/utils/common/shadcn'
 import { prettyDateTime, toRelativeDate } from '@/lib/utils/time'
 import { useModalStore } from '@/store/use-modal-store'
 import { itemVariants, listVariants } from './constant'
+import { MutterCommentButton } from './mutter-comment-button'
+import { MutterLikeButton } from './mutter-like-button'
 
 type MutterListItem = {
   id: number
@@ -79,9 +79,7 @@ export function MutterListClient({ mutters }: { mutters: MutterListItem[] }) {
           const relativeDate = toRelativeDate(createdAt)
           const isLiked = likedMutterIds.includes(item.id)
           const likeCount = likeCounts[item.id] ?? item.likeCount
-          const showLikeCount = likeCount > 0
           const isCommentActive = activeCommentPayload?.mutterId === item.id
-          const showCommentCount = item.commentCount > 0
 
           return (
             <motion.li key={item.id} className="flex items-start gap-3.5" variants={itemVariants}>
@@ -102,15 +100,10 @@ export function MutterListClient({ mutters }: { mutters: MutterListItem[] }) {
                 </time>
                 <article className="rounded-xl border border-[#00000011] bg-theme-background/80 px-4 py-3 text-[15px] text-zinc-900 leading-7 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100">
                   <p className="wrap-break-word whitespace-pre-wrap">{item.content}</p>
-                  <footer className="mt-3 flex items-center justify-end gap-1">
-                    <button
-                      type="button"
-                      aria-label="open comment modal"
-                      aria-pressed={isCommentActive}
-                      className={cn(
-                        'inline-flex h-8 cursor-pointer items-center justify-center gap-1 rounded-md px-2 text-zinc-400 transition-colors hover:text-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:text-zinc-500 dark:hover:text-zinc-200',
-                        isCommentActive && 'text-zinc-700 dark:text-zinc-200',
-                      )}
+                  <footer className="mt-3 flex items-center justify-end gap-0.5">
+                    <MutterCommentButton
+                      isActive={isCommentActive}
+                      commentCount={item.commentCount}
                       onClick={() => {
                         setModalOpen('mutterCommentModal', {
                           mutterId: item.id,
@@ -118,38 +111,15 @@ export function MutterListClient({ mutters }: { mutters: MutterListItem[] }) {
                           createdAt: item.createdAt,
                         })
                       }}
-                    >
-                      <MessageCircle className="size-4" />
-                      {showCommentCount ? (
-                        <span className="font-medium text-[11px] leading-none">
-                          {item.commentCount}
-                        </span>
-                      ) : null}
-                    </button>
+                    />
 
-                    <button
-                      type="button"
-                      aria-label="like mutter"
-                      aria-pressed={isLiked}
-                      className={cn(
-                        'inline-flex h-8 cursor-pointer items-center justify-center gap-1 rounded-md px-2 text-zinc-400 transition-colors hover:text-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:text-zinc-500 dark:hover:text-zinc-200',
-                        isLiked && 'text-rose-500 hover:text-rose-500 dark:text-rose-500',
-                      )}
-                      disabled={isLiked}
+                    <MutterLikeButton
+                      isLiked={isLiked}
+                      likeCount={likeCount}
                       onClick={() => {
                         void handleLike(item.id)
                       }}
-                    >
-                      <Heart
-                        className={cn(
-                          'size-4 transition-colors',
-                          isLiked && 'fill-rose-500 text-rose-500',
-                        )}
-                      />
-                      {showLikeCount ? (
-                        <span className="font-medium text-[11px] leading-none">{likeCount}</span>
-                      ) : null}
-                    </button>
+                    />
                   </footer>
                 </article>
               </div>
