@@ -1,22 +1,8 @@
-import type { ModalType } from '@/store/use-modal-store'
+import type { NavGroup, NavRoute, RouteItem } from './types'
 
-export type NavRoute = {
-  path: string
-  pathName: string
-  pattern: RegExp
-  disabled?: boolean
-  type?: 'link' | 'button'
-  modal?: ModalType
-}
-
-export type NavGroup = {
-  key: string
-  mainPath?: string
-  disabled?: boolean
-  items: [NavRoute, ...NavRoute[]]
-}
-
-export type RouteItem = (NavRoute & { group?: never }) | { group: NavGroup }
+export const activeTextShadowClass =
+  '[text-shadow:0.03em_0_0_currentColor,-0.03em_0_0_currentColor]'
+export const inactiveTextShadowClass = '[text-shadow:0_0_0_transparent]'
 
 export const slideVariants = {
   enter: (direction: number) => ({
@@ -66,13 +52,11 @@ export const navigationConfig: RouteItem[] = [
           path: '/mutter',
           pathName: '低语',
           pattern: /^\/mutter($|\/)/,
-          // disabled: true,
         },
         {
           path: '/friends',
           pathName: '友链',
           pattern: /^\/friends($|\/)/,
-          // disabled: true,
         },
       ],
     },
@@ -104,3 +88,31 @@ export const navigationConfig: RouteItem[] = [
     pattern: /^\/about($|\/)/,
   },
 ]
+
+export const isNavGroupRoute = (
+  route: RouteItem,
+): route is Extract<RouteItem, { group: NavGroup }> => {
+  return 'group' in route && route.group != null
+}
+
+export const flatNavRoutes = navigationConfig.flatMap(route =>
+  isNavGroupRoute(route) ? route.group.items : [route],
+)
+
+export const navGroupRoutes = navigationConfig.filter(isNavGroupRoute)
+
+export const navGroupIndexMap = new Map<string, number>(
+  navGroupRoutes.map((route, index) => [route.group.key, index] as const),
+)
+
+export const navGroupRouteMap = new Map<string, Extract<RouteItem, { group: NavGroup }>>(
+  navGroupRoutes.map(route => [route.group.key, route] as const),
+)
+
+export const navRoutePathMap = new Map<string, NavRoute>(
+  flatNavRoutes.map(route => [route.path, route] as const),
+)
+
+export const navRouteGroupMap = new Map<string, Extract<RouteItem, { group: NavGroup }>>(
+  navGroupRoutes.flatMap(route => route.group.items.map(item => [item.path, route] as const)),
+)

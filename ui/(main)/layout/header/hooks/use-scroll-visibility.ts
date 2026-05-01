@@ -1,18 +1,12 @@
-'use client'
-
 import { useEffect, useRef, useState } from 'react'
-
-type UseScrollVisibilityOptions = {
-  velocityThreshold?: number
-  velocitySmoothing?: number
-  topShowOffset?: number
-}
 
 const defaultVelocityThreshold = 0.45
 const defaultVelocitySmoothing = 0.25
 const defaultTopShowOffset = 24
 
-export const useScrollVisibility = (options: UseScrollVisibilityOptions = {}) => {
+export const useScrollVisibility = (
+  options: { velocityThreshold?: number; velocitySmoothing?: number; topShowOffset?: number } = {},
+) => {
   const {
     velocityThreshold = defaultVelocityThreshold,
     velocitySmoothing = defaultVelocitySmoothing,

@@ -1,5 +1,5 @@
 import type { ComponentProps, FC } from 'react'
-import type { NavRoute } from './constant'
+import type { NavRoute } from './types'
 import Link from 'next/link'
 import { sileo } from 'sileo'
 import { useModalStore } from '@/store/use-modal-store'
