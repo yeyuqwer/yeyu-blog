@@ -1,7 +1,6 @@
 'use client'
 
 import type { Heading } from './utils'
-import { useLenis } from 'lenis/react'
 import { ChevronDown, TextAlignJustify } from 'lucide-react'
 import { AnimatePresence, motion, useScroll, useTransform } from 'motion/react'
 import { type FC, useEffect, useRef, useState } from 'react'
@@ -83,7 +82,6 @@ export const PostToc: FC<{
   const [isExpanded, setIsExpanded] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [articleContent, setArticleContent] = useState<HTMLElement | null>(null)
-  const lenis = useLenis()
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const hasScrolledRef = useRef(false)
 
@@ -160,16 +158,6 @@ export const PostToc: FC<{
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault()
-
-    if (lenis != null) {
-      const target = document.getElementById(id)
-      if (target != null) {
-        lenis.scrollTo(target, { offset: -80 })
-      }
-      setActiveId(id)
-      setIsExpanded(false)
-      return
-    }
 
     const element = document.getElementById(id)
     if (element != null) {
@@ -307,7 +295,6 @@ export const PostToc: FC<{
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 ref={scrollContainerRef}
                 className="relative max-h-[60vh] overflow-y-auto overflow-x-hidden overscroll-contain border-black/5 border-t dark:border-white/5 [&::-webkit-scrollbar-track]:bg-transparent"
-                data-lenis-prevent
               >
                 <ul className="flex flex-col gap-1 p-2">
                   {headings.map(heading => (
