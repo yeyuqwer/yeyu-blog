@@ -214,7 +214,7 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({ className, .
                       handleSelect(id)
                     }}
                   >
-                    <Icon className="relative z-10 size-5" />
+                    <Icon className="relative z-10 size-5" isActive={isFunctionActive} size={20} />
                   </FloatingMenuActionButton>
                 )
               })}

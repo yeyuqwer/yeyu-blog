@@ -97,7 +97,11 @@ export default function YeAvatar() {
                   isActive={activeIcon === id || isFunctionActive}
                   showPing={activeIcon === id}
                 >
-                  <Icon className="relative z-10 size-5" />
+                  <Icon
+                    className="relative z-10 size-5"
+                    isActive={activeIcon === id || isFunctionActive}
+                    size={20}
+                  />
                 </FloatingMenuActionButton>
               )
             })}
