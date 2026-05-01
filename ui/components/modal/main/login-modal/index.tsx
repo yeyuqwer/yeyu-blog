@@ -5,7 +5,6 @@ import type { Address } from 'viem'
 import { Wallet2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { SiweMessage } from 'siwe'
 import { useChainId, useChains, useConnect, useConnections, useConnectors } from 'wagmi'
@@ -38,7 +37,6 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
   const isModalOpen = modalType === 'loginModal'
   const connectors = useConnectors().filter(v => v.id !== 'injected')
   const { mutateAsync: connectAsync, isPending } = useConnect()
-  const router = useRouter()
   const [isWalletSigningIn, setIsWalletSigningIn] = useState(false)
 
   const connections = useConnections()
@@ -120,7 +118,6 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
         }
 
         await refetchSession()
-        router.refresh()
       } catch {
         //
       } finally {
@@ -128,7 +125,7 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
         setIsWalletSigningIn(false)
       }
     },
-    [refetchSession, router],
+    [refetchSession],
   )
 
   const handleWalletConnect = useCallback(
@@ -197,7 +194,6 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
                   await disconnect(wagmiConfig).catch()
                   await signOut()
                   await refetchSession()
-                  router.refresh()
                 }}
                 className="mt-2 w-full"
               >
@@ -231,7 +227,6 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
                     await disconnect(wagmiConfig).catch()
                     await signOut()
                     await refetchSession()
-                    router.refresh()
                   }}
                   className="w-full"
                 >

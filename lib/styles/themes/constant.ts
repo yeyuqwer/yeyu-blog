@@ -1,5 +1,5 @@
-export const brandThemeStorageKey = 'yeyu-brand-theme'
 export const brandThemeAttribute = 'data-brand-theme'
+export const brandThemeRequestHeader = 'x-yeyu-brand-theme'
 
 export const brandThemeOptions = [
   {
@@ -38,16 +38,15 @@ export type BrandThemeId = (typeof brandThemeOptions)[number]['id']
 
 export const defaultBrandTheme: BrandThemeId = 'mint'
 
-const brandThemeIds = brandThemeOptions.map(option => option.id)
+export const brandThemeIds = brandThemeOptions.map(option => option.id)
+
+export function getRandomBrandTheme(): BrandThemeId {
+  const randomIndex = Math.floor(Math.random() * brandThemeIds.length)
+  return brandThemeIds[randomIndex]!
+}
 
 export function isBrandThemeId(value: string | null): value is BrandThemeId {
   return value != null && brandThemeIds.includes(value as BrandThemeId)
-}
-
-export function getStoredBrandTheme(): BrandThemeId | null {
-  if (typeof window === 'undefined') return null
-  const raw = window.localStorage.getItem(brandThemeStorageKey)
-  return isBrandThemeId(raw) ? raw : null
 }
 
 export function getDomBrandTheme(): BrandThemeId | null {
@@ -63,12 +62,8 @@ export function applyBrandTheme(theme: BrandThemeId) {
 
 export function setBrandTheme(theme: BrandThemeId) {
   applyBrandTheme(theme)
-
-  if (typeof window !== 'undefined') {
-    window.localStorage.setItem(brandThemeStorageKey, theme)
-  }
 }
 
 export function resolveBrandTheme(): BrandThemeId {
-  return getStoredBrandTheme() ?? getDomBrandTheme() ?? defaultBrandTheme
+  return getDomBrandTheme() ?? defaultBrandTheme
 }
