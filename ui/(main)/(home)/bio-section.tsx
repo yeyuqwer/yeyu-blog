@@ -5,7 +5,7 @@ export default function BioSection() {
         你好! 我是 <span className="font-bold text-theme-primary">叶鱼 (*´∪`)</span>
       </h1>
       <p>
-        一位还在学习前端开发的大四学
+        一位还在学习 TS 全栈开发的大四学
         <span className="text-pink-500 line-through">生</span>牲 (≖_≖ )
       </p>
       <p>欢迎来到我的主页 Σ( ´･ω･`)</p>

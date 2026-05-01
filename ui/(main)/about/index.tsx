@@ -76,7 +76,7 @@ export default function AboutPage() {
         <h2>
           你可以叫我, <span className="font-bold text-theme-indicator">叶鱼</span> (●´ω｀●)ゞ
         </h2>
-        <p>一位业余的前端开发者 _(:3 ⌒ﾞ)_</p>
+        <p>一位业余的 TS 全栈开发者 _(:3 ⌒ﾞ)_</p>
         <p>目前人还在上海活着 (¦3[▓▓]</p>
       </Section>
 

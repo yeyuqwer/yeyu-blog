@@ -19,7 +19,7 @@ export const brandThemeOptions = [
   },
   {
     id: 'indigo',
-    label: '星夜蓝',
+    label: '星夜紫',
     cssFile: 'indigo.css',
   },
   {
