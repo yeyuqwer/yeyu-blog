@@ -1,0 +1,35 @@
+:root[data-brand-theme="indigo"] {
+  /* Theme scale (shadcn/tailwind style) */
+  --theme-50: hsl(240 100% 98%);
+  --theme-100: hsl(240 92% 96%);
+  --theme-200: hsl(239 88% 90%);
+  --theme-300: hsl(239 84% 82%);
+  --theme-400: hsl(239 80% 68%);
+  --theme-500: hsl(240 77% 54%);
+  --theme-600: hsl(240 68% 47%);
+  --theme-700: hsl(240 60% 39%);
+  --theme-800: hsl(241 52% 31%);
+  --theme-900: hsl(242 46% 24%);
+  --theme-950: hsl(243 43% 14%);
+
+  /* Semantic brand tokens */
+  --theme-primary: var(--theme-700);
+  --theme-primary-foreground: hsl(0 0% 100%);
+  --theme-background: var(--theme-100);
+  --theme-surface: var(--theme-50);
+  --theme-active-text: hsl(0 0% 100%);
+  --theme-indicator: var(--theme-500);
+  --theme-hover-background: var(--theme-200);
+  --theme-border: var(--theme-300);
+  --theme-muted: var(--theme-200);
+  --theme-muted-foreground: var(--theme-800);
+  --theme-ring: var(--theme-400);
+
+  /* Background animation tokens (light mode) */
+  --bg-animate-base-start: hsl(240 78% 72%);
+  --bg-animate-base-end: hsl(240 92% 96%);
+  --bg-animate-c-0-start: hsl(238 88% 88%);
+  --bg-animate-c-1-start: hsl(248 78% 80%);
+  --bg-animate-c-0-end: hsl(0 0% 100%);
+  --bg-animate-c-1-end: hsl(239 82% 90%);
+}

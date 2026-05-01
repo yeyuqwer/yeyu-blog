@@ -1,0 +1,35 @@
+:root[data-brand-theme="lemon"] {
+  /* Theme scale (shadcn/tailwind style) */
+  --theme-50: hsl(58 100% 99%);
+  --theme-100: hsl(57 78% 96%);
+  --theme-200: hsl(56 72% 91%);
+  --theme-300: hsl(56 68% 83%);
+  --theme-400: #e8dc18;
+  --theme-500: hsl(54 88% 52%);
+  --theme-600: hsl(52 86% 47%);
+  --theme-700: hsl(50 78% 41%);
+  --theme-800: hsl(49 70% 34%);
+  --theme-900: hsl(48 62% 30%);
+  --theme-950: hsl(47 56% 26%);
+
+  /* Semantic brand tokens */
+  --theme-primary: var(--theme-700);
+  --theme-primary-foreground: hsl(0 0% 100%);
+  --theme-background: var(--theme-100);
+  --theme-surface: var(--theme-50);
+  --theme-active-text: hsl(0 0% 100%);
+  --theme-indicator: var(--theme-600);
+  --theme-hover-background: var(--theme-200);
+  --theme-border: var(--theme-300);
+  --theme-muted: var(--theme-200);
+  --theme-muted-foreground: var(--theme-800);
+  --theme-ring: var(--theme-500);
+
+  /* Background animation tokens (light mode) */
+  --bg-animate-base-start: hsl(56 78% 78%);
+  --bg-animate-base-end: hsl(57 78% 96%);
+  --bg-animate-c-0-start: hsl(56 72% 91%);
+  --bg-animate-c-1-start: hsl(55 76% 80%);
+  --bg-animate-c-0-end: hsl(58 100% 99%);
+  --bg-animate-c-1-end: hsl(56 70% 86%);
+}

@@ -1,0 +1,35 @@
+:root[data-brand-theme="leaf"] {
+  /* Theme scale (shadcn/tailwind style) */
+  --theme-50: hsl(100 50% 98%);
+  --theme-100: hsl(99 45% 94%);
+  --theme-200: hsl(99 42% 88%);
+  --theme-300: hsl(99 40% 78%);
+  --theme-400: #a2cb8b;
+  --theme-500: hsl(99 40% 56%);
+  --theme-600: hsl(101 36% 45%);
+  --theme-700: hsl(103 38% 35%);
+  --theme-800: hsl(105 34% 28%);
+  --theme-900: hsl(107 30% 22%);
+  --theme-950: hsl(110 28% 14%);
+
+  /* Semantic brand tokens */
+  --theme-primary: var(--theme-700);
+  --theme-primary-foreground: hsl(0 0% 100%);
+  --theme-background: var(--theme-100);
+  --theme-surface: var(--theme-50);
+  --theme-active-text: hsl(0 0% 100%);
+  --theme-indicator: var(--theme-400);
+  --theme-hover-background: var(--theme-200);
+  --theme-border: var(--theme-300);
+  --theme-muted: var(--theme-200);
+  --theme-muted-foreground: var(--theme-800);
+  --theme-ring: var(--theme-400);
+
+  /* Background animation tokens (light mode) */
+  --bg-animate-base-start: #a2cb8b;
+  --bg-animate-base-end: hsl(99 45% 94%);
+  --bg-animate-c-0-start: hsl(99 42% 88%);
+  --bg-animate-c-1-start: #a2cb8b;
+  --bg-animate-c-0-end: hsl(100 50% 98%);
+  --bg-animate-c-1-end: hsl(99 40% 84%);
+}

@@ -17,6 +17,21 @@ export const brandThemeOptions = [
     label: '茶花红',
     cssFile: 'camellia.css',
   },
+  {
+    id: 'indigo',
+    label: '星夜蓝',
+    cssFile: 'indigo.css',
+  },
+  {
+    id: 'leaf',
+    label: '新叶绿',
+    cssFile: 'leaf.css',
+  },
+  {
+    id: 'lemon',
+    label: '麦穗黄',
+    cssFile: 'lemon.css',
+  },
 ] as const
 
 export type BrandThemeId = (typeof brandThemeOptions)[number]['id']
