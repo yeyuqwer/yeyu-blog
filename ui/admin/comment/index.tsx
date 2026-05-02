@@ -27,7 +27,7 @@ export const CommentPage: FC<ComponentProps<'main'>> = () => {
   const mutterPendingCount = mutterCommentData?.total ?? 0
 
   return (
-    <main className="flex h-full min-h-0 w-full flex-1 flex-col gap-2 overflow-hidden">
+    <main className="flex h-full min-h-0 w-full flex-1 flex-col gap-2">
       <header className="flex flex-wrap items-center gap-2">
         <div className="relative inline-flex overflow-visible">
           <Button

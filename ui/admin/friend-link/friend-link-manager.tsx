@@ -211,7 +211,10 @@ export const FriendLinkManager: FC<ComponentProps<'main'>> = () => {
           <Select
             value={draftState}
             onValueChange={value => {
-              setDraftState(value as FriendLinkStateFilter)
+              const nextState = value as FriendLinkStateFilter
+              setDraftState(nextState)
+              setQuery(draftQuery.trim())
+              setState(nextState)
             }}
           >
             <SelectTrigger className="w-40">

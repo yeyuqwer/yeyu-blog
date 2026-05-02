@@ -120,7 +120,7 @@ export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
   }
 
   return (
-    <main className="flex h-full min-h-0 w-full flex-1 flex-col gap-2 overflow-hidden">
+    <main className="flex h-full min-h-0 w-full flex-1 flex-col gap-2">
       <header className="flex flex-wrap items-center gap-2">
         <Input
           className="min-w-56 flex-1"
@@ -151,7 +151,11 @@ export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
         <Select
           value={draftState}
           onValueChange={value => {
-            setDraftState(value as 'all' | MutterCommentState)
+            const nextState = value as 'all' | MutterCommentState
+            setDraftState(nextState)
+            setQuery(draftQuery.trim())
+            setMutterIdInput(draftMutterId.trim())
+            setState(nextState)
           }}
         >
           <SelectTrigger className="w-40">

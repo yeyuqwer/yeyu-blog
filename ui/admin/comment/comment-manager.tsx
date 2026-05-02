@@ -136,7 +136,7 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
   }
 
   return (
-    <main className="flex h-full min-h-0 w-full flex-1 flex-col gap-2 overflow-hidden">
+    <main className="flex h-full min-h-0 w-full flex-1 flex-col gap-2">
       <header className="flex flex-wrap items-center gap-2">
         <Input
           className="min-w-56 flex-1"
@@ -167,7 +167,12 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
         <Select
           value={draftTargetType}
           onValueChange={value => {
-            setDraftTargetType(value as TargetTypeFilter)
+            const nextTargetType = value as TargetTypeFilter
+            setDraftTargetType(nextTargetType)
+            setQuery(draftQuery.trim())
+            setTargetIdInput(draftTargetId.trim())
+            setTargetType(nextTargetType)
+            setState(draftState)
           }}
         >
           <SelectTrigger className="w-40">
@@ -184,7 +189,12 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
         <Select
           value={draftState}
           onValueChange={value => {
-            setDraftState(value as CommentStateFilter)
+            const nextState = value as CommentStateFilter
+            setDraftState(nextState)
+            setQuery(draftQuery.trim())
+            setTargetIdInput(draftTargetId.trim())
+            setTargetType(draftTargetType)
+            setState(nextState)
           }}
         >
           <SelectTrigger className="w-40">
