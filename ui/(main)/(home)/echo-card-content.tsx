@@ -2,13 +2,12 @@
 
 import type { PublicEchoCardData } from '@/lib/api/echo/type'
 import { motion, useReducedMotion, type Variants } from 'motion/react'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 type ReducedMotionPreference = ReturnType<typeof useReducedMotion>
+type EchoCardData = NonNullable<PublicEchoCardData>
 
-type EchoCardContentProps = {
-  echo?: PublicEchoCardData
-}
+let sessionEcho: EchoCardData | null = null
 
 function getContentVariants(shouldReduceMotion: ReducedMotionPreference): Variants {
   return {
@@ -45,13 +44,18 @@ function getLineVariants(shouldReduceMotion: ReducedMotionPreference): Variants 
   }
 }
 
-export default function EchoCardContent({ echo }: EchoCardContentProps) {
+export default function EchoCardContent({ echo }: { echo: EchoCardData }) {
   const shouldReduceMotion = useReducedMotion()
+  const [currentEcho] = useState(() => sessionEcho ?? echo)
   const contentVariants = useMemo(
     () => getContentVariants(shouldReduceMotion),
     [shouldReduceMotion],
   )
   const lineVariants = useMemo(() => getLineVariants(shouldReduceMotion), [shouldReduceMotion])
+
+  useEffect(() => {
+    sessionEcho = currentEcho
+  }, [currentEcho])
 
   return (
     <motion.section layout className="mt-4 flex w-2/3 flex-col">
@@ -64,18 +68,16 @@ export default function EchoCardContent({ echo }: EchoCardContentProps) {
         className="flex flex-col"
       >
         <motion.p
-          suppressHydrationWarning
           variants={lineVariants}
           className="underline decoration-black drop-shadow-[0_0_0.75rem_var(--theme-indicator)] dark:decoration-white dark:drop-shadow-[0_0_10px_var(--theme-400)]"
         >
-          {echo?.content ?? '虚无。'}
+          {currentEcho.content}
         </motion.p>
         <motion.footer
-          suppressHydrationWarning
           variants={lineVariants}
           className="ml-auto text-sm text-theme-primary drop-shadow-[0_0_0.75rem_var(--theme-indicator)] dark:text-theme-400 dark:drop-shadow-[0_0_10px_var(--theme-400)]"
         >
-          「{echo?.reference ?? '无名。'}」
+          「{currentEcho.reference}」
         </motion.footer>
       </motion.blockquote>
     </motion.section>
