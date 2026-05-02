@@ -195,7 +195,7 @@ export const FriendLinkApplyModal: FC<ComponentProps<'div'>> = () => {
                   }}
                 >
                   <SendIcon ref={sendIconRef} className="size-4" />
-                  {isSubmitting ? '提交中...' : '提交申请'}
+                  {isSubmitting ? '稍等' : '提交'}
                 </Button>
               </div>
             </DialogFooter>

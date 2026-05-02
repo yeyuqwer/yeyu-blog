@@ -1,6 +1,6 @@
 'use client'
 
-import { MessageCircle } from 'lucide-react'
+import { LogIn, MessageCircle } from 'lucide-react'
 import Image from 'next/image'
 import { type ComponentProps, type FC, useMemo, useState } from 'react'
 import { type Address, isAddress } from 'viem'
@@ -22,7 +22,7 @@ export const MutterCommentModal: FC<ComponentProps<'div'>> = () => {
   const setModalOpen = useModalStore(s => s.setModalOpen)
   const isModalOpen = modalType === 'mutterCommentModal'
   const values =
-    payload != null
+    isModalOpen && payload != null
       ? (payload as {
           mutterId: number
           content: string
@@ -42,7 +42,7 @@ export const MutterCommentModal: FC<ComponentProps<'div'>> = () => {
 
   const isLoggedIn = useMemo(() => isEmailUser || isWalletUser, [isEmailUser, isWalletUser])
 
-  const { data: commentListData, isPending: isCommentListPending } = usePublicMutterCommentQuery({
+  const { data: commentListData, isLoading: isCommentListLoading } = usePublicMutterCommentQuery({
     mutterId,
     take: 50,
     enabled: isModalOpen && mutterId > 0,
@@ -111,7 +111,7 @@ export const MutterCommentModal: FC<ComponentProps<'div'>> = () => {
               event.stopPropagation()
             }}
           >
-            {isCommentListPending ? (
+            {isCommentListLoading ? (
               <div className="flex h-full min-h-32 items-center justify-center">
                 <Loading />
               </div>
@@ -260,7 +260,7 @@ export const MutterCommentModal: FC<ComponentProps<'div'>> = () => {
                 <Button
                   type="button"
                   size="sm"
-                  className="w-full"
+                  className="h-9 w-full cursor-pointer rounded-xl bg-theme-indicator text-theme-active-text shadow-none hover:bg-[color-mix(in_srgb,var(--theme-indicator)_92%,black)] hover:text-theme-active-text focus-visible:ring-theme-ring/35 disabled:cursor-not-allowed disabled:bg-theme-indicator disabled:text-theme-active-text disabled:opacity-45"
                   disabled={trimmedComment.length === 0 || isCreatingComment}
                   onClick={() => {
                     void handleSubmitComment()
@@ -274,11 +274,12 @@ export const MutterCommentModal: FC<ComponentProps<'div'>> = () => {
             <div className="flex items-center justify-end">
               <Button
                 type="button"
-                className="w-full"
+                className="h-10 w-full cursor-pointer rounded-xl bg-theme-indicator text-theme-active-text shadow-none hover:bg-[color-mix(in_srgb,var(--theme-indicator)_92%,black)] hover:text-theme-active-text focus-visible:ring-theme-ring/35"
                 onClick={() => {
                   setModalOpen('loginModal')
                 }}
               >
+                <LogIn className="size-4" />
                 登录后评论
               </Button>
             </div>

@@ -14,7 +14,7 @@ export default function GlobalProvider({ children }: { children: React.ReactNode
         <ReactQueryProvider>
           <WalletProvider>
             {children}
-            <Toaster position="top-left" />
+            <Toaster position="top-center" />
           </WalletProvider>
         </ReactQueryProvider>
       </ThemeProvider>
