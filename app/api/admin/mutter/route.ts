@@ -105,6 +105,7 @@ export const PATCH = withResponse(async request => {
     throw new BadRequestError('Mutter not found.', { data: { id } })
   }
 
+  const isContentUpdate = content != null
   const updated = await prisma.mutter.update({
     where: {
       id,
@@ -112,6 +113,7 @@ export const PATCH = withResponse(async request => {
     data: {
       ...(content != null ? { content } : {}),
       ...(isPublished != null ? { isPublished } : {}),
+      ...(!isContentUpdate ? { updatedAt: existing.updatedAt } : {}),
     },
   })
 

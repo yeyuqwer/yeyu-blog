@@ -22,6 +22,7 @@ export const POST = withResponse(async request => {
     select: {
       id: true,
       isPublished: true,
+      updatedAt: true,
     },
   })
 
@@ -37,6 +38,7 @@ export const POST = withResponse(async request => {
       likeCount: {
         increment: 1,
       },
+      updatedAt: mutter.updatedAt,
     },
     select: {
       id: true,
