@@ -2,22 +2,25 @@
 
 import { Moon, Sun } from 'lucide-react'
 import { useTransitionTheme } from '@/hooks/animation'
+import { useIsMounted } from '@/hooks/common'
 import { Button } from '@/ui/shadcn/button'
 
 export function ModeToggle() {
-  const { setTransitionTheme, theme } = useTransitionTheme()
+  const { setTransitionTheme, resolvedTheme } = useTransitionTheme()
+  const mounted = useIsMounted()
+  const currentTheme = mounted && resolvedTheme === 'dark' ? 'dark' : 'light'
 
   return (
     <Button
       onClick={() =>
-        setTransitionTheme(theme === 'light' ? 'dark' : 'light', {
-          direction: theme === 'light' ? 'bottom' : 'top',
+        setTransitionTheme(currentTheme === 'light' ? 'dark' : 'light', {
+          direction: currentTheme === 'light' ? 'bottom' : 'top',
         })
       }
       size="sm"
       className="cursor-pointer"
     >
-      {theme === 'light' ? <Sun /> : <Moon />}
+      {currentTheme === 'light' ? <Sun /> : <Moon />}
     </Button>
   )
 }
