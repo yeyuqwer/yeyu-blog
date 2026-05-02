@@ -1,6 +1,7 @@
 import 'server-only'
 
 import { prisma } from '@/prisma/instance'
+import { getAdminPendingCount } from '../pending-count/get-admin-pending-count'
 
 export type AdminOverviewStats = {
   blogCount: number
@@ -14,19 +15,17 @@ export type AdminOverviewStats = {
 }
 
 export async function getAdminOverviewStats(): Promise<AdminOverviewStats> {
-  const blogGroups = await prisma.blog.groupBy({
-    by: ['isPublished'],
-    _count: { _all: true },
-  })
-  const noteGroups = await prisma.note.groupBy({
-    by: ['isPublished'],
-    _count: { _all: true },
-  })
-  const siteCommentPendingCount = await prisma.siteComment.count({ where: { state: 'PENDING' } })
-  const mutterCommentPendingCount = await prisma.mutterComment.count({
-    where: { state: 'PENDING' },
-  })
-  const friendLinkPendingCount = await prisma.friendLink.count({ where: { state: 'PENDING' } })
+  const [blogGroups, noteGroups, pendingCount] = await Promise.all([
+    prisma.blog.groupBy({
+      by: ['isPublished'],
+      _count: { _all: true },
+    }),
+    prisma.note.groupBy({
+      by: ['isPublished'],
+      _count: { _all: true },
+    }),
+    getAdminPendingCount(),
+  ])
 
   const blogCount = blogGroups.reduce((total, group) => total + group._count._all, 0)
   const noteCount = noteGroups.reduce((total, group) => total + group._count._all, 0)
@@ -38,7 +37,6 @@ export async function getAdminOverviewStats(): Promise<AdminOverviewStats> {
     (total, group) => total + (group.isPublished ? 0 : group._count._all),
     0,
   )
-  const commentPendingCount = siteCommentPendingCount + mutterCommentPendingCount
 
   return {
     blogCount,
@@ -46,8 +44,8 @@ export async function getAdminOverviewStats(): Promise<AdminOverviewStats> {
     blogDraftCount,
     noteDraftCount,
     draftCount: blogDraftCount + noteDraftCount,
-    commentPendingCount,
-    friendLinkPendingCount,
-    pendingCount: commentPendingCount + friendLinkPendingCount,
+    commentPendingCount: pendingCount.commentPendingCount,
+    friendLinkPendingCount: pendingCount.friendLinkPendingCount,
+    pendingCount: pendingCount.pendingCount,
   }
 }

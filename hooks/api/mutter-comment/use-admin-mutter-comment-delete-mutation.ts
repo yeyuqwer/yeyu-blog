@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { adminPendingCountQueryKey } from '@/hooks/api/admin'
 import { deleteMutterComment } from '@/lib/api/mutter-comment'
 
 export function useAdminMutterCommentDeleteMutation() {
@@ -9,6 +10,9 @@ export function useAdminMutterCommentDeleteMutation() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: ['admin-mutter-comment-list'],
+      })
+      await queryClient.invalidateQueries({
+        queryKey: adminPendingCountQueryKey,
       })
       await queryClient.invalidateQueries({
         queryKey: ['public-mutter-comment-list'],

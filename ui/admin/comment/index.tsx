@@ -2,8 +2,7 @@
 
 import type { ComponentProps, FC } from 'react'
 import { useState } from 'react'
-import { useAdminCommentQuery } from '@/hooks/api/comment'
-import { useAdminMutterCommentQuery } from '@/hooks/api/mutter-comment'
+import { useAdminPendingCountQuery } from '@/hooks/api/admin'
 import { formatPendingCount } from '@/lib/utils/common/format-pending-count'
 import { cn } from '@/lib/utils/common/shadcn'
 import { Button } from '@/ui/shadcn/button'
@@ -13,18 +12,9 @@ import { MutterCommentManager } from './mutter-comment-manager'
 
 export const CommentPage: FC<ComponentProps<'main'>> = () => {
   const [mode, setMode] = useState<'comment' | 'mutterComment' | 'commentConfig'>('comment')
-  const { data: commentData } = useAdminCommentQuery({
-    state: 'PENDING',
-    take: 1,
-    skip: 0,
-  })
-  const { data: mutterCommentData } = useAdminMutterCommentQuery({
-    state: 'PENDING',
-    take: 1,
-    skip: 0,
-  })
-  const pendingCount = commentData?.total ?? 0
-  const mutterPendingCount = mutterCommentData?.total ?? 0
+  const { data: pendingCountData } = useAdminPendingCountQuery()
+  const pendingCount = pendingCountData?.siteCommentPendingCount ?? 0
+  const mutterPendingCount = pendingCountData?.mutterCommentPendingCount ?? 0
 
   return (
     <main className="flex h-full min-h-0 w-full flex-1 flex-col gap-2">
