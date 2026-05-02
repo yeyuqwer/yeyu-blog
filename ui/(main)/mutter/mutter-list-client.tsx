@@ -9,17 +9,20 @@ import { prettyDateTime, toRelativeDate } from '@/lib/utils/time'
 import { useModalStore } from '@/store/use-modal-store'
 import { itemVariants, listVariants } from './constant'
 import { MutterCommentButton } from './mutter-comment-button'
+import { MutterContent } from './mutter-content'
 import { MutterLikeButton } from './mutter-like-button'
 
-type MutterListItem = {
-  id: number
-  content: string
-  likeCount: number
-  createdAt: string
-  commentCount: number
-}
-
-export function MutterListClient({ mutters }: { mutters: MutterListItem[] }) {
+export function MutterListClient({
+  mutters,
+}: {
+  mutters: {
+    id: number
+    content: string
+    likeCount: number
+    createdAt: string
+    commentCount: number
+  }[]
+}) {
   const [likedMutterIds, setLikedMutterIds] = useState<number[]>([])
   const [likeCounts, setLikeCounts] = useState<Record<number, number>>(
     Object.fromEntries(mutters.map(item => [item.id, item.likeCount])),
@@ -99,7 +102,7 @@ export function MutterListClient({ mutters }: { mutters: MutterListItem[] }) {
                   {relativeDate}
                 </time>
                 <article className="rounded-xl border border-[#00000011] bg-theme-background/80 px-4 py-3 text-[15px] text-zinc-900 leading-7 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100">
-                  <p className="wrap-break-word whitespace-pre-wrap">{item.content}</p>
+                  <MutterContent content={item.content} />
                   <footer className="mt-3 flex items-center justify-end gap-0.5">
                     <MutterCommentButton
                       isActive={isCommentActive}
