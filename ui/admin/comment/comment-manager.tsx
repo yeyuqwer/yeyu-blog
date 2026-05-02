@@ -17,15 +17,11 @@ import { Badge } from '@/ui/shadcn/badge'
 import { Button } from '@/ui/shadcn/button'
 import { Input } from '@/ui/shadcn/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/shadcn/select'
+import { CommentContent } from './comment-content'
 
-type BadgeVariant = NonNullable<ComponentProps<typeof Badge>['variant']>
-
-type CommentStateFilter = 'all' | CommentState
-type TargetTypeFilter = 'all' | CommentTargetType
-
-const COMMENT_STATE_OPTIONS: Array<{
+const commentStateOptions: Array<{
   label: string
-  value: CommentStateFilter
+  value: 'all' | CommentState
 }> = [
   { label: '全部状态', value: 'all' },
   { label: '待审核', value: 'PENDING' },
@@ -33,28 +29,31 @@ const COMMENT_STATE_OPTIONS: Array<{
   { label: '已拒绝', value: 'REJECTED' },
 ]
 
-const COMMENT_STATE_LABEL_MAP: Record<CommentState, string> = {
+const commentStateLabelMap: Record<CommentState, string> = {
   PENDING: '待审核',
   APPROVED: '已通过',
   REJECTED: '已拒绝',
 }
 
-const COMMENT_STATE_BADGE_VARIANT_MAP: Record<CommentState, BadgeVariant> = {
+const commentStateBadgeVariantMap: Record<
+  CommentState,
+  NonNullable<ComponentProps<typeof Badge>['variant']>
+> = {
   PENDING: 'warning',
   APPROVED: 'success',
   REJECTED: 'destructive',
 }
 
-const TARGET_TYPE_OPTIONS: Array<{
+const targetTypeOptions: Array<{
   label: string
-  value: TargetTypeFilter
+  value: 'all' | CommentTargetType
 }> = [
   { label: '全部类型', value: 'all' },
   { label: '博客', value: 'BLOG' },
   { label: '笔记', value: 'NOTE' },
 ]
 
-const TARGET_TYPE_LABEL_MAP: Record<CommentTargetType, string> = {
+const targetTypeLabelMap: Record<CommentTargetType, string> = {
   BLOG: '博客',
   NOTE: '笔记',
 }
@@ -62,13 +61,13 @@ const TARGET_TYPE_LABEL_MAP: Record<CommentTargetType, string> = {
 export const CommentManager: FC<ComponentProps<'main'>> = () => {
   const [draftQuery, setDraftQuery] = useState('')
   const [draftTargetId, setDraftTargetId] = useState('')
-  const [draftTargetType, setDraftTargetType] = useState<TargetTypeFilter>('all')
-  const [draftState, setDraftState] = useState<CommentStateFilter>('PENDING')
+  const [draftTargetType, setDraftTargetType] = useState<'all' | CommentTargetType>('all')
+  const [draftState, setDraftState] = useState<'all' | CommentState>('PENDING')
 
   const [query, setQuery] = useState('')
   const [targetIdInput, setTargetIdInput] = useState('')
-  const [targetType, setTargetType] = useState<TargetTypeFilter>('all')
-  const [state, setState] = useState<CommentStateFilter>('PENDING')
+  const [targetType, setTargetType] = useState<'all' | CommentTargetType>('all')
+  const [state, setState] = useState<'all' | CommentState>('PENDING')
 
   const parsedTargetId = useMemo(() => {
     if (targetIdInput.trim().length === 0) {
@@ -167,7 +166,7 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
         <Select
           value={draftTargetType}
           onValueChange={value => {
-            const nextTargetType = value as TargetTypeFilter
+            const nextTargetType = value as 'all' | CommentTargetType
             setDraftTargetType(nextTargetType)
             setQuery(draftQuery.trim())
             setTargetIdInput(draftTargetId.trim())
@@ -179,7 +178,7 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
             <SelectValue placeholder="内容类型" />
           </SelectTrigger>
           <SelectContent>
-            {TARGET_TYPE_OPTIONS.map(option => (
+            {targetTypeOptions.map(option => (
               <SelectItem value={option.value} key={option.value}>
                 {option.label}
               </SelectItem>
@@ -189,7 +188,7 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
         <Select
           value={draftState}
           onValueChange={value => {
-            const nextState = value as CommentStateFilter
+            const nextState = value as 'all' | CommentState
             setDraftState(nextState)
             setQuery(draftQuery.trim())
             setTargetIdInput(draftTargetId.trim())
@@ -201,7 +200,7 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
             <SelectValue placeholder="评论状态" />
           </SelectTrigger>
           <SelectContent>
-            {COMMENT_STATE_OPTIONS.map(option => (
+            {commentStateOptions.map(option => (
               <SelectItem value={option.value} key={option.value}>
                 {option.label}
               </SelectItem>
@@ -225,20 +224,20 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
             {comments.map(comment => (
               <li key={comment.id} className="rounded-sm border bg-background p-3 shadow-xs">
                 <section className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="font-medium text-sm">
                         {comment.user?.name ?? comment.authorName}
                       </h3>
                       <Badge variant="outline">#{comment.id}</Badge>
-                      <Badge variant={COMMENT_STATE_BADGE_VARIANT_MAP[comment.state]}>
-                        {COMMENT_STATE_LABEL_MAP[comment.state]}
+                      <Badge variant={commentStateBadgeVariantMap[comment.state]}>
+                        {commentStateLabelMap[comment.state]}
                       </Badge>
                       <Badge variant="outline">
-                        {`${TARGET_TYPE_LABEL_MAP[comment.targetType]} ${comment.targetId}`}
+                        {`${targetTypeLabelMap[comment.targetType]} ${comment.targetId}`}
                       </Badge>
                     </div>
-                    <p className="mt-2 whitespace-pre-wrap text-sm leading-6">{comment.content}</p>
+                    <CommentContent content={comment.content} />
                     <div className="mt-2 flex flex-wrap items-center gap-2 text-muted-foreground text-xs">
                       {comment.target != null ? (
                         <>

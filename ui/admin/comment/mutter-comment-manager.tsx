@@ -17,6 +17,7 @@ import { Badge } from '@/ui/shadcn/badge'
 import { Button } from '@/ui/shadcn/button'
 import { Input } from '@/ui/shadcn/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/shadcn/select'
+import { CommentContent } from './comment-content'
 
 const commentStateOptions: Array<{
   label: string
@@ -186,7 +187,7 @@ export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
             {comments.map(comment => (
               <li key={comment.id} className="rounded-sm border bg-background p-3 shadow-xs">
                 <section className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="font-medium text-sm">
                         {comment.user?.name ?? comment.authorName}
@@ -197,7 +198,7 @@ export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
                       </Badge>
                       <Badge variant="outline">{`Mutter ${comment.mutterId}`}</Badge>
                     </div>
-                    <p className="mt-2 whitespace-pre-wrap text-sm leading-6">{comment.content}</p>
+                    <CommentContent content={comment.content} />
                     <p className="mt-2 line-clamp-1 text-muted-foreground text-xs">
                       <span className="mr-1">关联低语：</span>
                       {comment.mutter.content}

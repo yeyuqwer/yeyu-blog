@@ -1,7 +1,14 @@
+import Image, { type ImageLoaderProps } from 'next/image'
+import { useMemo } from 'react'
 import { cn } from '@/lib/utils/common/shadcn'
 import { useCommentMarkdown } from './use-comment-markdown'
 
-export function CommentMarkdownContent({ content }: { content: string }) {
+const urlPattern = /https?:\/\/[^\s<>"'`]+/g
+const sentencePunctuationPattern = /[，。！？；：、]/
+const trailingUrlTextPattern = /[),.;:!?，。！？；：、]+$/g
+const passthroughImageLoader = ({ src }: ImageLoaderProps) => src
+
+function CommentMarkdownText({ content }: { content: string }) {
   const html = useCommentMarkdown(content)
 
   if (html == null) {
@@ -23,5 +30,178 @@ export function CommentMarkdownContent({ content }: { content: string }) {
       )}
       dangerouslySetInnerHTML={{ __html: html }}
     />
+  )
+}
+
+function CommentLink({
+  faviconUrl,
+  href,
+  label,
+}: {
+  faviconUrl: string
+  href: string
+  label: string
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      title={href}
+      className="inline-flex w-fit max-w-full items-center gap-1.5 text-sm text-zinc-600 transition-colors hover:text-zinc-950 hover:underline dark:text-zinc-400 dark:hover:text-zinc-100"
+    >
+      <Image
+        src={faviconUrl}
+        alt=""
+        width={16}
+        height={16}
+        className="size-4 shrink-0"
+        loader={passthroughImageLoader}
+        unoptimized
+      />
+      <span className="min-w-0 truncate">{label}</span>
+    </a>
+  )
+}
+
+function getCommentContentBlocks(content: string) {
+  const blocks: Array<
+    | {
+        kind: 'text'
+        value: string
+      }
+    | {
+        kind: 'link'
+        faviconUrl: string
+        href: string
+        label: string
+      }
+  > = []
+  let textStartIndex = 0
+
+  const appendTextBlock = (text: string) => {
+    const value = text.replace(/\n{3,}/g, '\n\n').trim()
+
+    if (value.length === 0) {
+      return
+    }
+
+    const previousBlock = blocks.at(-1)
+
+    if (previousBlock?.kind === 'text') {
+      previousBlock.value = `${previousBlock.value}\n${value}`
+      return
+    }
+
+    blocks.push({
+      kind: 'text',
+      value,
+    })
+  }
+
+  for (const match of content.matchAll(urlPattern)) {
+    const matchedText = match[0]
+    const matchIndex = match.index ?? 0
+    const urlText = getUrlText(matchedText)
+    const nextTextStartIndex = matchIndex + urlText.length
+
+    if (
+      !URL.canParse(urlText) ||
+      shouldKeepUrlInMarkdown(content, matchIndex, nextTextStartIndex)
+    ) {
+      continue
+    }
+
+    const url = new URL(urlText)
+    appendTextBlock(content.slice(textStartIndex, matchIndex))
+    blocks.push({
+      kind: 'link',
+      faviconUrl: getCommentLinkFaviconUrl(url),
+      href: url.toString(),
+      label: getCommentLinkLabel(url),
+    })
+    textStartIndex = nextTextStartIndex
+  }
+
+  appendTextBlock(content.slice(textStartIndex))
+
+  return blocks
+}
+
+function getUrlText(matchedText: string) {
+  const punctuationIndex = matchedText.search(sentencePunctuationPattern)
+  const trimmedText = punctuationIndex === -1 ? matchedText : matchedText.slice(0, punctuationIndex)
+
+  return trimmedText.replace(trailingUrlTextPattern, '')
+}
+
+function shouldKeepUrlInMarkdown(content: string, startIndex: number, endIndex: number) {
+  return (
+    isMarkdownLinkUrl(content, startIndex) ||
+    isMarkdownAutolink(content, startIndex, endIndex) ||
+    isInsideInlineCode(content, startIndex)
+  )
+}
+
+function isMarkdownLinkUrl(content: string, startIndex: number) {
+  if (content[startIndex - 1] !== '(' || content[startIndex - 2] !== ']') {
+    return false
+  }
+
+  const labelStartIndex = content.lastIndexOf('[', startIndex - 2)
+  const lineStartIndex = content.lastIndexOf('\n', startIndex - 2)
+
+  return labelStartIndex > lineStartIndex
+}
+
+function isMarkdownAutolink(content: string, startIndex: number, endIndex: number) {
+  return content[startIndex - 1] === '<' && content[endIndex] === '>'
+}
+
+function isInsideInlineCode(content: string, startIndex: number) {
+  const lineStartIndex = content.lastIndexOf('\n', startIndex - 1) + 1
+  const textBeforeUrl = content.slice(lineStartIndex, startIndex)
+  const backtickCount = textBeforeUrl.match(/`/g)?.length ?? 0
+
+  return backtickCount % 2 === 1
+}
+
+function getCommentLinkFaviconUrl(url: URL) {
+  return `https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(url.origin)}&sz=64`
+}
+
+function getCommentLinkLabel(url: URL) {
+  const pathname = url.pathname === '/' ? '' : url.pathname
+  return `${url.hostname}${pathname}${url.search}${url.hash}`
+}
+
+export function CommentMarkdownContent({ content }: { content: string }) {
+  const blocks = useMemo(() => getCommentContentBlocks(content), [content])
+
+  if (blocks.length === 1 && blocks[0].kind === 'text') {
+    return <CommentMarkdownText content={blocks[0].value} />
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      {blocks.map((block, index) => {
+        if (block.kind === 'text') {
+          return <CommentMarkdownText key={`text-${index}`} content={block.value} />
+        }
+
+        if (block.kind === 'link') {
+          return (
+            <CommentLink
+              key={`link-${block.href}-${index}`}
+              faviconUrl={block.faviconUrl}
+              href={block.href}
+              label={block.label}
+            />
+          )
+        }
+
+        return null
+      })}
+    </div>
   )
 }
