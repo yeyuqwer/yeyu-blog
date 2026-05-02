@@ -1,19 +1,25 @@
 'use client'
 
+import { useInfiniteQuery } from '@tanstack/react-query'
 import * as motion from 'motion/react-client'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import avatar from '@/config/img/avatar.webp'
 import { useMutterLikeMutation } from '@/hooks/api/mutter'
+import { getPublicMutters } from '@/lib/api/mutter'
 import { prettyDateTime, toRelativeDate } from '@/lib/utils/time'
 import { useModalStore } from '@/store/use-modal-store'
+import Loading from '@/ui/components/shared/loading'
 import { itemVariants, listVariants } from './constant'
 import { MutterCommentButton } from './mutter-comment-button'
 import { MutterContent } from './mutter-content'
 import { MutterLikeButton } from './mutter-like-button'
 
+const pageSize = 10
+
 export function MutterListClient({
-  mutters,
+  mutters: initialMutters,
+  total,
 }: {
   mutters: {
     id: number
@@ -22,12 +28,36 @@ export function MutterListClient({
     createdAt: string
     commentCount: number
   }[]
+  total: number
 }) {
   const [likedMutterIds, setLikedMutterIds] = useState<number[]>([])
   const [likeCounts, setLikeCounts] = useState<Record<number, number>>(
-    Object.fromEntries(mutters.map(item => [item.id, item.likeCount])),
+    Object.fromEntries(initialMutters.map(item => [item.id, item.likeCount])),
   )
+  const loadMoreRef = useRef<HTMLDivElement>(null)
   const { mutateAsync: likeMutterById } = useMutterLikeMutation()
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: ['public-mutter-list', pageSize],
+    queryFn: ({ pageParam }) => getPublicMutters({ take: pageSize, skip: pageParam }),
+    initialPageParam: 0,
+    initialData: {
+      pages: [
+        {
+          list: initialMutters,
+          total,
+          take: pageSize,
+          skip: 0,
+        },
+      ],
+      pageParams: [0],
+    },
+    getNextPageParam: lastPage => {
+      const nextSkip = lastPage.skip + lastPage.list.length
+
+      return nextSkip < lastPage.total ? nextSkip : undefined
+    },
+    staleTime: 1000 * 30,
+  })
   const modalType = useModalStore(s => s.modalType)
   const payload = useModalStore(s => s.payload)
   const setModalOpen = useModalStore(s => s.setModalOpen)
@@ -39,6 +69,48 @@ export function MutterListClient({
           createdAt: string
         })
       : null
+  const mutters = useMemo(() => {
+    const existingIds = new Set<number>()
+
+    return data.pages
+      .flatMap(page => page.list)
+      .filter(item => {
+        if (existingIds.has(item.id)) {
+          return false
+        }
+
+        existingIds.add(item.id)
+
+        return true
+      })
+  }, [data.pages])
+
+  useEffect(() => {
+    const element = loadMoreRef.current
+
+    if (element == null || !hasNextPage) {
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      entries => {
+        const entry = entries[0]
+
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          void fetchNextPage()
+        }
+      },
+      {
+        rootMargin: '240px 0px',
+      },
+    )
+
+    observer.observe(element)
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage])
 
   const handleLike = async (id: number) => {
     if (likedMutterIds.includes(id)) {
@@ -130,6 +202,11 @@ export function MutterListClient({
           )
         })}
       </motion.ul>
+      {hasNextPage ? (
+        <div ref={loadMoreRef} className="flex h-28 items-center justify-center">
+          {isFetchingNextPage ? <Loading /> : null}
+        </div>
+      ) : null}
     </motion.section>
   )
 }

@@ -29,6 +29,21 @@ export const GET = withResponse(async request => {
   const [list, total] = await Promise.all([
     prisma.mutter.findMany({
       where,
+      select: {
+        id: true,
+        content: true,
+        likeCount: true,
+        createdAt: true,
+        _count: {
+          select: {
+            comments: {
+              where: {
+                state: 'APPROVED',
+              },
+            },
+          },
+        },
+      },
       orderBy: {
         createdAt: 'desc',
       },
@@ -39,7 +54,13 @@ export const GET = withResponse(async request => {
   ])
 
   return {
-    list,
+    list: list.map(item => ({
+      id: item.id,
+      content: item.content,
+      likeCount: item.likeCount,
+      createdAt: item.createdAt,
+      commentCount: item._count.comments,
+    })),
     total,
     take,
     skip,
