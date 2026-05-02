@@ -12,9 +12,9 @@ function TagSearch({ setQuery }: { setQuery: Dispatch<SetStateAction<string>> })
   const inputRef = useRef<HTMLInputElement>(null)
 
   return (
-    <div className="flex gap-2">
+    <div className="flex w-full shrink-0 gap-2">
       <Input
-        className="w-1/2 xl:w-1/3"
+        className="min-w-0 flex-1"
         placeholder="请输入标签名喵~"
         ref={inputRef}
         onKeyDown={e => {
@@ -47,6 +47,10 @@ function TagSearch({ setQuery }: { setQuery: Dispatch<SetStateAction<string>> })
         variant="secondary"
         className="cursor-pointer"
         onClick={() => {
+          if (inputRef.current != null) {
+            inputRef.current.value = ''
+          }
+
           setQuery('')
         }}
       >

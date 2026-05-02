@@ -15,10 +15,12 @@ export const AdminEchoPage: FC<ComponentProps<'main'>> = () => {
   })
 
   return (
-    <main className="flex w-full flex-col gap-2">
-      <EchoSearch setQuery={setQuery} />
+    <main className="flex h-[calc(100dvh-5rem)] min-h-0 w-full flex-col gap-3 pb-4">
+      <section className="flex min-h-0 flex-1 flex-col gap-2">
+        <EchoSearch setQuery={setQuery} />
 
-      {isPending ? <Loading /> : <DataTable columns={columns} data={data ?? []} />}
+        {isPending ? <Loading /> : <DataTable columns={columns} data={data ?? []} />}
+      </section>
     </main>
   )
 }

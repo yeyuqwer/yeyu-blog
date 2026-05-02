@@ -10,10 +10,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <AdminProvider>
-      <main className="flex min-h-screen max-w-screen flex-col dark:bg-black dark:text-white">
+      <main className="flex min-h-screen w-full min-w-0 max-w-screen flex-col overflow-x-hidden dark:bg-black dark:text-white">
         <AdminNavbar />
-        <div className="mt-2 flex flex-1 px-6">
-          <main className="flex flex-1">{children}</main>
+        <div className="mt-2 flex min-w-0 flex-1 px-6">
+          <main className="flex min-w-0 flex-1">{children}</main>
         </div>
       </main>
     </AdminProvider>

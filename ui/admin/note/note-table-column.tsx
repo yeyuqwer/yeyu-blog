@@ -34,9 +34,15 @@ export const columns: ColumnDef<NoteListItem>[] = [
     cell: ({ row }) => {
       const tags = row.original.tags
       return (
-        <div className="flex items-center gap-1">
+        <div className="flex max-w-[min(22rem,32vw)] flex-wrap items-center gap-1 overflow-hidden">
           {tags.map(tag => (
-            <TagItemBadge tag={tag.tagName} key={tag.id} />
+            <span
+              className="inline-block min-w-0 max-w-36 truncate align-bottom"
+              title={tag.tagName}
+              key={tag.id}
+            >
+              <TagItemBadge tag={tag.tagName} />
+            </span>
           ))}
         </div>
       )

@@ -3,13 +3,11 @@ import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-r
 import { Button } from '@/ui/shadcn/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/shadcn/select'
 
-interface DataTablePaginationProps<TData> {
-  table: Table<TData>
-}
+export function DataTablePagination<TData>({ table }: { table: Table<TData> }) {
+  const pageCount = Math.max(table.getPageCount(), 1)
 
-export function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>) {
   return (
-    <div className="my-2 flex items-center justify-end">
+    <div className="flex shrink-0 items-center justify-end border-zinc-200 border-t py-2 dark:border-zinc-800">
       <div className="flex items-center space-x-2 lg:space-x-3">
         <div className="flex items-center space-x-2">
           <Select
@@ -31,7 +29,7 @@ export function DataTablePagination<TData>({ table }: DataTablePaginationProps<T
           </Select>
         </div>
         <div className="flex w-[100px] items-center justify-center font-medium text-sm">
-          {table.getState().pagination.pageIndex + 1} /{table.getPageCount()}
+          {table.getState().pagination.pageIndex + 1} /{pageCount}
         </div>
         <div className="flex items-center space-x-2">
           <Button
@@ -64,7 +62,7 @@ export function DataTablePagination<TData>({ table }: DataTablePaginationProps<T
           <Button
             variant="outline"
             className="hidden h-8 w-8 cursor-pointer p-0 lg:flex"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            onClick={() => table.setPageIndex(pageCount - 1)}
             disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">最后一页</span>

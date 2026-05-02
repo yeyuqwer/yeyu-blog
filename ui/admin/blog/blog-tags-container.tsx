@@ -17,25 +17,27 @@ export function BlogTagsContainer({
   setSelectedTags: Dispatch<SetStateAction<string[]>>
 }) {
   const [api, setApi] = useState<CarouselApi>()
-  const [current, setCurrent] = useState(1)
-  const [count, setCount] = useState(0)
+  const [canScrollPrev, setCanScrollPrev] = useState(false)
+  const [canScrollNext, setCanScrollNext] = useState(false)
 
   const blogTags = blogTagList.map(tag => tag.tagName)
 
   useEffect(() => {
     if (api == null) return
 
-    const updateCurrent = () => {
-      setCurrent(api.selectedScrollSnap() + 1)
+    const updateMaskState = () => {
+      setCanScrollPrev(api.canScrollPrev())
+      setCanScrollNext(api.canScrollNext())
     }
 
-    setCount(api.scrollSnapList().length)
-    updateCurrent()
+    updateMaskState()
 
-    api.on('select', updateCurrent)
+    api.on('select', updateMaskState)
+    api.on('reInit', updateMaskState)
 
     return () => {
-      api.off('select', updateCurrent)
+      api.off('select', updateMaskState)
+      api.off('reInit', updateMaskState)
     }
   }, [api])
 
@@ -46,18 +48,19 @@ export function BlogTagsContainer({
         dragFree: true,
       }}
       setApi={setApi}
-      className="relative"
+      className="relative w-full min-w-0 shrink-0 overflow-hidden"
     >
-      {/* 左侧 fade 遮罩 */}
       <span
+        aria-hidden="true"
         className={cn(
-          'absolute top-0 bottom-0 left-0 z-10 w-12',
-          'bg-gradient-to-r from-white/80 to-transparent dark:from-black/60',
-          'pointer-events-none transition-colors duration-300 ease-in-out',
-          current === 1 && 'hidden',
+          'pointer-events-none absolute inset-y-0 left-0 z-20 w-20',
+          'bg-gradient-to-r from-white via-white/90 to-transparent dark:from-black dark:via-black/85',
+          'shadow-[18px_0_24px_-24px_rgb(24_24_27/0.45)] dark:shadow-[18px_0_24px_-24px_rgb(0_0_0/0.7)]',
+          'transition-opacity duration-200 ease-out',
+          canScrollPrev ? 'opacity-100' : 'opacity-0',
         )}
       />
-      <CarouselContent className="w-fit max-w-[calc(100vw-4rem)] shrink-0">
+      <CarouselContent className="min-w-0">
         {blogTags.length === 0 ? (
           <CarouselItem className="m-auto text-muted-foreground">没有标签 (｡•́︿•̀｡)</CarouselItem>
         ) : (
@@ -83,13 +86,14 @@ export function BlogTagsContainer({
           ))
         )}
       </CarouselContent>
-      {/* 右侧 fade 遮罩 */}
       <span
+        aria-hidden="true"
         className={cn(
-          'absolute top-0 right-0 bottom-0 z-10 w-12',
-          'bg-gradient-to-l from-white/80 to-transparent dark:from-black/60',
-          'pointer-events-none transition-colors duration-300 ease-in-out',
-          current === count && 'hidden',
+          'pointer-events-none absolute inset-y-0 right-0 z-20 w-20',
+          'bg-gradient-to-l from-white via-white/90 to-transparent dark:from-black dark:via-black/85',
+          'shadow-[-18px_0_24px_-24px_rgb(24_24_27/0.45)] dark:shadow-[-18px_0_24px_-24px_rgb(0_0_0/0.7)]',
+          'transition-opacity duration-200 ease-out',
+          canScrollNext ? 'opacity-100' : 'opacity-0',
         )}
       />
     </Carousel>

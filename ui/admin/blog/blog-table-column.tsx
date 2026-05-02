@@ -35,9 +35,15 @@ export const columns: ColumnDef<BlogListItem>[] = [
       const tags = row.original.tags
 
       return (
-        <div className="flex gap-1">
+        <div className="flex max-w-[min(22rem,32vw)] flex-wrap gap-1 overflow-hidden">
           {tags.map(tag => (
-            <TagItemBadge tag={tag.tagName} key={tag.id} />
+            <span
+              className="inline-block min-w-0 max-w-36 truncate align-bottom"
+              title={tag.tagName}
+              key={tag.id}
+            >
+              <TagItemBadge tag={tag.tagName} />
+            </span>
           ))}
         </div>
       )

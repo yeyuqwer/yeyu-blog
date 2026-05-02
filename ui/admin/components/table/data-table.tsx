@@ -13,12 +13,13 @@ import { useState } from 'react'
 import { DataTablePagination } from '@/ui/components/shared/pagination'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/shadcn/table'
 
-type DataTableProps<TData, TValue> = {
+export function DataTable<TData, TValue>({
+  columns,
+  data = [],
+}: {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
-}
-
-export function DataTable<TData, TValue>({ columns, data = [] }: DataTableProps<TData, TValue>) {
+}) {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 15,
@@ -38,7 +39,7 @@ export function DataTable<TData, TValue>({ columns, data = [] }: DataTableProps<
 
   return (
     <motion.div
-      className="h-full"
+      className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-lg border bg-zinc-50/70 dark:bg-zinc-950/50"
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{
@@ -47,14 +48,17 @@ export function DataTable<TData, TValue>({ columns, data = [] }: DataTableProps<
         damping: 20,
       }}
     >
-      <div className="overflow-hidden rounded-md border">
-        <Table>
+      <div className="min-h-0 min-w-0 flex-1 overflow-auto [scrollbar-color:rgba(113,113,122,0.45)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-500/45 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-400/35 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-[3px]">
+        <Table containerClassName="overflow-visible">
           <TableHeader className="bg-gray-100 dark:bg-card">
             {table.getHeaderGroups().map(headerGroup => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map(header => {
                   return (
-                    <TableHead key={header.id} className="text-gray-500 dark:text-gray-200">
+                    <TableHead
+                      key={header.id}
+                      className="sticky top-0 z-20 bg-gray-100 text-gray-500 shadow-[0_1px_0_var(--border)] dark:bg-card dark:text-gray-200"
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(header.column.columnDef.header, header.getContext())}

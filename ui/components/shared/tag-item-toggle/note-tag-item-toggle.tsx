@@ -14,7 +14,8 @@ export function NoteTagItemToggle({
     <Toggle
       variant="outline"
       size="sm"
-      className="cursor-pointer"
+      className="max-w-48 cursor-pointer truncate"
+      title={tag}
       onPressedChange={selected => {
         setSelectedTags(beforeSelectedTags =>
           selected ? [...beforeSelectedTags, tag] : beforeSelectedTags.filter(t => t !== tag),

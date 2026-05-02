@@ -22,18 +22,20 @@ export const AdminNotePage: FC<ComponentProps<'main'>> = () => {
   const { data: noteTags, isPending: noteTagsPending } = useNoteTagsQuery()
 
   return (
-    <main className="flex w-full flex-col gap-2">
-      <NoteSearch setQuery={setQuery} />
+    <main className="flex h-[calc(100dvh-5rem)] min-h-0 w-full min-w-0 flex-col gap-3 pb-4">
+      <section className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+        <NoteSearch setQuery={setQuery} />
 
-      {!noteTagsPending && (
-        <NoteTagsContainer noteTagList={noteTags ?? []} setSelectedTags={setSelectedTags} />
-      )}
+        {!noteTagsPending && (
+          <NoteTagsContainer noteTagList={noteTags ?? []} setSelectedTags={setSelectedTags} />
+        )}
 
-      {noteListPending || noteTagsPending ? (
-        <Loading />
-      ) : (
-        <DataTable columns={columns} data={noteList ?? []} />
-      )}
+        {noteListPending || noteTagsPending ? (
+          <Loading />
+        ) : (
+          <DataTable columns={columns} data={noteList ?? []} />
+        )}
+      </section>
     </main>
   )
 }

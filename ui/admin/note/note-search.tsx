@@ -12,10 +12,10 @@ function NoteSearch({ setQuery }: { setQuery: Dispatch<SetStateAction<string>> }
   const inputRef = useRef<HTMLInputElement>(null)
 
   return (
-    <section className="flex gap-2">
+    <section className="flex w-full shrink-0 gap-2">
       <Input
         placeholder="请输入标题喵~"
-        className="w-1/2 xl:w-1/3"
+        className="min-w-0 flex-1"
         ref={inputRef}
         onKeyDown={e => {
           if (e.key === 'Enter') {
@@ -47,6 +47,10 @@ function NoteSearch({ setQuery }: { setQuery: Dispatch<SetStateAction<string>> }
       <Button
         variant="secondary"
         onClick={() => {
+          if (inputRef.current != null) {
+            inputRef.current.value = ''
+          }
+
           setQuery('')
         }}
         className="cursor-pointer"
