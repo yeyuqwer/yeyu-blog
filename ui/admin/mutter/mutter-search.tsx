@@ -15,7 +15,7 @@ export const MutterSearch: FC<
   }
 
   return (
-    <header className="flex w-full gap-2">
+    <header className="flex w-full shrink-0 gap-2">
       <Input
         className="w-full"
         placeholder="搜索回忆..."

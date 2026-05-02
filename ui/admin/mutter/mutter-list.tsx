@@ -52,7 +52,7 @@ export const MutterList: FC<
   }
 
   return (
-    <main className="flex max-h-[69vh] min-h-0 flex-1 overflow-y-auto bg-card [scrollbar-color:rgba(113,113,122,0.45)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-500/45 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-400/35 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-[3px]">
+    <main className="flex min-h-0 flex-1 overflow-y-auto rounded-lg bg-zinc-50/70 [scrollbar-color:rgba(113,113,122,0.45)_transparent] [scrollbar-width:thin] dark:bg-zinc-950/50 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-500/45 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-400/35 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-[3px]">
       {mutters.length === 0 ? (
         <div className="m-auto">虚无。</div>
       ) : (
@@ -64,7 +64,10 @@ export const MutterList: FC<
             const displayAt = isEdited ? updatedAt : createdAt
 
             return (
-              <li key={item.id} className="relative rounded-sm border bg-background p-2 shadow-xs">
+              <li
+                key={item.id}
+                className="relative rounded-lg border border-zinc-200 bg-white p-3 shadow-xs dark:border-zinc-800 dark:bg-zinc-950"
+              >
                 <section className="absolute top-1.5 right-1.5 flex items-center gap-0.5">
                   <Button
                     type="button"

@@ -77,7 +77,7 @@ export const MutterForm: FC<MutterFormProps> = ({ editingMutter, clearEditingMut
   }
 
   return (
-    <form className="h-40 max-h-40 min-h-40 shrink-0" onSubmit={handleSubmit}>
+    <form className="h-36 max-h-36 min-h-36 shrink-0" onSubmit={handleSubmit}>
       <InputGroup className="h-full min-h-0 has-[>[data-align=block-end]]:h-full has-[>textarea]:h-full">
         <InputGroupTextarea
           className="field-sizing-fixed h-full min-h-0 overflow-y-auto"

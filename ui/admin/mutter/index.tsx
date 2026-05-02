@@ -27,8 +27,8 @@ export const MutterPage: FC<ComponentProps<'main'>> = () => {
   const pendingCount = commentData?.total ?? 0
 
   return (
-    <main className="flex h-full min-h-0 w-full flex-1 flex-col gap-2 overflow-hidden">
-      <header className="flex items-center gap-2">
+    <main className="flex h-[calc(100dvh-5rem)] min-h-0 w-full flex-col gap-3 pb-4">
+      <header className="flex shrink-0 items-center gap-2">
         <Button
           type="button"
           size="sm"
@@ -72,7 +72,7 @@ export const MutterPage: FC<ComponentProps<'main'>> = () => {
       </header>
 
       {mode === 'mutter' ? (
-        <>
+        <section className="flex min-h-0 flex-1 flex-col gap-2">
           <MutterSearch setQuery={setQuery} />
 
           <MutterList query={query} onEditMutter={setEditingMutter} />
@@ -81,7 +81,7 @@ export const MutterPage: FC<ComponentProps<'main'>> = () => {
             editingMutter={editingMutter}
             clearEditingMutter={() => setEditingMutter(null)}
           />
-        </>
+        </section>
       ) : mode === 'comment' ? (
         <MutterCommentManager />
       ) : (
