@@ -33,8 +33,7 @@ export const AdminNavbar: FC<ComponentProps<'header'>> = () => {
   })
 
   const pendingCountByPath: Partial<Record<(typeof AdminRoutes)[number]['path'], number>> = {
-    '/admin/comment': commentData?.total ?? 0,
-    '/admin/mutter': mutterCommentData?.total ?? 0,
+    '/admin/comment': (commentData?.total ?? 0) + (mutterCommentData?.total ?? 0),
     '/admin/friend-link': friendLinkData?.total ?? 0,
   }
 

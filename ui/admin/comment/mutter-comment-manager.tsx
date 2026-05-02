@@ -1,7 +1,7 @@
 'use client'
 
 import type { ComponentProps, FC } from 'react'
-import type { MutterCommentState } from '@/lib/api/mutter-comment'
+import type { AdminMutterCommentRecord, MutterCommentState } from '@/lib/api/mutter-comment'
 import { Check, RefreshCcw, Search, Trash2, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { sileo } from 'sileo'
@@ -11,19 +11,16 @@ import {
   useAdminMutterCommentStateMutation,
 } from '@/hooks/api/mutter-comment'
 import { prettyDateTime } from '@/lib/utils/time'
+import { ConfirmDialog } from '@/ui/components/modal/base/confirm-dialog'
 import Loading from '@/ui/components/shared/loading'
 import { Badge } from '@/ui/shadcn/badge'
 import { Button } from '@/ui/shadcn/button'
 import { Input } from '@/ui/shadcn/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/shadcn/select'
 
-type BadgeVariant = NonNullable<ComponentProps<typeof Badge>['variant']>
-
-type CommentStateFilter = 'all' | MutterCommentState
-
-const COMMENT_STATE_OPTIONS: Array<{
+const commentStateOptions: Array<{
   label: string
-  value: CommentStateFilter
+  value: 'all' | MutterCommentState
 }> = [
   { label: '全部', value: 'all' },
   { label: '待审核', value: 'PENDING' },
@@ -31,13 +28,16 @@ const COMMENT_STATE_OPTIONS: Array<{
   { label: '已拒绝', value: 'REJECTED' },
 ]
 
-const COMMENT_STATE_LABEL_MAP: Record<MutterCommentState, string> = {
+const commentStateLabelMap: Record<MutterCommentState, string> = {
   PENDING: '待审核',
   APPROVED: '已通过',
   REJECTED: '已拒绝',
 }
 
-const COMMENT_STATE_BADGE_VARIANT_MAP: Record<MutterCommentState, BadgeVariant> = {
+const commentStateBadgeVariantMap: Record<
+  MutterCommentState,
+  NonNullable<ComponentProps<typeof Badge>['variant']>
+> = {
   PENDING: 'warning',
   APPROVED: 'success',
   REJECTED: 'destructive',
@@ -46,11 +46,12 @@ const COMMENT_STATE_BADGE_VARIANT_MAP: Record<MutterCommentState, BadgeVariant> 
 export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
   const [draftQuery, setDraftQuery] = useState('')
   const [draftMutterId, setDraftMutterId] = useState('')
-  const [draftState, setDraftState] = useState<CommentStateFilter>('PENDING')
+  const [draftState, setDraftState] = useState<'all' | MutterCommentState>('PENDING')
 
   const [query, setQuery] = useState('')
   const [mutterIdInput, setMutterIdInput] = useState('')
-  const [state, setState] = useState<CommentStateFilter>('PENDING')
+  const [state, setState] = useState<'all' | MutterCommentState>('PENDING')
+  const [deletingComment, setDeletingComment] = useState<AdminMutterCommentRecord | null>(null)
 
   const parsedMutterId = useMemo(() => {
     if (mutterIdInput.trim().length === 0) {
@@ -98,15 +99,17 @@ export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
     )
   }
 
-  const handleDelete = (id: number) => {
-    if (!window.confirm('确认删除这条评论吗？此操作不可撤销。')) {
+  const handleDelete = () => {
+    if (deletingComment == null) {
+      sileo.error({ title: '评论信息不存在，删除失败。' })
       return
     }
 
     deleteById(
-      { id },
+      { id: deletingComment.id },
       {
         onSuccess: () => {
+          setDeletingComment(null)
           sileo.success({ title: '评论已删除。' })
         },
         onError: error => {
@@ -148,14 +151,14 @@ export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
         <Select
           value={draftState}
           onValueChange={value => {
-            setDraftState(value as CommentStateFilter)
+            setDraftState(value as 'all' | MutterCommentState)
           }}
         >
           <SelectTrigger className="w-40">
             <SelectValue placeholder="评论状态" />
           </SelectTrigger>
           <SelectContent>
-            {COMMENT_STATE_OPTIONS.map(option => (
+            {commentStateOptions.map(option => (
               <SelectItem value={option.value} key={option.value}>
                 {option.label}
               </SelectItem>
@@ -185,8 +188,8 @@ export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
                         {comment.user?.name ?? comment.authorName}
                       </h3>
                       <Badge variant="outline">#{comment.id}</Badge>
-                      <Badge variant={COMMENT_STATE_BADGE_VARIANT_MAP[comment.state]}>
-                        {COMMENT_STATE_LABEL_MAP[comment.state]}
+                      <Badge variant={commentStateBadgeVariantMap[comment.state]}>
+                        {commentStateLabelMap[comment.state]}
                       </Badge>
                       <Badge variant="outline">{`Mutter ${comment.mutterId}`}</Badge>
                     </div>
@@ -247,7 +250,7 @@ export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
                       className="cursor-pointer"
                       disabled={isDeletingComment}
                       onClick={() => {
-                        handleDelete(comment.id)
+                        setDeletingComment(comment)
                       }}
                     >
                       <Trash2 className="size-4" />
@@ -260,6 +263,28 @@ export const MutterCommentManager: FC<ComponentProps<'main'>> = () => {
           </ul>
         </main>
       )}
+
+      <ConfirmDialog
+        open={deletingComment != null}
+        onClose={() => {
+          setDeletingComment(null)
+        }}
+        onConfirm={handleDelete}
+        title="确定要删除这条评论吗？"
+        description="该操作不可撤销。"
+        isPending={isDeletingComment}
+      >
+        {deletingComment != null ? (
+          <div className="rounded-md border bg-muted/30 p-3 text-sm">
+            <p className="font-medium">
+              {deletingComment.user?.name ?? deletingComment.authorName}
+            </p>
+            <p className="mt-2 line-clamp-3 whitespace-pre-wrap text-muted-foreground text-xs">
+              {deletingComment.content}
+            </p>
+          </div>
+        ) : null}
+      </ConfirmDialog>
     </main>
   )
 }
