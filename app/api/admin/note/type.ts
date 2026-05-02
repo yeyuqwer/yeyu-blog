@@ -21,6 +21,8 @@ const noteRelatedTagNamesSchema = z.array(z.string()).max(3, { message: '最多�
 export const getNotesQuerySchema = z.object({
   q: z.string().trim().optional(),
   tagNames: z.string().trim().optional(),
+  take: z.coerce.number().int().min(1).max(100).default(15),
+  skip: z.coerce.number().int().min(0).default(0),
 })
 
 export const createNoteSchema = z.object({

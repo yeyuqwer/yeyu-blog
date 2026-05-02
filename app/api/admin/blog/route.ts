@@ -43,13 +43,15 @@ export const GET = withResponse(async request => {
   const queryResult = getBlogsQuerySchema.safeParse({
     q: request.nextUrl.searchParams.get('q') ?? undefined,
     tagNames: request.nextUrl.searchParams.get('tagNames') ?? undefined,
+    take: request.nextUrl.searchParams.get('take') ?? undefined,
+    skip: request.nextUrl.searchParams.get('skip') ?? undefined,
   })
 
   if (!queryResult.success) {
     throw new BadRequestError('Invalid query parameters.', { data: queryResult.error.flatten() })
   }
 
-  const { q, tagNames: rawTagNames } = queryResult.data
+  const { q, tagNames: rawTagNames, take, skip } = queryResult.data
   const tagNames = parseTagNames(rawTagNames)
 
   const andWhere = [
@@ -73,18 +75,33 @@ export const GET = withResponse(async request => {
 
   const where = andWhere.length > 0 ? { AND: andWhere } : undefined
 
-  return await prisma.blog.findMany({
-    where,
-    select: {
-      id: true,
-      slug: true,
-      title: true,
-      isPublished: true,
-      createdAt: true,
-      updatedAt: true,
-      tags: true,
-    },
-  })
+  const [list, total] = await Promise.all([
+    prisma.blog.findMany({
+      where,
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        isPublished: true,
+        createdAt: true,
+        updatedAt: true,
+        tags: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take,
+      skip,
+    }),
+    prisma.blog.count({ where }),
+  ])
+
+  return {
+    list,
+    total,
+    take,
+    skip,
+  }
 })
 
 export const POST = withResponse(async request => {

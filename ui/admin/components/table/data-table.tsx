@@ -1,6 +1,6 @@
 'use client'
 
-import type { ColumnDef } from '@tanstack/react-table'
+import type { ColumnDef, OnChangeFn, PaginationState } from '@tanstack/react-table'
 import {
   flexRender,
   getCoreRowModel,
@@ -16,23 +16,33 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 export function DataTable<TData, TValue>({
   columns,
   data = [],
+  onPaginationChange,
+  pageCount,
+  pagination: controlledPagination,
 }: {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  onPaginationChange?: OnChangeFn<PaginationState>
+  pageCount?: number
+  pagination?: PaginationState
 }) {
-  const [pagination, setPagination] = useState({
+  const [internalPagination, setInternalPagination] = useState({
     pageIndex: 0,
     pageSize: 15,
   })
+  const tablePagination = controlledPagination ?? internalPagination
+  const isManualPagination = controlledPagination != null && onPaginationChange != null
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
+    getPaginationRowModel: isManualPagination ? undefined : getPaginationRowModel(),
+    manualPagination: isManualPagination,
+    onPaginationChange: onPaginationChange ?? setInternalPagination,
+    pageCount: isManualPagination ? pageCount : undefined,
     state: {
-      pagination,
+      pagination: tablePagination,
     },
   })
   const rows = table.getRowModel().rows

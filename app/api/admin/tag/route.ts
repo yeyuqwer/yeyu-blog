@@ -12,37 +12,74 @@ export const GET = withResponse(async request => {
   const queryResult = getTagsQuerySchema.safeParse({
     q: request.nextUrl.searchParams.get('q') ?? undefined,
     tagType: request.nextUrl.searchParams.get('tagType') ?? undefined,
+    take: request.nextUrl.searchParams.get('take') ?? undefined,
+    skip: request.nextUrl.searchParams.get('skip') ?? undefined,
   })
 
   if (!queryResult.success) {
     throw new BadRequestError('Invalid query parameters.', { data: queryResult.error.flatten() })
   }
 
-  const { q, tagType } = queryResult.data
+  const { q, tagType, take, skip } = queryResult.data
   const where = q != null && q.length > 0 ? { tagName: { contains: q } } : undefined
 
   if (tagType === TagType.BLOG) {
-    return await prisma.blogTag.findMany({ where })
+    return await prisma.blogTag.findMany({
+      where,
+      orderBy: {
+        id: 'desc',
+      },
+    })
   }
 
   if (tagType === TagType.NOTE) {
-    return await prisma.noteTag.findMany({ where })
+    return await prisma.noteTag.findMany({
+      where,
+      orderBy: {
+        id: 'desc',
+      },
+    })
   }
 
-  const [blogTags, noteTags] = await Promise.all([
-    prisma.blogTag.findMany({
-      where,
-      include: {
-        _count: true,
-      },
-    }),
-    prisma.noteTag.findMany({
-      where,
-      include: {
-        _count: true,
-      },
-    }),
+  const [blogTotal, noteTotal] = await Promise.all([
+    prisma.blogTag.count({ where }),
+    prisma.noteTag.count({ where }),
   ])
+  const total = blogTotal + noteTotal
+  const blogSkip = Math.min(skip, blogTotal)
+  const blogTake = Math.min(take, Math.max(blogTotal - blogSkip, 0))
+  const noteSkip = Math.max(skip - blogTotal, 0)
+  const noteTake = take - blogTake
+
+  const blogTags =
+    blogTake > 0
+      ? await prisma.blogTag.findMany({
+          where,
+          include: {
+            _count: true,
+          },
+          orderBy: {
+            id: 'desc',
+          },
+          take: blogTake,
+          skip: blogSkip,
+        })
+      : []
+
+  const noteTags =
+    noteTake > 0
+      ? await prisma.noteTag.findMany({
+          where,
+          include: {
+            _count: true,
+          },
+          orderBy: {
+            id: 'desc',
+          },
+          take: noteTake,
+          skip: noteSkip,
+        })
+      : []
 
   const blogTagsWithCount = blogTags.map(tag => ({
     id: tag.id,
@@ -58,7 +95,12 @@ export const GET = withResponse(async request => {
     count: tag._count.notes,
   }))
 
-  return [...blogTagsWithCount, ...noteTagsWithCount]
+  return {
+    list: [...blogTagsWithCount, ...noteTagsWithCount],
+    total,
+    take,
+    skip,
+  }
 })
 
 export const POST = withResponse(async request => {

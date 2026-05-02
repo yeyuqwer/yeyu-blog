@@ -10,6 +10,8 @@ const tagNameSchema = z
 export const getTagsQuerySchema = z.object({
   q: z.string().trim().optional(),
   tagType: z.nativeEnum(TagType).optional(),
+  take: z.coerce.number().int().min(1).max(100).default(15),
+  skip: z.coerce.number().int().min(0).default(0),
 })
 
 export const createTagSchema = z.object({

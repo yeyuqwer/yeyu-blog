@@ -15,13 +15,15 @@ export const GET = withResponse(async request => {
 
   const queryResult = getEchosQuerySchema.safeParse({
     q: request.nextUrl.searchParams.get('q') ?? undefined,
+    take: request.nextUrl.searchParams.get('take') ?? undefined,
+    skip: request.nextUrl.searchParams.get('skip') ?? undefined,
   })
 
   if (!queryResult.success) {
     throw new BadRequestError('Invalid query parameters.', { data: queryResult.error.flatten() })
   }
 
-  const { q } = queryResult.data
+  const { q, take, skip } = queryResult.data
   const where =
     q != null && q.length > 0
       ? {
@@ -31,7 +33,24 @@ export const GET = withResponse(async request => {
         }
       : undefined
 
-  return await prisma.echo.findMany({ where })
+  const [list, total] = await Promise.all([
+    prisma.echo.findMany({
+      where,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take,
+      skip,
+    }),
+    prisma.echo.count({ where }),
+  ])
+
+  return {
+    list,
+    total,
+    take,
+    skip,
+  }
 })
 
 export const POST = withResponse(async request => {
