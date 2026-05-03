@@ -1,7 +1,12 @@
 import type { CommentTargetType } from '@/lib/api/comment'
+import type { CommentTreeNode } from './type'
 import { useMemo, useState } from 'react'
 import { type Address, isAddress } from 'viem'
-import { useCommentMutation, usePublicCommentQuery } from '@/hooks/api/comment'
+import {
+  useCommentDeleteMutation,
+  useCommentMutation,
+  usePublicCommentQuery,
+} from '@/hooks/api/comment'
 import { isAdminLoggedIn, isEmailLoggedIn, isWalletLoggedIn, useSession } from '@/lib/core'
 import { useModalStore } from '@/store/use-modal-store'
 import { maxCommentLength } from './constant'
@@ -18,6 +23,7 @@ export function useCommentCard({
   const [replyContent, setReplyContent] = useState('')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
   const [activeReplyCommentId, setActiveReplyCommentId] = useState<number | null>(null)
+  const [deletingComment, setDeletingComment] = useState<CommentTreeNode | null>(null)
   const setModalOpen = useModalStore(s => s.setModalOpen)
 
   const { data: session } = useSession()
@@ -37,6 +43,7 @@ export function useCommentCard({
   )
 
   const { mutate: createComment, isPending: isCreatingComment } = useCommentMutation()
+  const { mutate: deleteComment, isPending: isDeletingComment } = useCommentDeleteMutation()
 
   const sessionAddress = isAddress(session?.user?.name ?? '')
     ? (session?.user?.name as Address)
@@ -132,6 +139,30 @@ export function useCommentCard({
     })
   }
 
+  const confirmDeleteComment = () => {
+    if (deletingComment == null) {
+      return
+    }
+
+    deleteComment(
+      {
+        id: deletingComment.id,
+        targetType: deletingComment.targetType,
+        targetId: deletingComment.targetId,
+      },
+      {
+        onSuccess: () => {
+          if (activeReplyCommentId === deletingComment.id) {
+            setActiveReplyCommentId(null)
+            setReplyContent('')
+          }
+
+          setDeletingComment(null)
+        },
+      },
+    )
+  }
+
   return {
     total: data?.total,
     commentTree,
@@ -145,12 +176,16 @@ export function useCommentCard({
     isLoggedIn,
     isCommentPending,
     isCreatingComment,
+    isDeletingComment,
     sessionUserId: session?.user?.id,
     sessionAvatarProps,
+    deletingComment,
+    setDeletingComment,
     openLoginModal,
     submitRootComment,
     handleReplyClick,
     cancelReply,
     submitReply,
+    confirmDeleteComment,
   }
 }

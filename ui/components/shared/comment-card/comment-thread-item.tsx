@@ -1,5 +1,5 @@
 import type { CommentTreeNode, SessionAvatarProps } from './type'
-import { CornerUpLeft } from 'lucide-react'
+import { CornerUpLeft, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils/common/shadcn'
 import { prettyDateTime, toRelativeDate } from '@/lib/utils/time'
 import { Button } from '@/ui/shadcn/button'
@@ -16,11 +16,13 @@ export function CommentThreadItem({
   activeReplyCommentId,
   replyContent,
   isCreatingComment,
+  isDeletingComment,
   sessionAvatarProps,
   onReplyClick,
   onReplyCancel,
   onReplyContentChange,
   onReplySubmit,
+  onDeleteClick,
 }: {
   comment: CommentTreeNode
   depth: number
@@ -29,12 +31,15 @@ export function CommentThreadItem({
   activeReplyCommentId: number | null
   replyContent: string
   isCreatingComment: boolean
+  isDeletingComment: boolean
   sessionAvatarProps: SessionAvatarProps
   onReplyClick: (commentId: number) => void
   onReplyCancel: () => void
   onReplyContentChange: (value: string) => void
   onReplySubmit: (commentId: number) => void
+  onDeleteClick: (comment: CommentTreeNode) => void
 }) {
+  const isDeletedComment = comment.isDeleted
   const commentCreatedAt = new Date(comment.createdAt)
   const absoluteTime = prettyDateTime(commentCreatedAt)
   const shouldShowRelativeTime =
@@ -42,7 +47,8 @@ export function CommentThreadItem({
   const displayName = getCommentDisplayName(comment)
   const formattedDisplayName = formatCommentDisplayName(displayName)
   const isCurrentUserComment = sessionUserId != null && comment.userId === sessionUserId
-  const isReplyEditorOpen = activeReplyCommentId === comment.id
+  const canDeleteComment = !isDeletedComment && isCurrentUserComment
+  const isReplyEditorOpen = !isDeletedComment && activeReplyCommentId === comment.id
   const parentDisplayName =
     comment.parent == null ? null : formatCommentDisplayName(getCommentDisplayName(comment.parent))
 
@@ -97,6 +103,9 @@ export function CommentThreadItem({
                       {toRelativeDate(commentCreatedAt)}
                     </time>
                   ) : null}
+                  {isDeletedComment ? (
+                    <span className="text-zinc-400 dark:text-zinc-500">（已删除）</span>
+                  ) : null}
                 </div>
 
                 {parentDisplayName != null ? (
@@ -107,22 +116,47 @@ export function CommentThreadItem({
                 ) : null}
               </div>
 
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                className="shrink-0 rounded-lg text-zinc-500 opacity-100 transition-opacity hover:text-zinc-900 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 dark:text-zinc-400 dark:hover:text-zinc-100"
-                aria-label={`回复 ${formattedDisplayName}`}
-                onClick={() => {
-                  onReplyClick(comment.id)
-                }}
-              >
-                <CornerUpLeft className="size-3.5" />
-              </Button>
+              {!isDeletedComment ? (
+                <div className="flex shrink-0 items-center gap-1 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
+                  {canDeleteComment ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon-xs"
+                      className="rounded-lg text-zinc-500 hover:text-destructive dark:text-zinc-400"
+                      aria-label={`删除 ${formattedDisplayName} 的评论`}
+                      disabled={isDeletingComment}
+                      onClick={() => {
+                        onDeleteClick(comment)
+                      }}
+                    >
+                      <Trash2 className="size-3.5" />
+                    </Button>
+                  ) : null}
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-xs"
+                    className="rounded-lg text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                    aria-label={`回复 ${formattedDisplayName}`}
+                    onClick={() => {
+                      onReplyClick(comment.id)
+                    }}
+                  >
+                    <CornerUpLeft className="size-3.5" />
+                  </Button>
+                </div>
+              ) : null}
             </header>
 
             <div className="mt-2 text-zinc-900 dark:text-zinc-100">
-              <CommentMarkdownContent content={comment.content} />
+              {isDeletedComment ? (
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                  <del>已删除</del>
+                </p>
+              ) : (
+                <CommentMarkdownContent content={comment.content} />
+              )}
             </div>
           </article>
 
@@ -162,11 +196,13 @@ export function CommentThreadItem({
                   activeReplyCommentId={activeReplyCommentId}
                   replyContent={replyContent}
                   isCreatingComment={isCreatingComment}
+                  isDeletingComment={isDeletingComment}
                   sessionAvatarProps={sessionAvatarProps}
                   onReplyClick={onReplyClick}
                   onReplyCancel={onReplyCancel}
                   onReplyContentChange={onReplyContentChange}
                   onReplySubmit={onReplySubmit}
+                  onDeleteClick={onDeleteClick}
                 />
               ))}
             </ul>

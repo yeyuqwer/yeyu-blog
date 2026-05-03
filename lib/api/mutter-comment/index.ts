@@ -1,5 +1,6 @@
 export * from './create-mutter-comment'
 export * from './delete-mutter-comment'
+export * from './delete-own-mutter-comment'
 export * from './get-admin-mutter-comments'
 export * from './get-mutter-comment-config'
 export * from './get-public-mutter-comments'

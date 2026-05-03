@@ -1,5 +1,6 @@
 export * from './create-comment'
 export * from './delete-comment'
+export * from './delete-own-comment'
 export * from './get-admin-comments'
 export * from './get-comment-config'
 export * from './get-public-comments'

@@ -10,11 +10,13 @@ export function CommentList({
   activeReplyCommentId,
   replyContent,
   isCreatingComment,
+  isDeletingComment,
   sessionAvatarProps,
   onReplyClick,
   onReplyCancel,
   onReplyContentChange,
   onReplySubmit,
+  onDeleteClick,
 }: {
   isPending: boolean
   commentTree: CommentTreeNode[]
@@ -23,11 +25,13 @@ export function CommentList({
   activeReplyCommentId: number | null
   replyContent: string
   isCreatingComment: boolean
+  isDeletingComment: boolean
   sessionAvatarProps: SessionAvatarProps
   onReplyClick: (commentId: number) => void
   onReplyCancel: () => void
   onReplyContentChange: (value: string) => void
   onReplySubmit: (commentId: number) => void
+  onDeleteClick: (comment: CommentTreeNode) => void
 }) {
   if (isPending) {
     return (
@@ -57,11 +61,13 @@ export function CommentList({
           activeReplyCommentId={activeReplyCommentId}
           replyContent={replyContent}
           isCreatingComment={isCreatingComment}
+          isDeletingComment={isDeletingComment}
           sessionAvatarProps={sessionAvatarProps}
           onReplyClick={onReplyClick}
           onReplyCancel={onReplyCancel}
           onReplyContentChange={onReplyContentChange}
           onReplySubmit={onReplySubmit}
+          onDeleteClick={onDeleteClick}
         />
       ))}
     </ul>
