@@ -30,7 +30,7 @@ const friendLinkApplyFields = [
   },
   {
     name: 'email',
-    label: '联系邮箱',
+    label: '联系邮箱（可选，仅用于通知）',
     type: 'email',
     required: false,
   },
