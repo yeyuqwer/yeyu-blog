@@ -1,5 +1,6 @@
 import 'server-only'
 
+import { after } from 'next/server'
 import nodemailer from 'nodemailer'
 import { serverEnv } from '@/config/env/server-env'
 
@@ -74,10 +75,7 @@ const getMailTransporter = () => {
 export const getAdminMailRecipients = () => getNotificationRecipients()
 
 export const sendEmailInBackground = (task: () => Promise<unknown>) => {
-  void task().then(
-    () => undefined,
-    () => undefined,
-  )
+  after(task)
 }
 
 export async function sendEmail({
