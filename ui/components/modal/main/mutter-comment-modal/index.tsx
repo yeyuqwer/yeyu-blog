@@ -15,7 +15,7 @@ import {
 import { isAdminLoggedIn, isEmailLoggedIn, isWalletLoggedIn, useSession } from '@/lib/core'
 import { prettyDateTime, toRelativeDate } from '@/lib/utils/time'
 import { useModalStore } from '@/store/use-modal-store'
-import { ConfirmDialog } from '@/ui/components/modal/base/confirm-dialog'
+import { MainConfirmModal } from '@/ui/components/modal/main/main-confirm-modal'
 import { AccountIcon } from '@/ui/components/shared/account-icon'
 import Loading from '@/ui/components/shared/loading'
 import { Button } from '@/ui/shadcn/button'
@@ -432,7 +432,7 @@ export const MutterCommentModal: FC<ComponentProps<'div'>> = () => {
         </DialogContent>
       </Dialog>
 
-      <ConfirmDialog
+      <MainConfirmModal
         open={deletingComment != null}
         onClose={() => {
           setDeletingComment(null)
@@ -443,16 +443,16 @@ export const MutterCommentModal: FC<ComponentProps<'div'>> = () => {
         isPending={isDeletingComment}
       >
         {deletingComment != null ? (
-          <div className="rounded-md border bg-muted/30 p-3 text-sm">
+          <div className="rounded-xl border border-theme-border/70 bg-theme-surface/55 p-3 text-sm dark:border-theme-400/20 dark:bg-theme-950/35">
             <p className="font-medium">
               {deletingComment.user?.name ?? deletingComment.authorName}
             </p>
-            <p className="mt-2 line-clamp-3 whitespace-pre-wrap text-muted-foreground text-xs">
+            <p className="mt-2 line-clamp-3 whitespace-pre-wrap text-theme-muted-foreground text-xs dark:text-theme-200/75">
               {deletingComment.content}
             </p>
           </div>
         ) : null}
-      </ConfirmDialog>
+      </MainConfirmModal>
     </>
   )
 }

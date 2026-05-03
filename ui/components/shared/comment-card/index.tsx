@@ -4,7 +4,7 @@ import type { ComponentProps } from 'react'
 import type { CommentTargetType } from '@/lib/api/comment'
 import { ArrowDownNarrowWide, ArrowUpNarrowWide } from 'lucide-react'
 import { cn } from '@/lib/utils/common/shadcn'
-import { ConfirmDialog } from '@/ui/components/modal/base/confirm-dialog'
+import { MainConfirmModal } from '@/ui/components/modal/main/main-confirm-modal'
 import { CommentCardHeader } from './comment-card-header'
 import { CommentComposer } from './comment-composer'
 import { CommentList } from './comment-list'
@@ -105,7 +105,7 @@ export default function CommentCard({
         </section>
       </section>
 
-      <ConfirmDialog
+      <MainConfirmModal
         open={deletingComment != null}
         onClose={() => {
           setDeletingComment(null)
@@ -116,16 +116,16 @@ export default function CommentCard({
         isPending={isDeletingComment}
       >
         {deletingComment != null ? (
-          <div className="rounded-md border bg-muted/30 p-3 text-sm">
+          <div className="rounded-xl border border-theme-border/70 bg-theme-surface/55 p-3 text-sm dark:border-theme-400/20 dark:bg-theme-950/35">
             <p className="font-medium">
               {deletingComment.user?.name ?? deletingComment.authorName}
             </p>
-            <p className="mt-2 line-clamp-3 whitespace-pre-wrap text-muted-foreground text-xs">
+            <p className="mt-2 line-clamp-3 whitespace-pre-wrap text-theme-muted-foreground text-xs dark:text-theme-200/75">
               {deletingComment.content}
             </p>
           </div>
         ) : null}
-      </ConfirmDialog>
+      </MainConfirmModal>
     </>
   )
 }
