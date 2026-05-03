@@ -84,7 +84,17 @@ GOOGLE_CLIENT_SECRET=
 
 UPLOADTHING_TOKEN=
 DATABASE_URL=
+
+SMTP_HOST=
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_USER=
+SMTP_PASS=
+MAIL_FROM="叶鱼博客 <notice@example.com>"
+MAIL_TO=
 ```
+
+Gmail 应用专用密码可以不写空格，代码发送前也会自动移除空白。
 
 `BETTER_AUTH_SECRET` 可以用下面的命令生成：
 
@@ -92,7 +102,7 @@ DATABASE_URL=
 openssl rand -base64 32
 ```
 
-当前服务端环境变量校验要求 GitHub 和 Google 两组 OAuth 都填写。`NEXT_PUBLIC_ADMIN_WALLET_ADDRESS` 是可选项，不需要钱包登录后台时可以留空。
+当前服务端环境变量校验要求 GitHub 和 Google 两组 OAuth 都填写。`NEXT_PUBLIC_ADMIN_WALLET_ADDRESS` 是可选项，不需要钱包登录后台时可以留空。`MAIL_TO` 是站长通知收件人，多个邮箱用英文逗号分隔。
 
 ### 配置数据库
 
