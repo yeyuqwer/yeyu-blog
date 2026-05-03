@@ -16,6 +16,10 @@ export type PublicMutterCommentRecord = {
     id: string
     name: string
     image: string | null
+    accounts?: {
+      providerId: string
+      accountId: string
+    }[]
   } | null
 }
 

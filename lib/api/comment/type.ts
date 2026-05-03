@@ -6,6 +6,10 @@ export type CommentUser = {
   id: string
   name: string
   image: string | null
+  accounts?: {
+    providerId: string
+    accountId: string
+  }[]
 }
 
 export type CommentParent = {

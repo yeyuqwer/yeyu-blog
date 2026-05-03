@@ -3,7 +3,8 @@
 import type { PublicMutterCommentRecord } from '@/lib/api/mutter-comment'
 import { LogIn, MessageCircle, Trash2 } from 'lucide-react'
 import Image from 'next/image'
-import { type ComponentProps, type FC, useMemo, useState } from 'react'
+import { type ComponentProps, type FC, type ReactNode, useMemo, useState } from 'react'
+import { siGithub, siGoogle } from 'simple-icons'
 import { type Address, isAddress } from 'viem'
 import avatar from '@/config/img/avatar.webp'
 import {
@@ -20,6 +21,83 @@ import Loading from '@/ui/components/shared/loading'
 import { Button } from '@/ui/shadcn/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/ui/shadcn/dialog'
 import { Textarea } from '@/ui/shadcn/textarea'
+
+const mutterCommentAvatarImageClassName =
+  'size-10 rounded-full border border-zinc-200 object-cover dark:border-zinc-700'
+
+function getMutterCommentLoginProvider(comment: PublicMutterCommentRecord) {
+  if (comment.user?.accounts?.some(account => account.providerId === 'github')) {
+    return 'github'
+  }
+
+  if (comment.user?.accounts?.some(account => account.providerId === 'google')) {
+    return 'google'
+  }
+
+  return undefined
+}
+
+function getMutterCommentGithubAccountId(comment: PublicMutterCommentRecord) {
+  const githubAccount = comment.user?.accounts?.find(account => account.providerId === 'github')
+
+  return githubAccount?.accountId
+}
+
+function MutterCommentProviderIcon({ provider }: { provider: 'github' | 'google' }) {
+  const icon = provider === 'github' ? siGithub : siGoogle
+
+  return (
+    <span
+      className="absolute -right-0.5 -bottom-0.5 flex size-4 items-center justify-center rounded-full border border-white bg-white text-zinc-950 shadow-sm dark:border-zinc-950 dark:bg-zinc-950 dark:text-zinc-50"
+      title={icon.title}
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+        className={provider === 'google' ? 'size-2.5 text-[#4285F4]' : 'size-2.5'}
+      >
+        <path d={icon.path} />
+      </svg>
+      <span className="sr-only">{icon.title}</span>
+    </span>
+  )
+}
+
+function MutterCommentAvatarFrame({
+  children,
+  displayName,
+  githubAccountId,
+  provider,
+}: {
+  children: ReactNode
+  displayName: string
+  githubAccountId?: string
+  provider?: 'github' | 'google'
+}) {
+  const avatarContent = (
+    <>
+      {children}
+      {provider != null ? <MutterCommentProviderIcon provider={provider} /> : null}
+    </>
+  )
+
+  if (provider === 'github' && githubAccountId != null) {
+    return (
+      <a
+        href={`/api/github-user/${encodeURIComponent(githubAccountId)}`}
+        target="_blank"
+        rel="noreferrer"
+        className="relative inline-flex size-10 shrink-0 rounded-full outline-none transition-transform hover:scale-[1.03] focus-visible:ring-2 focus-visible:ring-theme-indicator/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        aria-label={`打开 ${displayName} 的 GitHub 主页`}
+      >
+        {avatarContent}
+      </a>
+    )
+  }
+
+  return <span className="relative inline-flex size-10 shrink-0 rounded-full">{avatarContent}</span>
+}
 
 export const MutterCommentModal: FC<ComponentProps<'div'>> = () => {
   const modalType = useModalStore(s => s.modalType)
@@ -163,6 +241,9 @@ export const MutterCommentModal: FC<ComponentProps<'div'>> = () => {
                     const commentAddress = isAddress(comment.user?.name ?? '')
                       ? (comment.user?.name as Address)
                       : undefined
+                    const provider = getMutterCommentLoginProvider(comment)
+                    const githubAccountId = getMutterCommentGithubAccountId(comment)
+
                     return (
                       <li
                         key={comment.id}
@@ -173,28 +254,44 @@ export const MutterCommentModal: FC<ComponentProps<'div'>> = () => {
                         }
                       >
                         {comment.isAdmin ? (
-                          <span className="relative inline-flex">
+                          <MutterCommentAvatarFrame
+                            displayName={displayName}
+                            provider={provider}
+                            githubAccountId={githubAccountId}
+                          >
                             <Image
                               src={avatar}
                               alt={displayName}
                               width={40}
                               height={40}
-                              className="size-10 rounded-full border border-zinc-200 object-cover dark:border-zinc-700"
+                              className={mutterCommentAvatarImageClassName}
                             />
-                          </span>
+                          </MutterCommentAvatarFrame>
                         ) : commentAvatar != null ? (
-                          <Image
-                            src={commentAvatar}
-                            alt={displayName}
-                            width={40}
-                            height={40}
-                            className="size-10 rounded-full border border-zinc-200 object-cover dark:border-zinc-700"
-                          />
+                          <MutterCommentAvatarFrame
+                            displayName={displayName}
+                            provider={provider}
+                            githubAccountId={githubAccountId}
+                          >
+                            <Image
+                              src={commentAvatar}
+                              alt={displayName}
+                              width={40}
+                              height={40}
+                              className={mutterCommentAvatarImageClassName}
+                            />
+                          </MutterCommentAvatarFrame>
                         ) : (
-                          <AccountIcon
-                            account={commentAddress}
-                            className="size-10 rounded-full border border-zinc-200 dark:border-zinc-700"
-                          />
+                          <MutterCommentAvatarFrame
+                            displayName={displayName}
+                            provider={provider}
+                            githubAccountId={githubAccountId}
+                          >
+                            <AccountIcon
+                              account={commentAddress}
+                              className="size-10 rounded-full border border-zinc-200 dark:border-zinc-700"
+                            />
+                          </MutterCommentAvatarFrame>
                         )}
                         <div
                           className={
@@ -286,7 +383,7 @@ export const MutterCommentModal: FC<ComponentProps<'div'>> = () => {
                         alt="admin avatar"
                         width={40}
                         height={40}
-                        className="size-10 rounded-full border border-zinc-200 object-cover dark:border-zinc-700"
+                        className={mutterCommentAvatarImageClassName}
                       />
                     </span>
                   ) : isWalletUser || sessionAvatar == null ? (
@@ -300,7 +397,7 @@ export const MutterCommentModal: FC<ComponentProps<'div'>> = () => {
                       alt="my avatar"
                       width={40}
                       height={40}
-                      className="size-10 rounded-full border border-zinc-200 object-cover dark:border-zinc-700"
+                      className={mutterCommentAvatarImageClassName}
                     />
                   )}
 

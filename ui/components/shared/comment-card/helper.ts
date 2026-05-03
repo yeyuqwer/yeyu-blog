@@ -20,6 +20,24 @@ export function getCommentAddress(comment: Pick<CommentAuthorLike, 'user'>) {
   return isAddress(comment.user?.name ?? '') ? (comment.user?.name as Address) : undefined
 }
 
+export function getCommentLoginProvider(comment: Pick<CommentAuthorLike, 'user'>) {
+  if (comment.user?.accounts?.some(account => account.providerId === 'github')) {
+    return 'github'
+  }
+
+  if (comment.user?.accounts?.some(account => account.providerId === 'google')) {
+    return 'google'
+  }
+
+  return undefined
+}
+
+export function getCommentGithubAccountId(comment: Pick<CommentAuthorLike, 'user'>) {
+  const githubAccount = comment.user?.accounts?.find(account => account.providerId === 'github')
+
+  return githubAccount?.accountId
+}
+
 export function buildCommentTree(
   comments: PublicCommentRecord[],
   sortOrder: 'asc' | 'desc' = 'asc',

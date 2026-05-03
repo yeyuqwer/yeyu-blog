@@ -17,12 +17,17 @@ const defaultSiteCommentConfig = {
   autoApproveWalletUsers: false,
 }
 const deletedCommentText = '已删除'
+const commentLoginProviderIds = ['github', 'google']
 
 type PublicCommentUserRecord = {
   id: string
   name: string
   email: string
   image: string | null
+  accounts: {
+    providerId: string
+    accountId: string
+  }[]
 }
 
 type PublicCommentParentRecord = {
@@ -56,6 +61,17 @@ const publicCommentUserSelect = {
   name: true,
   email: true,
   image: true,
+  accounts: {
+    where: {
+      providerId: {
+        in: commentLoginProviderIds,
+      },
+    },
+    select: {
+      providerId: true,
+      accountId: true,
+    },
+  },
 } as const
 
 const publicCommentInclude = {
@@ -76,6 +92,16 @@ const publicCommentInclude = {
   },
 } as const
 
+const serializePublicCommentUser = (user: PublicCommentUserRecord) => ({
+  id: user.id,
+  name: user.name,
+  image: user.image,
+  accounts: user.accounts.map(account => ({
+    providerId: account.providerId,
+    accountId: account.accountId,
+  })),
+})
+
 const serializePublicCommentParent = (comment: PublicCommentParentRecord) => {
   return {
     id: comment.id,
@@ -84,14 +110,7 @@ const serializePublicCommentParent = (comment: PublicCommentParentRecord) => {
     authorName: comment.authorName,
     authorImage: comment.authorImage,
     isDeleted: comment.isDeleted,
-    user:
-      comment.user == null
-        ? null
-        : {
-            id: comment.user.id,
-            name: comment.user.name,
-            image: comment.user.image,
-          },
+    user: comment.user == null ? null : serializePublicCommentUser(comment.user),
   }
 }
 
@@ -110,14 +129,7 @@ const serializePublicComment = (comment: PublicCommentRecord) => ({
   state: comment.state,
   createdAt: comment.createdAt,
   updatedAt: comment.updatedAt,
-  user:
-    comment.user == null
-      ? null
-      : {
-          id: comment.user.id,
-          name: comment.user.name,
-          image: comment.user.image,
-        },
+  user: comment.user == null ? null : serializePublicCommentUser(comment.user),
 })
 
 const isMissingTableError = (error: unknown) =>

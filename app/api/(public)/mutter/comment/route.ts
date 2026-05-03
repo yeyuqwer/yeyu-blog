@@ -18,6 +18,7 @@ const defaultMutterCommentConfig = {
   autoApproveWalletUsers: false,
 }
 const deletedCommentText = '已删除'
+const mutterCommentLoginProviderIds = ['github', 'google']
 
 const isMissingTableError = (error: unknown) =>
   typeof error === 'object' &&
@@ -83,6 +84,17 @@ export const GET = withResponse(async request => {
             name: true,
             email: true,
             image: true,
+            accounts: {
+              where: {
+                providerId: {
+                  in: mutterCommentLoginProviderIds,
+                },
+              },
+              select: {
+                providerId: true,
+                accountId: true,
+              },
+            },
           },
         },
       },
@@ -114,6 +126,10 @@ export const GET = withResponse(async request => {
             id: comment.user.id,
             name: comment.user.name,
             image: comment.user.image,
+            accounts: comment.user.accounts.map(account => ({
+              providerId: account.providerId,
+              accountId: account.accountId,
+            })),
           },
   }))
 
