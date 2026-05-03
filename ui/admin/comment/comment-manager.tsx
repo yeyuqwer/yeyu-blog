@@ -9,6 +9,7 @@ import { sileo } from 'sileo'
 import {
   useAdminCommentDeleteMutation,
   useAdminCommentQuery,
+  useAdminCommentRestoreMutation,
   useAdminCommentStateMutation,
 } from '@/hooks/api/comment'
 import { prettyDateTime } from '@/lib/utils/time'
@@ -22,12 +23,13 @@ import { CommentContent } from './comment-content'
 
 const commentStateOptions: Array<{
   label: string
-  value: 'all' | CommentState
+  value: 'all' | 'deleted' | CommentState
 }> = [
   { label: '全部状态', value: 'all' },
   { label: '待审核', value: 'PENDING' },
   { label: '已通过', value: 'APPROVED' },
   { label: '已拒绝', value: 'REJECTED' },
+  { label: '已删除', value: 'deleted' },
 ]
 
 const commentStateLabelMap: Record<CommentState, string> = {
@@ -63,12 +65,12 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
   const [draftQuery, setDraftQuery] = useState('')
   const [draftTargetId, setDraftTargetId] = useState('')
   const [draftTargetType, setDraftTargetType] = useState<'all' | CommentTargetType>('all')
-  const [draftState, setDraftState] = useState<'all' | CommentState>('PENDING')
+  const [draftState, setDraftState] = useState<'all' | 'deleted' | CommentState>('PENDING')
 
   const [query, setQuery] = useState('')
   const [targetIdInput, setTargetIdInput] = useState('')
   const [targetType, setTargetType] = useState<'all' | CommentTargetType>('all')
-  const [state, setState] = useState<'all' | CommentState>('PENDING')
+  const [state, setState] = useState<'all' | 'deleted' | CommentState>('PENDING')
   const [deletingComment, setDeletingComment] = useState<AdminCommentRecord | null>(null)
 
   const parsedTargetId = useMemo(() => {
@@ -84,7 +86,8 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
     q: query,
     targetType: targetType === 'all' ? undefined : targetType,
     targetId: parsedTargetId,
-    state: state === 'all' ? undefined : state,
+    state: state === 'all' || state === 'deleted' ? undefined : state,
+    isDeleted: state === 'deleted',
     take: 100,
     skip: 0,
   })
@@ -93,6 +96,7 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
 
   const { mutate: updateStateById, isPending: isUpdatingState } = useAdminCommentStateMutation()
   const { mutate: deleteById, isPending: isDeletingComment } = useAdminCommentDeleteMutation()
+  const { mutate: restoreById, isPending: isRestoringComment } = useAdminCommentRestoreMutation()
 
   const applyFilters = () => {
     setQuery(draftQuery.trim())
@@ -130,6 +134,20 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
         onSuccess: () => {
           setDeletingComment(null)
           sileo.success({ title: '评论已删除。' })
+        },
+        onError: error => {
+          sileo.error({ title: error.message })
+        },
+      },
+    )
+  }
+
+  const handleRestore = (id: number) => {
+    restoreById(
+      { id },
+      {
+        onSuccess: () => {
+          sileo.success({ title: '评论已恢复。' })
         },
         onError: error => {
           sileo.error({ title: error.message })
@@ -192,7 +210,7 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
         <Select
           value={draftState}
           onValueChange={value => {
-            const nextState = value as 'all' | CommentState
+            const nextState = value as 'all' | 'deleted' | CommentState
             setDraftState(nextState)
             setQuery(draftQuery.trim())
             setTargetIdInput(draftTargetId.trim())
@@ -237,6 +255,7 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
                       <Badge variant={commentStateBadgeVariantMap[comment.state]}>
                         {commentStateLabelMap[comment.state]}
                       </Badge>
+                      {comment.isDeleted ? <Badge variant="destructive">已删除</Badge> : null}
                       <Badge variant="outline">
                         {`${targetTypeLabelMap[comment.targetType]} ${comment.targetId}`}
                       </Badge>
@@ -269,60 +288,78 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
                     </time>
                   </div>
 
-                  <div className="flex shrink-0 flex-col gap-1">
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="outline"
-                      className="cursor-pointer"
-                      disabled={isUpdatingState || comment.state === 'APPROVED'}
-                      onClick={() => {
-                        handleUpdateState(comment.id, 'APPROVED')
-                      }}
-                    >
-                      <Check className="size-4" />
-                      通过
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="outline"
-                      className="cursor-pointer"
-                      disabled={isUpdatingState || comment.state === 'PENDING'}
-                      onClick={() => {
-                        handleUpdateState(comment.id, 'PENDING')
-                      }}
-                    >
-                      <RefreshCcw className="size-4" />
-                      待审
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="outline"
-                      className="cursor-pointer"
-                      disabled={isUpdatingState || comment.state === 'REJECTED'}
-                      onClick={() => {
-                        handleUpdateState(comment.id, 'REJECTED')
-                      }}
-                    >
-                      <X className="size-4" />
-                      拒绝
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="destructive"
-                      className="cursor-pointer"
-                      disabled={isDeletingComment}
-                      onClick={() => {
-                        setDeletingComment(comment)
-                      }}
-                    >
-                      <Trash2 className="size-4" />
-                      删除
-                    </Button>
-                  </div>
+                  {comment.isDeleted ? (
+                    <div className="flex shrink-0 flex-col gap-1">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="cursor-pointer"
+                        disabled={isRestoringComment}
+                        onClick={() => {
+                          handleRestore(comment.id)
+                        }}
+                      >
+                        <RefreshCcw className="size-4" />
+                        恢复
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex shrink-0 flex-col gap-1">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="cursor-pointer"
+                        disabled={isUpdatingState || comment.state === 'APPROVED'}
+                        onClick={() => {
+                          handleUpdateState(comment.id, 'APPROVED')
+                        }}
+                      >
+                        <Check className="size-4" />
+                        通过
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="cursor-pointer"
+                        disabled={isUpdatingState || comment.state === 'PENDING'}
+                        onClick={() => {
+                          handleUpdateState(comment.id, 'PENDING')
+                        }}
+                      >
+                        <RefreshCcw className="size-4" />
+                        待审
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="cursor-pointer"
+                        disabled={isUpdatingState || comment.state === 'REJECTED'}
+                        onClick={() => {
+                          handleUpdateState(comment.id, 'REJECTED')
+                        }}
+                      >
+                        <X className="size-4" />
+                        拒绝
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="destructive"
+                        className="cursor-pointer"
+                        disabled={isDeletingComment}
+                        onClick={() => {
+                          setDeletingComment(comment)
+                        }}
+                      >
+                        <Trash2 className="size-4" />
+                        删除
+                      </Button>
+                    </div>
+                  )}
                 </section>
               </li>
             ))}

@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { type GetAdminCommentsParams, getAdminComments } from '@/lib/api/comment'
 
 export function useAdminCommentQuery(params: GetAdminCommentsParams) {
-  const { q, targetType, targetId, state, take = 20, skip = 0 } = params
+  const { q, targetType, targetId, state, isDeleted, take = 20, skip = 0 } = params
 
   return useQuery({
     queryKey: [
@@ -11,6 +11,7 @@ export function useAdminCommentQuery(params: GetAdminCommentsParams) {
       targetType ?? 'all',
       targetId ?? 'all',
       state ?? 'all',
+      isDeleted ?? 'all',
       take,
       skip,
     ],
@@ -20,6 +21,7 @@ export function useAdminCommentQuery(params: GetAdminCommentsParams) {
         targetType,
         targetId,
         state,
+        isDeleted,
         take,
         skip,
       }),

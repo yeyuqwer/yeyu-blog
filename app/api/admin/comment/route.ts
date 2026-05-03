@@ -24,6 +24,7 @@ type AdminCommentParentRecord = {
   userId: string | null
   authorName: string
   authorImage: string | null
+  isDeleted: boolean
   user: AdminCommentUserRecord | null
 }
 
@@ -44,6 +45,7 @@ const adminCommentInclude = {
       userId: true,
       authorName: true,
       authorImage: true,
+      isDeleted: true,
       user: {
         select: adminCommentUserSelect,
       },
@@ -57,6 +59,7 @@ const serializeAdminCommentParent = (comment: AdminCommentParentRecord) => ({
   isAdmin: isAdminUser(comment.user),
   authorName: comment.authorName,
   authorImage: comment.authorImage,
+  isDeleted: comment.isDeleted,
   user:
     comment.user == null
       ? null
@@ -81,6 +84,7 @@ export const GET = withResponse(async request => {
     targetType: request.nextUrl.searchParams.get('targetType') ?? undefined,
     targetId: request.nextUrl.searchParams.get('targetId') ?? undefined,
     state: request.nextUrl.searchParams.get('state') ?? undefined,
+    isDeleted: request.nextUrl.searchParams.get('isDeleted') ?? undefined,
     take: request.nextUrl.searchParams.get('take') ?? undefined,
     skip: request.nextUrl.searchParams.get('skip') ?? undefined,
   })
@@ -89,7 +93,7 @@ export const GET = withResponse(async request => {
     throw new BadRequestError('Invalid query parameters.', { data: queryResult.error.flatten() })
   }
 
-  const { q, targetType, targetId, state, take, skip } = queryResult.data
+  const { q, targetType, targetId, state, isDeleted, take, skip } = queryResult.data
 
   const where = {
     ...(q != null && q.length > 0
@@ -102,6 +106,7 @@ export const GET = withResponse(async request => {
     ...(targetType != null ? { targetType } : {}),
     ...(targetId != null ? { targetId } : {}),
     ...(state != null ? { state } : {}),
+    ...(isDeleted != null ? { isDeleted } : {}),
   }
 
   const getAdminSiteCommentList = () =>
@@ -182,6 +187,22 @@ export const PATCH = withResponse(async request => {
 
   if (existing == null) {
     throw new BadRequestError('Comment not found.', { data: { id: payload.id } })
+  }
+
+  if ('isDeleted' in payload) {
+    const updated = await prisma.siteComment.update({
+      where: {
+        id: payload.id,
+      },
+      data: {
+        isDeleted: payload.isDeleted,
+      },
+    })
+
+    return {
+      message: 'Updated.',
+      data: updated,
+    }
   }
 
   let updated: Awaited<ReturnType<typeof prisma.siteComment.update>>
@@ -292,9 +313,12 @@ export const DELETE = withResponse(async request => {
   }
 
   try {
-    await prisma.siteComment.delete({
+    await prisma.siteComment.update({
       where: {
         id,
+      },
+      data: {
+        isDeleted: true,
       },
     })
   } catch (error) {

@@ -17,6 +17,7 @@ export const GET = withResponse(async request => {
     q: request.nextUrl.searchParams.get('q') ?? undefined,
     mutterId: request.nextUrl.searchParams.get('mutterId') ?? undefined,
     state: request.nextUrl.searchParams.get('state') ?? undefined,
+    isDeleted: request.nextUrl.searchParams.get('isDeleted') ?? undefined,
     take: request.nextUrl.searchParams.get('take') ?? undefined,
     skip: request.nextUrl.searchParams.get('skip') ?? undefined,
   })
@@ -25,7 +26,7 @@ export const GET = withResponse(async request => {
     throw new BadRequestError('Invalid query parameters.', { data: queryResult.error.flatten() })
   }
 
-  const { q, mutterId, state, take, skip } = queryResult.data
+  const { q, mutterId, state, isDeleted, take, skip } = queryResult.data
 
   const where = {
     ...(q != null && q.length > 0
@@ -37,6 +38,7 @@ export const GET = withResponse(async request => {
       : {}),
     ...(mutterId != null ? { mutterId } : {}),
     ...(state != null ? { state } : {}),
+    ...(isDeleted != null ? { isDeleted } : {}),
   }
 
   const [list, total] = await Promise.all([
@@ -98,6 +100,25 @@ export const PATCH = withResponse(async request => {
     throw new BadRequestError('Comment not found.', { data: { id: payload.id } })
   }
 
+  if ('isDeleted' in payload) {
+    const updated = await prisma.mutterComment.update({
+      where: {
+        id: payload.id,
+      },
+      data: {
+        isDeleted: payload.isDeleted,
+      },
+    })
+
+    revalidatePath('/mutter')
+    revalidatePath('/admin/mutter')
+
+    return {
+      message: 'Updated.',
+      data: updated,
+    }
+  }
+
   const updated = await prisma.mutterComment.update({
     where: {
       id: payload.id,
@@ -139,9 +160,12 @@ export const DELETE = withResponse(async request => {
     throw new BadRequestError('Comment not found.', { data: { id } })
   }
 
-  await prisma.mutterComment.delete({
+  await prisma.mutterComment.update({
     where: {
       id,
+    },
+    data: {
+      isDeleted: true,
     },
   })
 
