@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache'
 import { BadRequestError } from '@/lib/common/errors/request'
 import { isAdminUser, isWalletSessionUser, requireSignedInUser } from '@/lib/core/auth/guard'
 import { notifyAdminNewMutterComment } from '@/lib/infra/email/notifications'
@@ -5,13 +6,18 @@ import { sendEmailInBackground } from '@/lib/infra/email/send-email'
 import { readJsonBody } from '@/lib/infra/http/read-json-body'
 import { withResponse } from '@/lib/infra/http/with-response'
 import { prisma } from '@/prisma/instance'
-import { createMutterCommentSchema, getPublicMutterCommentsQuerySchema } from './type'
+import {
+  createMutterCommentSchema,
+  deleteMutterCommentQuerySchema,
+  getPublicMutterCommentsQuerySchema,
+} from './type'
 
 const mutterCommentConfigId = 1
 const defaultMutterCommentConfig = {
   autoApproveEmailUsers: true,
   autoApproveWalletUsers: false,
 }
+const deletedCommentText = '已删除'
 
 const isMissingTableError = (error: unknown) =>
   typeof error === 'object' &&
@@ -96,7 +102,8 @@ export const GET = withResponse(async request => {
     isAdmin: isAdminUser(comment.user),
     authorName: comment.authorName,
     authorImage: comment.authorImage,
-    content: comment.content,
+    content: comment.isDeleted ? deletedCommentText : comment.content,
+    isDeleted: comment.isDeleted,
     state: comment.state,
     createdAt: comment.createdAt,
     updatedAt: comment.updatedAt,
@@ -176,5 +183,54 @@ export const POST = withResponse(async request => {
   return {
     message: autoApprove ? 'Comment published.' : 'Comment submitted, waiting for approval.',
     data: created,
+  }
+})
+
+export const DELETE = withResponse(async request => {
+  const user = await requireSignedInUser()
+
+  const queryResult = deleteMutterCommentQuerySchema.safeParse({
+    id: request.nextUrl.searchParams.get('id') ?? undefined,
+  })
+
+  if (!queryResult.success) {
+    throw new BadRequestError('Invalid query parameters.', { data: queryResult.error.flatten() })
+  }
+
+  const { id } = queryResult.data
+  const existing = await prisma.mutterComment.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+      userId: true,
+      mutterId: true,
+    },
+  })
+
+  if (existing == null) {
+    throw new BadRequestError('Comment not found.', { data: { id } })
+  }
+
+  if (existing.userId !== user.id) {
+    throw new BadRequestError('只能删除自己的评论。')
+  }
+
+  await prisma.mutterComment.update({
+    where: {
+      id,
+    },
+    data: {
+      isDeleted: true,
+    },
+  })
+
+  revalidatePath('/mutter')
+
+  return {
+    message: 'Deleted.',
+    id,
+    mutterId: existing.mutterId,
   }
 })

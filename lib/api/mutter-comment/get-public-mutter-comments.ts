@@ -8,6 +8,7 @@ export type PublicMutterCommentRecord = {
   authorName: string
   authorImage: string | null
   content: string
+  isDeleted: boolean
   state: 'PENDING' | 'APPROVED' | 'REJECTED'
   createdAt: string
   updatedAt: string

@@ -9,13 +9,14 @@ import { sendEmailInBackground } from '@/lib/infra/email/send-email'
 import { readJsonBody } from '@/lib/infra/http/read-json-body'
 import { withResponse } from '@/lib/infra/http/with-response'
 import { prisma } from '@/prisma/instance'
-import { createCommentSchema, getPublicCommentsQuerySchema } from './type'
+import { createCommentSchema, deleteCommentQuerySchema, getPublicCommentsQuerySchema } from './type'
 
 const siteCommentConfigId = 1
 const defaultSiteCommentConfig = {
   autoApproveEmailUsers: true,
   autoApproveWalletUsers: false,
 }
+const deletedCommentText = '已删除'
 
 type PublicCommentUserRecord = {
   id: string
@@ -29,6 +30,7 @@ type PublicCommentParentRecord = {
   userId: string | null
   authorName: string
   authorImage: string | null
+  isDeleted: boolean
   user: PublicCommentUserRecord | null
 }
 
@@ -41,6 +43,7 @@ type PublicCommentRecord = {
   authorName: string
   authorImage: string | null
   content: string
+  isDeleted: boolean
   state: 'PENDING' | 'APPROVED' | 'REJECTED'
   createdAt: Date
   updatedAt: Date
@@ -65,6 +68,7 @@ const publicCommentInclude = {
       userId: true,
       authorName: true,
       authorImage: true,
+      isDeleted: true,
       user: {
         select: publicCommentUserSelect,
       },
@@ -72,21 +76,24 @@ const publicCommentInclude = {
   },
 } as const
 
-const serializePublicCommentParent = (comment: PublicCommentParentRecord) => ({
-  id: comment.id,
-  userId: comment.userId,
-  isAdmin: isAdminUser(comment.user),
-  authorName: comment.authorName,
-  authorImage: comment.authorImage,
-  user:
-    comment.user == null
-      ? null
-      : {
-          id: comment.user.id,
-          name: comment.user.name,
-          image: comment.user.image,
-        },
-})
+const serializePublicCommentParent = (comment: PublicCommentParentRecord) => {
+  return {
+    id: comment.id,
+    userId: comment.userId,
+    isAdmin: isAdminUser(comment.user),
+    authorName: comment.authorName,
+    authorImage: comment.authorImage,
+    isDeleted: comment.isDeleted,
+    user:
+      comment.user == null
+        ? null
+        : {
+            id: comment.user.id,
+            name: comment.user.name,
+            image: comment.user.image,
+          },
+  }
+}
 
 const serializePublicComment = (comment: PublicCommentRecord) => ({
   id: comment.id,
@@ -98,7 +105,8 @@ const serializePublicComment = (comment: PublicCommentRecord) => ({
   isAdmin: isAdminUser(comment.user),
   authorName: comment.authorName,
   authorImage: comment.authorImage,
-  content: comment.content,
+  content: comment.isDeleted ? deletedCommentText : comment.content,
+  isDeleted: comment.isDeleted,
   state: comment.state,
   createdAt: comment.createdAt,
   updatedAt: comment.updatedAt,
@@ -344,5 +352,50 @@ export const POST = withResponse(async request => {
   return {
     message: autoApprove ? 'Comment published.' : 'Comment submitted, waiting for approval.',
     data: serializePublicComment(created),
+  }
+})
+
+export const DELETE = withResponse(async request => {
+  const user = await requireSignedInUser()
+
+  const queryResult = deleteCommentQuerySchema.safeParse({
+    id: request.nextUrl.searchParams.get('id') ?? undefined,
+  })
+
+  if (!queryResult.success) {
+    throw new BadRequestError('Invalid query parameters.', { data: queryResult.error.flatten() })
+  }
+
+  const { id } = queryResult.data
+  const existing = await prisma.siteComment.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+      userId: true,
+    },
+  })
+
+  if (existing == null) {
+    throw new BadRequestError('Comment not found.', { data: { id } })
+  }
+
+  if (existing.userId !== user.id) {
+    throw new BadRequestError('只能删除自己的评论。')
+  }
+
+  await prisma.siteComment.update({
+    where: {
+      id,
+    },
+    data: {
+      isDeleted: true,
+    },
+  })
+
+  return {
+    message: 'Deleted.',
+    id,
   }
 })

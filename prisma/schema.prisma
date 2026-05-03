@@ -191,6 +191,7 @@ model MutterComment {
   authorName  String             @db.VarChar(120)
   authorImage String?
   content     String             @db.VarChar(500)
+  isDeleted   Boolean            @default(false)
   state       MutterCommentState @default(PENDING)
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
@@ -231,6 +232,7 @@ model SiteComment {
   authorName  String                @db.VarChar(120)
   authorImage String?
   content     String                @db.VarChar(500)
+  isDeleted   Boolean               @default(false)
   state       SiteCommentState      @default(PENDING)
   createdAt   DateTime              @default(now())
   updatedAt   DateTime              @updatedAt

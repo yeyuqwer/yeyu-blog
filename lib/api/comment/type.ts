@@ -14,6 +14,7 @@ export type CommentParent = {
   isAdmin: boolean
   authorName: string
   authorImage: string | null
+  isDeleted: boolean
   user: CommentUser | null
 }
 

@@ -19,3 +19,7 @@ export const createCommentSchema = z.object({
     message: 'Comment content cannot exceed 500 characters.',
   }),
 })
+
+export const deleteCommentQuerySchema = z.object({
+  id: z.coerce.number().int().positive({ message: 'Invalid id.' }),
+})

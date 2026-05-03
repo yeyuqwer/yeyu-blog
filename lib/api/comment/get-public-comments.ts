@@ -12,6 +12,7 @@ export type PublicCommentRecord = {
   authorName: string
   authorImage: string | null
   content: string
+  isDeleted: boolean
   state: CommentState
   createdAt: string
   updatedAt: string

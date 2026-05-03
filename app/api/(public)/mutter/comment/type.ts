@@ -12,3 +12,7 @@ export const createMutterCommentSchema = z.object({
     message: 'Comment content cannot exceed 500 characters.',
   }),
 })
+
+export const deleteMutterCommentQuerySchema = z.object({
+  id: z.coerce.number().int().positive({ message: 'Invalid id.' }),
+})
