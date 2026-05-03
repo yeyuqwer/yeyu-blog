@@ -1,12 +1,14 @@
 import { BadRequestError } from '@/lib/common/errors/request'
 import { isAdminUser, isWalletSessionUser, requireSignedInUser } from '@/lib/core/auth/guard'
+import { notifyAdminNewMutterComment } from '@/lib/infra/email/notifications'
+import { sendEmailInBackground } from '@/lib/infra/email/send-email'
 import { readJsonBody } from '@/lib/infra/http/read-json-body'
 import { withResponse } from '@/lib/infra/http/with-response'
 import { prisma } from '@/prisma/instance'
 import { createMutterCommentSchema, getPublicMutterCommentsQuerySchema } from './type'
 
-const MUTTER_COMMENT_CONFIG_ID = 1
-const DEFAULT_MUTTER_COMMENT_CONFIG = {
+const mutterCommentConfigId = 1
+const defaultMutterCommentConfig = {
   autoApproveEmailUsers: true,
   autoApproveWalletUsers: false,
 }
@@ -21,7 +23,7 @@ const getMutterCommentPolicy = async () => {
   try {
     const config = await prisma.mutterCommentConfig.findUnique({
       where: {
-        id: MUTTER_COMMENT_CONFIG_ID,
+        id: mutterCommentConfigId,
       },
       select: {
         autoApproveEmailUsers: true,
@@ -31,13 +33,13 @@ const getMutterCommentPolicy = async () => {
 
     return {
       autoApproveEmailUsers:
-        config?.autoApproveEmailUsers ?? DEFAULT_MUTTER_COMMENT_CONFIG.autoApproveEmailUsers,
+        config?.autoApproveEmailUsers ?? defaultMutterCommentConfig.autoApproveEmailUsers,
       autoApproveWalletUsers:
-        config?.autoApproveWalletUsers ?? DEFAULT_MUTTER_COMMENT_CONFIG.autoApproveWalletUsers,
+        config?.autoApproveWalletUsers ?? defaultMutterCommentConfig.autoApproveWalletUsers,
     }
   } catch (error) {
     if (isMissingTableError(error)) {
-      return DEFAULT_MUTTER_COMMENT_CONFIG
+      return defaultMutterCommentConfig
     }
 
     throw error
@@ -147,7 +149,8 @@ export const POST = withResponse(async request => {
   const autoApproveByPolicy = isWalletUser
     ? config.autoApproveWalletUsers
     : config.autoApproveEmailUsers
-  const autoApprove = isAdminUser(user) || autoApproveByPolicy
+  const currentUserIsAdmin = isAdminUser(user)
+  const autoApprove = currentUserIsAdmin || autoApproveByPolicy
 
   const created = await prisma.mutterComment.create({
     data: {
@@ -159,6 +162,16 @@ export const POST = withResponse(async request => {
       state: autoApprove ? 'APPROVED' : 'PENDING',
     },
   })
+
+  sendEmailInBackground(() =>
+    notifyAdminNewMutterComment({
+      authorName: created.authorName,
+      authorEmail: user.email,
+      content: created.content,
+      mutterId: created.mutterId,
+      state: created.state,
+    }),
+  )
 
   return {
     message: autoApprove ? 'Comment published.' : 'Comment submitted, waiting for approval.',

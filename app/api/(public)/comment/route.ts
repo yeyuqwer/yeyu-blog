@@ -1,13 +1,18 @@
 import { getSiteCommentTarget } from '@/lib/api/comment/target'
 import { BadRequestError } from '@/lib/common/errors/request'
 import { isAdminUser, isWalletSessionUser, requireSignedInUser } from '@/lib/core/auth/guard'
+import {
+  notifyAdminNewSiteComment,
+  notifyCommentAuthorReply,
+} from '@/lib/infra/email/notifications'
+import { sendEmailInBackground } from '@/lib/infra/email/send-email'
 import { readJsonBody } from '@/lib/infra/http/read-json-body'
 import { withResponse } from '@/lib/infra/http/with-response'
 import { prisma } from '@/prisma/instance'
 import { createCommentSchema, getPublicCommentsQuerySchema } from './type'
 
-const SITE_COMMENT_CONFIG_ID = 1
-const DEFAULT_SITE_COMMENT_CONFIG = {
+const siteCommentConfigId = 1
+const defaultSiteCommentConfig = {
   autoApproveEmailUsers: true,
   autoApproveWalletUsers: false,
 }
@@ -117,7 +122,7 @@ const getSiteCommentPolicy = async () => {
   try {
     const config = await prisma.siteCommentConfig.findUnique({
       where: {
-        id: SITE_COMMENT_CONFIG_ID,
+        id: siteCommentConfigId,
       },
       select: {
         autoApproveEmailUsers: true,
@@ -127,13 +132,13 @@ const getSiteCommentPolicy = async () => {
 
     return {
       autoApproveEmailUsers:
-        config?.autoApproveEmailUsers ?? DEFAULT_SITE_COMMENT_CONFIG.autoApproveEmailUsers,
+        config?.autoApproveEmailUsers ?? defaultSiteCommentConfig.autoApproveEmailUsers,
       autoApproveWalletUsers:
-        config?.autoApproveWalletUsers ?? DEFAULT_SITE_COMMENT_CONFIG.autoApproveWalletUsers,
+        config?.autoApproveWalletUsers ?? defaultSiteCommentConfig.autoApproveWalletUsers,
     }
   } catch (error) {
     if (isMissingTableError(error)) {
-      return DEFAULT_SITE_COMMENT_CONFIG
+      return defaultSiteCommentConfig
     }
 
     throw error
@@ -230,19 +235,26 @@ export const POST = withResponse(async request => {
     throw new BadRequestError('Article not found.')
   }
 
-  if (payload.parentId != null) {
-    const parentComment = await prisma.siteComment.findUnique({
-      where: {
-        id: payload.parentId,
-      },
-      select: {
-        id: true,
-        targetType: true,
-        targetId: true,
-        state: true,
-      },
-    })
+  const parentComment =
+    payload.parentId == null
+      ? null
+      : await prisma.siteComment.findUnique({
+          where: {
+            id: payload.parentId,
+          },
+          select: {
+            id: true,
+            targetType: true,
+            targetId: true,
+            authorName: true,
+            state: true,
+            user: {
+              select: publicCommentUserSelect,
+            },
+          },
+        })
 
+  if (payload.parentId != null) {
     if (parentComment == null) {
       throw new BadRequestError('Reply target not found.')
     }
@@ -263,7 +275,8 @@ export const POST = withResponse(async request => {
   const autoApproveByPolicy = isWalletUser
     ? config.autoApproveWalletUsers
     : config.autoApproveEmailUsers
-  const autoApprove = isAdminUser(user) || autoApproveByPolicy
+  const currentUserIsAdmin = isAdminUser(user)
+  const autoApprove = currentUserIsAdmin || autoApproveByPolicy
 
   let created: PublicCommentRecord
 
@@ -287,6 +300,44 @@ export const POST = withResponse(async request => {
     }
 
     throw error
+  }
+
+  const shouldNotifyAdmin = !currentUserIsAdmin || payload.parentId == null
+
+  if (shouldNotifyAdmin) {
+    sendEmailInBackground(() =>
+      notifyAdminNewSiteComment({
+        authorName: created.authorName,
+        authorEmail: user.email,
+        content: created.content,
+        targetTitle: target.title,
+        targetPath: target.path,
+        state: created.state,
+      }),
+    )
+  }
+
+  const parentCommentUser = parentComment?.user
+  if (
+    created.state === 'APPROVED' &&
+    parentComment != null &&
+    parentCommentUser != null &&
+    !isAdminUser(parentCommentUser) &&
+    parentCommentUser.id !== user.id
+  ) {
+    const parentCommentUserEmail = parentCommentUser.email
+    const parentCommentAuthorName = parentComment.authorName
+
+    sendEmailInBackground(() =>
+      notifyCommentAuthorReply({
+        to: parentCommentUserEmail,
+        recipientName: parentCommentAuthorName,
+        replyAuthorName: created.authorName,
+        targetTitle: target.title,
+        targetPath: target.path,
+        replyContent: created.content,
+      }),
+    )
   }
 
   return {

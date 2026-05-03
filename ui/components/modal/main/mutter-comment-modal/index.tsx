@@ -266,7 +266,7 @@ export const MutterCommentModal: FC<ComponentProps<'div'>> = () => {
                     void handleSubmitComment()
                   }}
                 >
-                  {isCreatingComment ? '提交中...' : '发布'}
+                  {isCreatingComment ? '稍等' : '发布'}
                 </Button>
               </div>
             </div>

@@ -1,6 +1,12 @@
-import { getSiteCommentTargetKey, getSiteCommentTargetMap } from '@/lib/api/comment/target'
+import {
+  getSiteCommentTarget,
+  getSiteCommentTargetKey,
+  getSiteCommentTargetMap,
+} from '@/lib/api/comment/target'
 import { BadRequestError } from '@/lib/common/errors/request'
 import { isAdminUser, requireAdmin } from '@/lib/core/auth/guard'
+import { notifyCommentAuthorReply } from '@/lib/infra/email/notifications'
+import { sendEmailInBackground } from '@/lib/infra/email/send-email'
 import { readJsonBody } from '@/lib/infra/http/read-json-body'
 import { withResponse } from '@/lib/infra/http/with-response'
 import { prisma } from '@/prisma/instance'
@@ -195,6 +201,54 @@ export const PATCH = withResponse(async request => {
     }
 
     throw error
+  }
+
+  if (existing.state !== 'APPROVED' && updated.state === 'APPROVED' && updated.parentId != null) {
+    const approvedReply = await prisma.siteComment.findUnique({
+      where: {
+        id: updated.id,
+      },
+      select: {
+        content: true,
+        authorName: true,
+        userId: true,
+        targetType: true,
+        targetId: true,
+        parent: {
+          select: {
+            authorName: true,
+            user: {
+              select: adminCommentUserSelect,
+            },
+          },
+        },
+      },
+    })
+    const target = await getSiteCommentTarget(updated.targetType, updated.targetId)
+    const approvedReplyParent = approvedReply?.parent
+    const parentCommentUser = approvedReplyParent?.user
+    const shouldNotifyReplyAuthor =
+      target != null &&
+      target.isPublished &&
+      parentCommentUser != null &&
+      !isAdminUser(parentCommentUser) &&
+      parentCommentUser.id !== approvedReply?.userId
+
+    if (shouldNotifyReplyAuthor && approvedReply != null && approvedReplyParent != null) {
+      const parentCommentUserEmail = parentCommentUser.email
+      const parentCommentAuthorName = approvedReplyParent.authorName
+
+      sendEmailInBackground(() =>
+        notifyCommentAuthorReply({
+          to: parentCommentUserEmail,
+          recipientName: parentCommentAuthorName,
+          replyAuthorName: approvedReply.authorName,
+          targetTitle: target.title,
+          targetPath: target.path,
+          replyContent: approvedReply.content,
+        }),
+      )
+    }
   }
 
   return {
