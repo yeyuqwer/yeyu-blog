@@ -1,4 +1,3 @@
-import { Suspense } from 'react'
 import BioSection from './bio-section'
 import EchoCard from './echo-card'
 import {
@@ -22,9 +21,7 @@ export default function HomeContent() {
       </HomeBioMotion>
 
       <HomeFadeMotion>
-        <Suspense fallback={<div aria-hidden className="mt-4 h-12 w-2/3" />}>
-          <EchoCard />
-        </Suspense>
+        <EchoCard />
       </HomeFadeMotion>
 
       <HomeFadeMotion>

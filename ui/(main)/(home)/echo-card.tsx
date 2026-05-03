@@ -1,15 +1,17 @@
-import { connection } from 'next/server'
-import { getRandomPublicEcho } from '@/lib/api/echo/get-random-public-echo'
+'use client'
+
+import { useQuery } from '@tanstack/react-query'
+import { getPublicEcho } from '@/lib/api/echo/get-public-echo'
 import EchoCardContent from './echo-card-content'
 
-export default async function EchoCard() {
-  await connection()
+export default function EchoCard() {
+  const { data } = useQuery({
+    queryKey: ['echo', 'random'],
+    queryFn: getPublicEcho,
+    staleTime: Infinity,
+  })
 
-  const echo = await getRandomPublicEcho()
+  if (data == null) return null
 
-  if (echo == null) {
-    return null
-  }
-
-  return <EchoCardContent echo={echo} />
+  return <EchoCardContent echo={data} />
 }

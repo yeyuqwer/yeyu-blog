@@ -30,30 +30,13 @@ export async function getRandomPublicEcho(
       : {}),
   }
 
-  const total = await prisma.echo.count({ where })
+  const ids = await prisma.echo.findMany({ where, select: { id: true } })
 
-  if (total === 0) {
+  if (ids.length === 0) {
     return null
   }
 
-  const randomSkip = Math.floor(Math.random() * total)
+  const { id } = ids[Math.floor(Math.random() * ids.length)]
 
-  const echo =
-    (await prisma.echo.findFirst({
-      where,
-      orderBy: {
-        id: 'asc',
-      },
-      skip: randomSkip,
-      select,
-    })) ??
-    (await prisma.echo.findFirst({
-      where,
-      orderBy: {
-        id: 'asc',
-      },
-      select,
-    }))
-
-  return echo
+  return prisma.echo.findUnique({ where: { id }, select })
 }

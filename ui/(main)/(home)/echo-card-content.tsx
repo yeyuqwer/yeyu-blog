@@ -2,14 +2,11 @@
 
 import type { PublicEchoCardData } from '@/lib/api/echo/type'
 import { motion, useReducedMotion, type Variants } from 'motion/react'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
-type ReducedMotionPreference = ReturnType<typeof useReducedMotion>
 type EchoCardData = NonNullable<PublicEchoCardData>
 
-let sessionEcho: EchoCardData | null = null
-
-function getContentVariants(shouldReduceMotion: ReducedMotionPreference): Variants {
+function getContentVariants(shouldReduceMotion: ReturnType<typeof useReducedMotion>): Variants {
   return {
     hidden: shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 12, filter: 'blur(2px)' },
     visible: {
@@ -33,7 +30,7 @@ function getContentVariants(shouldReduceMotion: ReducedMotionPreference): Varian
   }
 }
 
-function getLineVariants(shouldReduceMotion: ReducedMotionPreference): Variants {
+function getLineVariants(shouldReduceMotion: ReturnType<typeof useReducedMotion>): Variants {
   return {
     hidden: shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 6 },
     visible: {
@@ -46,16 +43,11 @@ function getLineVariants(shouldReduceMotion: ReducedMotionPreference): Variants 
 
 export default function EchoCardContent({ echo }: { echo: EchoCardData }) {
   const shouldReduceMotion = useReducedMotion()
-  const [currentEcho] = useState(() => sessionEcho ?? echo)
   const contentVariants = useMemo(
     () => getContentVariants(shouldReduceMotion),
     [shouldReduceMotion],
   )
   const lineVariants = useMemo(() => getLineVariants(shouldReduceMotion), [shouldReduceMotion])
-
-  useEffect(() => {
-    sessionEcho = currentEcho
-  }, [currentEcho])
 
   return (
     <motion.section layout className="mt-4 flex w-2/3 flex-col">
@@ -71,13 +63,13 @@ export default function EchoCardContent({ echo }: { echo: EchoCardData }) {
           variants={lineVariants}
           className="underline decoration-black drop-shadow-[0_0_0.75rem_var(--theme-indicator)] dark:decoration-white dark:drop-shadow-[0_0_10px_var(--theme-400)]"
         >
-          {currentEcho.content}
+          {echo.content}
         </motion.p>
         <motion.footer
           variants={lineVariants}
           className="ml-auto text-sm text-theme-primary drop-shadow-[0_0_0.75rem_var(--theme-indicator)] dark:text-theme-400 dark:drop-shadow-[0_0_10px_var(--theme-400)]"
         >
-          「{currentEcho.reference}」
+          「{echo.reference}」
         </motion.footer>
       </motion.blockquote>
     </motion.section>
