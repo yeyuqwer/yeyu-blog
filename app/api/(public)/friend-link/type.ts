@@ -20,6 +20,16 @@ const friendLinkUrlSchema = z
     message: '链接需要使用 HTTPS',
   })
 
+const friendLinkEmailSchema = z.preprocess(
+  value => (typeof value === 'string' && value.trim() === '' ? undefined : value),
+  z
+    .string()
+    .trim()
+    .email({ message: '请输入有效的邮箱地址' })
+    .max(254, { message: '邮箱地址不能超过 254 个字符' })
+    .optional(),
+)
+
 export const getPublicFriendLinksQuerySchema = z.object({
   take: z.coerce.number().int().min(1).max(100).default(100),
   skip: z.coerce.number().int().min(0).default(0),
@@ -27,6 +37,7 @@ export const getPublicFriendLinksQuerySchema = z.object({
 
 export const createFriendLinkSchema = z.object({
   name: friendLinkNameSchema,
+  email: friendLinkEmailSchema,
   description: friendLinkDescriptionSchema,
   avatarUrl: friendLinkUrlSchema,
   siteUrl: friendLinkUrlSchema,

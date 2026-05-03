@@ -29,6 +29,12 @@ const friendLinkApplyFields = [
     type: 'text',
   },
   {
+    name: 'email',
+    label: '联系邮箱',
+    type: 'email',
+    required: false,
+  },
+  {
     name: 'description',
     label: '站点描述',
     placeholder: '业余全栈开发',
@@ -49,16 +55,21 @@ const friendLinkApplyFields = [
 ] satisfies {
   name: keyof CreateFriendLinkParams
   label: string
-  placeholder: string
+  placeholder?: string
+  required?: boolean
   type?: ComponentProps<'input'>['type']
 }[]
 
-const friendLinkSiteInfo = `${friendLinkApplyFields[0].label}：${friendLinkApplyFields[0].placeholder}
-${friendLinkApplyFields[1].label}：${friendLinkApplyFields[1].placeholder}
-${friendLinkApplyFields[2].label}：${friendLinkApplyFields[2].placeholder}
-${friendLinkApplyFields[3].label}：${friendLinkApplyFields[3].placeholder}`
+const friendLinkSiteInfo = friendLinkApplyFields
+  .filter(field => field.name !== 'email')
+  .map(field => `${field.label}：${field.placeholder}`)
+  .join('\n')
 
-export const FriendLinkApplyModal: FC<ComponentProps<'div'>> = () => {
+export const FriendLinkApplyModal: FC<
+  ComponentProps<'div'> & {
+    emailPlaceholder?: string
+  }
+> = ({ emailPlaceholder }) => {
   const modalType = useModalStore(s => s.modalType)
   const closeModal = useModalStore(s => s.closeModal)
   const isModalOpen = modalType === 'friendLinkApplyModal'
@@ -128,6 +139,7 @@ export const FriendLinkApplyModal: FC<ComponentProps<'div'>> = () => {
             <div className="grid gap-4">
               {friendLinkApplyFields.map(field => {
                 const fieldId = `friend-link-apply-${field.name}`
+                const placeholder = field.name === 'email' ? emailPlaceholder : field.placeholder
 
                 return (
                   <div key={field.name} className="grid gap-2">
@@ -141,8 +153,8 @@ export const FriendLinkApplyModal: FC<ComponentProps<'div'>> = () => {
                       id={fieldId}
                       name={field.name}
                       type={field.type}
-                      required
-                      placeholder={field.placeholder}
+                      required={field.required ?? true}
+                      placeholder={placeholder}
                       className="h-10 rounded-xl border-black/10 bg-theme-background/65 text-sm shadow-none placeholder:text-zinc-400 focus-visible:border-zinc-400 focus-visible:ring-zinc-400/25 dark:border-white/10 dark:bg-zinc-900/70 dark:focus-visible:border-zinc-500 dark:focus-visible:ring-zinc-500/25 dark:placeholder:text-zinc-500"
                     />
                   </div>

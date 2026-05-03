@@ -1,6 +1,11 @@
 import { revalidatePath } from 'next/cache'
 import { BadRequestError } from '@/lib/common/errors/request'
 import { requireAdmin } from '@/lib/core/auth/guard'
+import {
+  notifyAdminFriendLinkApproved,
+  notifyFriendLinkApproved,
+} from '@/lib/infra/email/notifications'
+import { sendEmailInBackground } from '@/lib/infra/email/send-email'
 import { readJsonBody } from '@/lib/infra/http/read-json-body'
 import { withResponse } from '@/lib/infra/http/with-response'
 import { prisma } from '@/prisma/instance'
@@ -36,6 +41,11 @@ export const GET = withResponse(async request => {
             },
             {
               description: {
+                contains: q,
+              },
+            },
+            {
+              email: {
                 contains: q,
               },
             },
@@ -97,6 +107,7 @@ export const PATCH = withResponse(async request => {
     },
     data: {
       ...(payload.name != null ? { name: payload.name } : {}),
+      ...(payload.email != null ? { email: payload.email } : {}),
       ...(payload.description != null ? { description: payload.description } : {}),
       ...(payload.avatarUrl != null ? { avatarUrl: payload.avatarUrl } : {}),
       ...(payload.siteUrl != null ? { siteUrl: payload.siteUrl } : {}),
@@ -106,6 +117,28 @@ export const PATCH = withResponse(async request => {
 
   revalidatePath('/friends')
   revalidatePath('/admin/friend-link')
+
+  if (existing.state !== 'APPROVED' && updated.state === 'APPROVED') {
+    const approvedFriendLinkEmail = updated.email
+
+    if (approvedFriendLinkEmail != null) {
+      sendEmailInBackground(() =>
+        notifyFriendLinkApproved({
+          to: approvedFriendLinkEmail,
+          name: updated.name,
+          siteUrl: updated.siteUrl,
+        }),
+      )
+    }
+
+    sendEmailInBackground(() =>
+      notifyAdminFriendLinkApproved({
+        name: updated.name,
+        email: updated.email ?? '未填写',
+        siteUrl: updated.siteUrl,
+      }),
+    )
+  }
 
   return {
     message: 'Updated.',

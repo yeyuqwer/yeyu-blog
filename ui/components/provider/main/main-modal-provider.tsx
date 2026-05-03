@@ -7,14 +7,20 @@ import {
   SelectThemeModal,
 } from '@/ui/components/modal/main'
 
-export function MainModalProvider({ children }: { children: React.ReactNode }) {
+export function MainModalProvider({
+  children,
+  friendLinkEmailPlaceholder,
+}: {
+  children: React.ReactNode
+  friendLinkEmailPlaceholder?: string
+}) {
   return (
     <>
       {children}
       <LoginModal />
       <SelectThemeModal />
       <MutterCommentModal />
-      <FriendLinkApplyModal />
+      <FriendLinkApplyModal emailPlaceholder={friendLinkEmailPlaceholder} />
     </>
   )
 }

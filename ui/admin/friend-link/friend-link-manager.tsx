@@ -2,7 +2,7 @@
 
 import type { ComponentProps, FC, FormEvent } from 'react'
 import type { AdminFriendLinkRecord, FriendLinkState } from '@/lib/api/friend-link'
-import { Check, ExternalLink, Pencil, RefreshCcw, Search, Trash2, X } from 'lucide-react'
+import { Check, ExternalLink, Mail, Pencil, RefreshCcw, Search, Trash2, X } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -29,7 +29,9 @@ type FriendLinkStateFilter = 'all' | FriendLinkState
 type FriendLinkEditForm = Pick<
   AdminFriendLinkRecord,
   'name' | 'description' | 'avatarUrl' | 'siteUrl'
->
+> & {
+  email: string
+}
 
 const friendLinkStateOptions: Array<{
   label: string
@@ -55,6 +57,7 @@ const friendLinkStateBadgeVariantMap: Record<FriendLinkState, BadgeVariant> = {
 
 const initialFriendLinkEditForm: FriendLinkEditForm = {
   name: '',
+  email: '',
   description: '',
   avatarUrl: '',
   siteUrl: '',
@@ -65,6 +68,11 @@ const friendLinkEditFields = [
     name: 'name',
     label: '站点名称',
     type: 'text',
+  },
+  {
+    name: 'email',
+    label: '联系邮箱',
+    type: 'email',
   },
   {
     name: 'description',
@@ -136,6 +144,7 @@ export const FriendLinkManager: FC<ComponentProps<'main'>> = () => {
     setEditingFriendLink(friendLink)
     setEditForm({
       name: friendLink.name,
+      email: friendLink.email ?? '',
       description: friendLink.description,
       avatarUrl: friendLink.avatarUrl,
       siteUrl: friendLink.siteUrl,
@@ -197,7 +206,7 @@ export const FriendLinkManager: FC<ComponentProps<'main'>> = () => {
         <header className="flex flex-wrap items-center gap-2">
           <Input
             className="min-w-56 flex-1"
-            placeholder="搜索站点、描述或地址..."
+            placeholder="搜索站点、邮箱、描述或地址..."
             value={draftQuery}
             onChange={event => {
               setDraftQuery(event.target.value)
@@ -273,6 +282,15 @@ export const FriendLinkManager: FC<ComponentProps<'main'>> = () => {
                           {friendLink.description}
                         </p>
                         <div className="mt-2 flex flex-wrap items-center gap-2 text-muted-foreground text-xs">
+                          {friendLink.email != null ? (
+                            <a
+                              href={`mailto:${friendLink.email}`}
+                              className="inline-flex min-w-0 items-center gap-1 text-foreground underline underline-offset-4"
+                            >
+                              <Mail className="size-3 shrink-0" />
+                              <span className="truncate">{friendLink.email}</span>
+                            </a>
+                          ) : null}
                           <Link
                             href={friendLink.siteUrl}
                             target="_blank"

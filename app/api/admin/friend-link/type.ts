@@ -22,6 +22,12 @@ const friendLinkUrlSchema = z
     message: '链接需要使用 HTTPS',
   })
 
+const friendLinkEmailSchema = z
+  .string()
+  .trim()
+  .email({ message: '请输入有效的邮箱地址' })
+  .max(254, { message: '邮箱地址不能超过 254 个字符' })
+
 export const getAdminFriendLinksQuerySchema = z.object({
   q: z.string().trim().optional(),
   state: friendLinkStateSchema.optional(),
@@ -33,6 +39,7 @@ export const updateFriendLinkSchema = z
   .object({
     id: z.number().int().positive({ message: 'Invalid id.' }),
     name: friendLinkNameSchema.optional(),
+    email: friendLinkEmailSchema.optional(),
     description: friendLinkDescriptionSchema.optional(),
     avatarUrl: friendLinkUrlSchema.optional(),
     siteUrl: friendLinkUrlSchema.optional(),
@@ -41,6 +48,7 @@ export const updateFriendLinkSchema = z
   .refine(
     values =>
       values.name != null ||
+      values.email != null ||
       values.description != null ||
       values.avatarUrl != null ||
       values.siteUrl != null ||

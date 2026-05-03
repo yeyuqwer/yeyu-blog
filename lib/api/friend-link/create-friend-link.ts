@@ -3,6 +3,7 @@ import { apiRequest } from '@/lib/infra/http/ky'
 
 export type CreateFriendLinkParams = {
   name: string
+  email?: string
   description: string
   avatarUrl: string
   siteUrl: string

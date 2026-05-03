@@ -1,5 +1,7 @@
 import { revalidatePath } from 'next/cache'
 import { BadRequestError } from '@/lib/common/errors/request'
+import { notifyAdminFriendLinkApplication } from '@/lib/infra/email/notifications'
+import { sendEmailInBackground } from '@/lib/infra/email/send-email'
 import { readJsonBody } from '@/lib/infra/http/read-json-body'
 import { withResponse } from '@/lib/infra/http/with-response'
 import { prisma } from '@/prisma/instance'
@@ -23,6 +25,16 @@ export const GET = withResponse(async request => {
   const [list, total] = await Promise.all([
     prisma.friendLink.findMany({
       where,
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        avatarUrl: true,
+        siteUrl: true,
+        state: true,
+        createdAt: true,
+        updatedAt: true,
+      },
       orderBy: [
         {
           updatedAt: 'desc',
@@ -62,6 +74,16 @@ export const POST = withResponse(async request => {
 
   revalidatePath('/friends')
   revalidatePath('/admin/friend-link')
+
+  sendEmailInBackground(() =>
+    notifyAdminFriendLinkApplication({
+      name: created.name,
+      email: parseResult.data.email,
+      description: created.description,
+      siteUrl: created.siteUrl,
+      avatarUrl: created.avatarUrl,
+    }),
+  )
 
   return {
     message: '友链申请已提交，等待审核。',
