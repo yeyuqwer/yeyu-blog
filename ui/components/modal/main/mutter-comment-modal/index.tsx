@@ -12,7 +12,7 @@ import {
   useMutterCommentMutation,
   usePublicMutterCommentQuery,
 } from '@/hooks/api/mutter-comment'
-import { isAdminLoggedIn, isEmailLoggedIn, isWalletLoggedIn, useSession } from '@/lib/core'
+import { isAdminLoggedIn, isEmailLoggedIn, isWalletLoggedIn, useSession } from '@/lib/core/auth'
 import { prettyDateTime, toRelativeDate } from '@/lib/utils/time'
 import { useModalStore } from '@/store/use-modal-store'
 import { MainConfirmModal } from '@/ui/components/modal/main/main-confirm-modal'

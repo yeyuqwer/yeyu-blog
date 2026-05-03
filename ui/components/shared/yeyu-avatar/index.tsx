@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { useSession } from '@/lib/core'
+import { useSession } from '@/lib/core/auth'
 
 interface IAvatarSize {
   width?: number | `${number}` | undefined

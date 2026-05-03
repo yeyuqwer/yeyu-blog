@@ -7,7 +7,7 @@ import { LogOut } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { isWalletLoggedIn, signOut, useSession } from '@/lib/core'
+import { isWalletLoggedIn, signOut, useSession } from '@/lib/core/auth'
 import { cn } from '@/lib/utils/common/shadcn'
 import { AccountIcon } from '@/ui/components/shared/account-icon'
 import {

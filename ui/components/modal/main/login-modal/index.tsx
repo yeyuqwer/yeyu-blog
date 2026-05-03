@@ -7,7 +7,14 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
 import { SiweMessage } from 'siwe'
-import { useChainId, useChains, useConnect, useConnections, useConnectors } from 'wagmi'
+import {
+  useChainId,
+  useChains,
+  useConnect,
+  useConnections,
+  useConnectors,
+  WagmiProvider,
+} from 'wagmi'
 import { disconnect, signMessage } from 'wagmi/actions'
 import { clientEnv } from '@/config/env/client-env'
 import {
@@ -17,8 +24,8 @@ import {
   signIn,
   signOut,
   useSession,
-  wagmiConfig,
-} from '@/lib/core'
+} from '@/lib/core/auth'
+import { wagmiConfig } from '@/lib/core/web3'
 import { cn } from '@/lib/utils/common/shadcn'
 import { useModalStore } from '@/store/use-modal-store'
 import { AccountIcon } from '@/ui/components/shared/account-icon'
@@ -32,7 +39,7 @@ const adminWalletAddress = clientEnv.NEXT_PUBLIC_ADMIN_WALLET_ADDRESS?.trim().to
 
 // TODO: 全局状态管理存储钱包登录状态 ？
 // TODO: 之后再说吧，累了，在改 bug 要猝死了🥲
-export const LoginModal: FC<ComponentProps<'div'>> = () => {
+const LoginModalContent: FC<ComponentProps<'div'>> = () => {
   const modalType = useModalStore(s => s.modalType)
   const closeModal = useModalStore(s => s.closeModal)
   const isModalOpen = modalType === 'loginModal'
@@ -301,5 +308,13 @@ export const LoginModal: FC<ComponentProps<'div'>> = () => {
         </main>
       </DialogContent>
     </Dialog>
+  )
+}
+
+export const LoginModal: FC<ComponentProps<'div'>> = () => {
+  return (
+    <WagmiProvider config={wagmiConfig} reconnectOnMount={false}>
+      <LoginModalContent />
+    </WagmiProvider>
   )
 }

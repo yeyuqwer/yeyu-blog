@@ -1,11 +1,9 @@
 'use client'
 
-import {
-  FriendLinkApplyModal,
-  LoginModal,
-  MutterCommentModal,
-  SelectThemeModal,
-} from '@/ui/components/modal/main'
+import { FriendLinkApplyModal } from '@/ui/components/modal/main/friend-link-apply-modal'
+import { LoginModal } from '@/ui/components/modal/main/login-modal'
+import { MutterCommentModal } from '@/ui/components/modal/main/mutter-comment-modal'
+import { SelectThemeModal } from '@/ui/components/modal/main/select-theme-modal'
 
 export function MainModalProvider({
   children,
