@@ -149,8 +149,10 @@ export default function YeAvatar() {
           src={avatar}
           alt="avatar"
           className="w-44 rounded-full md:w-52"
+          sizes="(min-width: 768px) 13rem, 11rem"
           placeholder="blur"
-          priority
+          preload
+          fetchPriority="high"
         />
         <span className="absolute top-0 left-0 size-full animate-ye-ping-one-dot-one rounded-full ring-4 ring-theme-400 ring-offset-1 dark:ring-white dark:ring-offset-black" />
       </motion.figure>
