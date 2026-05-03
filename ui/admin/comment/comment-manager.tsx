@@ -1,7 +1,7 @@
 'use client'
 
 import type { ComponentProps, FC } from 'react'
-import type { CommentState, CommentTargetType } from '@/lib/api/comment'
+import type { AdminCommentRecord, CommentState, CommentTargetType } from '@/lib/api/comment'
 import { Check, RefreshCcw, Search, Trash2, X } from 'lucide-react'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
@@ -12,6 +12,7 @@ import {
   useAdminCommentStateMutation,
 } from '@/hooks/api/comment'
 import { prettyDateTime } from '@/lib/utils/time'
+import { ConfirmDialog } from '@/ui/components/modal/base/confirm-dialog'
 import Loading from '@/ui/components/shared/loading'
 import { Badge } from '@/ui/shadcn/badge'
 import { Button } from '@/ui/shadcn/button'
@@ -68,6 +69,7 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
   const [targetIdInput, setTargetIdInput] = useState('')
   const [targetType, setTargetType] = useState<'all' | CommentTargetType>('all')
   const [state, setState] = useState<'all' | CommentState>('PENDING')
+  const [deletingComment, setDeletingComment] = useState<AdminCommentRecord | null>(null)
 
   const parsedTargetId = useMemo(() => {
     if (targetIdInput.trim().length === 0) {
@@ -116,15 +118,17 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
     )
   }
 
-  const handleDelete = (id: number) => {
-    if (!window.confirm('确认删除这条评论吗？此操作不可撤销。')) {
+  const handleDelete = () => {
+    if (deletingComment == null) {
+      sileo.error({ title: '评论信息不存在，删除失败。' })
       return
     }
 
     deleteById(
-      { id },
+      { id: deletingComment.id },
       {
         onSuccess: () => {
+          setDeletingComment(null)
           sileo.success({ title: '评论已删除。' })
         },
         onError: error => {
@@ -312,7 +316,7 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
                       className="cursor-pointer"
                       disabled={isDeletingComment}
                       onClick={() => {
-                        handleDelete(comment.id)
+                        setDeletingComment(comment)
                       }}
                     >
                       <Trash2 className="size-4" />
@@ -325,6 +329,28 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
           </ul>
         </main>
       )}
+
+      <ConfirmDialog
+        open={deletingComment != null}
+        onClose={() => {
+          setDeletingComment(null)
+        }}
+        onConfirm={handleDelete}
+        title="确定要删除这条评论吗？"
+        description="该操作不可撤销。"
+        isPending={isDeletingComment}
+      >
+        {deletingComment != null ? (
+          <div className="rounded-md border bg-muted/30 p-3 text-sm">
+            <p className="font-medium">
+              {deletingComment.user?.name ?? deletingComment.authorName}
+            </p>
+            <p className="mt-2 line-clamp-3 whitespace-pre-wrap text-muted-foreground text-xs">
+              {deletingComment.content}
+            </p>
+          </div>
+        ) : null}
+      </ConfirmDialog>
     </main>
   )
 }
