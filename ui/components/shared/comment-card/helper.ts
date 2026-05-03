@@ -20,7 +20,10 @@ export function getCommentAddress(comment: Pick<CommentAuthorLike, 'user'>) {
   return isAddress(comment.user?.name ?? '') ? (comment.user?.name as Address) : undefined
 }
 
-export function buildCommentTree(comments: PublicCommentRecord[]) {
+export function buildCommentTree(
+  comments: PublicCommentRecord[],
+  sortOrder: 'asc' | 'desc' = 'asc',
+) {
   const nodeMap = new Map<number, CommentTreeNode>()
   const roots: CommentTreeNode[] = []
 
@@ -50,5 +53,20 @@ export function buildCommentTree(comments: PublicCommentRecord[]) {
     roots.push(node)
   }
 
+  sortCommentTree(roots, sortOrder)
+
   return roots
+}
+
+function sortCommentTree(comments: CommentTreeNode[], sortOrder: 'asc' | 'desc') {
+  comments.sort((previousComment, nextComment) => {
+    const previousTime = new Date(previousComment.createdAt).getTime()
+    const nextTime = new Date(nextComment.createdAt).getTime()
+
+    return sortOrder === 'asc' ? previousTime - nextTime : nextTime - previousTime
+  })
+
+  for (const comment of comments) {
+    sortCommentTree(comment.children, sortOrder)
+  }
 }

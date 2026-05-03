@@ -40,7 +40,7 @@ export function CommentList({
   if (commentTree.length === 0) {
     return (
       <div className="px-1 py-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
-        评论会在这里按时间倒序展开，回复会以缩进形式挂在对应楼层下面。
+        评论会在这里按时间展开，回复会以缩进形式挂在对应楼层下面。
       </div>
     )
   }

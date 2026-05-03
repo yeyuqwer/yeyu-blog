@@ -16,6 +16,7 @@ export function useCommentCard({
 }) {
   const [commentContent, setCommentContent] = useState('')
   const [replyContent, setReplyContent] = useState('')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
   const [activeReplyCommentId, setActiveReplyCommentId] = useState<number | null>(null)
   const setModalOpen = useModalStore(s => s.setModalOpen)
 
@@ -30,7 +31,10 @@ export function useCommentCard({
     targetId: articleId,
     take: 50,
   })
-  const commentTree = useMemo(() => buildCommentTree(data?.list ?? []), [data?.list])
+  const commentTree = useMemo(
+    () => buildCommentTree(data?.list ?? [], sortOrder),
+    [data?.list, sortOrder],
+  )
 
   const { mutate: createComment, isPending: isCreatingComment } = useCommentMutation()
 
@@ -131,6 +135,8 @@ export function useCommentCard({
   return {
     total: data?.total,
     commentTree,
+    sortOrder,
+    setSortOrder,
     commentContent,
     setCommentContent,
     replyContent,

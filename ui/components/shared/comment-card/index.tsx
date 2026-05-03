@@ -2,6 +2,7 @@
 
 import type { ComponentProps } from 'react'
 import type { CommentTargetType } from '@/lib/api/comment'
+import { ArrowDownNarrowWide, ArrowUpNarrowWide } from 'lucide-react'
 import { cn } from '@/lib/utils/common/shadcn'
 import { CommentCardHeader } from './comment-card-header'
 import { CommentComposer } from './comment-composer'
@@ -20,6 +21,8 @@ export default function CommentCard({
   const {
     total,
     commentTree,
+    sortOrder,
+    setSortOrder,
     commentContent,
     setCommentContent,
     replyContent,
@@ -36,6 +39,8 @@ export default function CommentCard({
     cancelReply,
     submitReply,
   } = useCommentCard({ articleId, articleType })
+  const nextSortOrder = sortOrder === 'asc' ? 'desc' : 'asc'
+  const SortIcon = sortOrder === 'asc' ? ArrowUpNarrowWide : ArrowDownNarrowWide
 
   return (
     <section id="comments" className={cn('py-2 sm:py-4', className)}>
@@ -59,6 +64,22 @@ export default function CommentCard({
       </section>
 
       <section className="mt-6 min-h-24">
+        {total != null && total > 1 ? (
+          <div className="mb-4 flex justify-end">
+            <button
+              type="button"
+              className="inline-flex items-center gap-1.5 text-xs text-zinc-500 transition-colors hover:text-theme-indicator dark:text-zinc-400 dark:hover:text-theme-indicator"
+              aria-label={`切换为${nextSortOrder === 'asc' ? '正序' : '倒序'}`}
+              onClick={() => {
+                setSortOrder(nextSortOrder)
+              }}
+            >
+              <SortIcon className="size-3.5" />
+              <span>{`按时间${sortOrder === 'asc' ? '正序' : '倒序'}`}</span>
+            </button>
+          </div>
+        ) : null}
+
         <CommentList
           isPending={isCommentPending}
           commentTree={commentTree}
