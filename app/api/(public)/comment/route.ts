@@ -323,6 +323,7 @@ export const POST = withResponse(async request => {
     parentComment != null &&
     parentCommentUser != null &&
     !isAdminUser(parentCommentUser) &&
+    !isWalletSessionUser(parentCommentUser) &&
     parentCommentUser.id !== user.id
   ) {
     const parentCommentUserEmail = parentCommentUser.email

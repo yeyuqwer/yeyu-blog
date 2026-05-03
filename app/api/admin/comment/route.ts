@@ -4,7 +4,7 @@ import {
   getSiteCommentTargetMap,
 } from '@/lib/api/comment/target'
 import { BadRequestError } from '@/lib/common/errors/request'
-import { isAdminUser, requireAdmin } from '@/lib/core/auth/guard'
+import { isAdminUser, isWalletSessionUser, requireAdmin } from '@/lib/core/auth/guard'
 import { notifyCommentAuthorReply } from '@/lib/infra/email/notifications'
 import { sendEmailInBackground } from '@/lib/infra/email/send-email'
 import { readJsonBody } from '@/lib/infra/http/read-json-body'
@@ -232,6 +232,7 @@ export const PATCH = withResponse(async request => {
       target.isPublished &&
       parentCommentUser != null &&
       !isAdminUser(parentCommentUser) &&
+      !isWalletSessionUser(parentCommentUser) &&
       parentCommentUser.id !== approvedReply?.userId
 
     if (shouldNotifyReplyAuthor && approvedReply != null && approvedReplyParent != null) {
