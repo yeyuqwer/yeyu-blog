@@ -155,7 +155,10 @@ export function CommentThreadItem({
                   <del>已删除</del>
                 </p>
               ) : (
-                <CommentMarkdownContent content={comment.content} />
+                <CommentMarkdownContent
+                  content={comment.content}
+                  htmlContent={comment.htmlContent}
+                />
               )}
             </div>
           </article>

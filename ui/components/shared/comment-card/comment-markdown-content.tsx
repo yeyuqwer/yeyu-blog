@@ -1,20 +1,13 @@
 import Image, { type ImageLoaderProps } from 'next/image'
 import { useMemo } from 'react'
 import { cn } from '@/lib/utils/common/shadcn'
-import { useCommentMarkdown } from './use-comment-markdown'
 
 const urlPattern = /https?:\/\/[^\s<>"'`]+/g
 const sentencePunctuationPattern = /[，。！？；：、]/
 const trailingUrlTextPattern = /[),.;:!?，。！？；：、]+$/g
 const passthroughImageLoader = ({ src }: ImageLoaderProps) => src
 
-function CommentMarkdownText({ content }: { content: string }) {
-  const html = useCommentMarkdown(content)
-
-  if (html == null) {
-    return <p className="whitespace-pre-wrap break-words">{content}</p>
-  }
-
+function CommentMarkdownText({ html }: { html: string }) {
   return (
     <div
       className={cn(
@@ -64,70 +57,6 @@ function CommentLink({
   )
 }
 
-function getCommentContentBlocks(content: string) {
-  const blocks: Array<
-    | {
-        kind: 'text'
-        value: string
-      }
-    | {
-        kind: 'link'
-        faviconUrl: string
-        href: string
-        label: string
-      }
-  > = []
-  let textStartIndex = 0
-
-  const appendTextBlock = (text: string) => {
-    const value = text.replace(/\n{3,}/g, '\n\n').trim()
-
-    if (value.length === 0) {
-      return
-    }
-
-    const previousBlock = blocks.at(-1)
-
-    if (previousBlock?.kind === 'text') {
-      previousBlock.value = `${previousBlock.value}\n${value}`
-      return
-    }
-
-    blocks.push({
-      kind: 'text',
-      value,
-    })
-  }
-
-  for (const match of content.matchAll(urlPattern)) {
-    const matchedText = match[0]
-    const matchIndex = match.index ?? 0
-    const urlText = getUrlText(matchedText)
-    const nextTextStartIndex = matchIndex + urlText.length
-
-    if (
-      !URL.canParse(urlText) ||
-      shouldKeepUrlInMarkdown(content, matchIndex, nextTextStartIndex)
-    ) {
-      continue
-    }
-
-    const url = new URL(urlText)
-    appendTextBlock(content.slice(textStartIndex, matchIndex))
-    blocks.push({
-      kind: 'link',
-      faviconUrl: getCommentLinkFaviconUrl(url),
-      href: url.toString(),
-      label: getCommentLinkLabel(url),
-    })
-    textStartIndex = nextTextStartIndex
-  }
-
-  appendTextBlock(content.slice(textStartIndex))
-
-  return blocks
-}
-
 function getUrlText(matchedText: string) {
   const punctuationIndex = matchedText.search(sentencePunctuationPattern)
   const trimmedText = punctuationIndex === -1 ? matchedText : matchedText.slice(0, punctuationIndex)
@@ -175,33 +104,57 @@ function getCommentLinkLabel(url: URL) {
   return `${url.hostname}${pathname}${url.search}${url.hash}`
 }
 
-export function CommentMarkdownContent({ content }: { content: string }) {
-  const blocks = useMemo(() => getCommentContentBlocks(content), [content])
+function getCommentLinkBlocks(content: string) {
+  const links: Array<{
+    faviconUrl: string
+    href: string
+    label: string
+  }> = []
 
-  if (blocks.length === 1 && blocks[0].kind === 'text') {
-    return <CommentMarkdownText content={blocks[0].value} />
+  for (const match of content.matchAll(urlPattern)) {
+    const matchedText = match[0]
+    const matchIndex = match.index ?? 0
+    const urlText = getUrlText(matchedText)
+    const nextTextStartIndex = matchIndex + urlText.length
+
+    if (
+      !URL.canParse(urlText) ||
+      shouldKeepUrlInMarkdown(content, matchIndex, nextTextStartIndex)
+    ) {
+      continue
+    }
+
+    const url = new URL(urlText)
+    links.push({
+      faviconUrl: getCommentLinkFaviconUrl(url),
+      href: url.toString(),
+      label: getCommentLinkLabel(url),
+    })
   }
+
+  return links
+}
+
+export function CommentMarkdownContent({
+  content,
+  htmlContent,
+}: {
+  content: string
+  htmlContent: string
+}) {
+  const links = useMemo(() => getCommentLinkBlocks(content), [content])
 
   return (
     <div className="flex flex-col gap-2">
-      {blocks.map((block, index) => {
-        if (block.kind === 'text') {
-          return <CommentMarkdownText key={`text-${index}`} content={block.value} />
-        }
-
-        if (block.kind === 'link') {
-          return (
-            <CommentLink
-              key={`link-${block.href}-${index}`}
-              faviconUrl={block.faviconUrl}
-              href={block.href}
-              label={block.label}
-            />
-          )
-        }
-
-        return null
-      })}
+      <CommentMarkdownText html={htmlContent} />
+      {links.map(link => (
+        <CommentLink
+          key={link.href}
+          faviconUrl={link.faviconUrl}
+          href={link.href}
+          label={link.label}
+        />
+      ))}
     </div>
   )
 }

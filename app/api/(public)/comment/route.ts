@@ -1,6 +1,7 @@
 import { getSiteCommentTarget } from '@/lib/api/comment/target'
 import { BadRequestError } from '@/lib/common/errors/request'
 import { isAdminUser, isWalletSessionUser, requireSignedInUser } from '@/lib/core/auth/guard'
+import { commentProcessor } from '@/lib/core/markdown/comment-processor'
 import {
   notifyAdminNewSiteComment,
   notifyCommentAuthorReply,
@@ -114,23 +115,31 @@ const serializePublicCommentParent = (comment: PublicCommentParentRecord) => {
   }
 }
 
-const serializePublicComment = (comment: PublicCommentRecord) => ({
-  id: comment.id,
-  targetType: comment.targetType,
-  targetId: comment.targetId,
-  parentId: comment.parentId,
-  parent: comment.parent == null ? null : serializePublicCommentParent(comment.parent),
-  userId: comment.userId,
-  isAdmin: isAdminUser(comment.user),
-  authorName: comment.authorName,
-  authorImage: comment.authorImage,
-  content: comment.isDeleted ? deletedCommentText : comment.content,
-  isDeleted: comment.isDeleted,
-  state: comment.state,
-  createdAt: comment.createdAt,
-  updatedAt: comment.updatedAt,
-  user: comment.user == null ? null : serializePublicCommentUser(comment.user),
-})
+const serializePublicComment = async (comment: PublicCommentRecord) => {
+  const content = comment.isDeleted ? deletedCommentText : comment.content
+  const htmlContent = comment.isDeleted
+    ? deletedCommentText
+    : String(await commentProcessor.process(content))
+
+  return {
+    id: comment.id,
+    targetType: comment.targetType,
+    targetId: comment.targetId,
+    parentId: comment.parentId,
+    parent: comment.parent == null ? null : serializePublicCommentParent(comment.parent),
+    userId: comment.userId,
+    isAdmin: isAdminUser(comment.user),
+    authorName: comment.authorName,
+    authorImage: comment.authorImage,
+    content,
+    htmlContent,
+    isDeleted: comment.isDeleted,
+    state: comment.state,
+    createdAt: comment.createdAt,
+    updatedAt: comment.updatedAt,
+    user: comment.user == null ? null : serializePublicCommentUser(comment.user),
+  }
+}
 
 const isMissingTableError = (error: unknown) =>
   typeof error === 'object' &&
@@ -227,7 +236,7 @@ export const GET = withResponse(async request => {
     throw error
   }
 
-  const list = rawList.map(serializePublicComment)
+  const list = await Promise.all(rawList.map(serializePublicComment))
 
   return {
     list,
@@ -363,7 +372,7 @@ export const POST = withResponse(async request => {
 
   return {
     message: autoApprove ? 'Comment published.' : 'Comment submitted, waiting for approval.',
-    data: serializePublicComment(created),
+    data: await serializePublicComment(created),
   }
 })
 
