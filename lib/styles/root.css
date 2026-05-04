@@ -6,3 +6,7 @@
 :root {
   text-autospace: normal;
 }
+
+::selection {
+  background-color: color-mix(in srgb, var(--theme-indicator) 32%, transparent);
+}
