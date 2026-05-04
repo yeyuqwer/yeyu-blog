@@ -1,23 +1,13 @@
-import { TagType } from '@prisma/client'
-import { z } from 'zod'
+import type { TagType } from '@prisma/client'
 
-export const CreateTagSchema = z.object({
-  tagName: z
-    .string()
-    .trim()
-    .min(1, { message: '标签名不能为空' })
-    .max(20, { message: '标签名超出大小限制' }),
-  tagType: z.nativeEnum(TagType),
-})
+export type CreateTagDTO = {
+  tagName: string
+  tagType: TagType
+}
 
-export const UpdateTagNameSchema = z
-  .object({
-    id: z.number(),
-  })
-  .merge(CreateTagSchema)
-
-export type CreateTagDTO = z.infer<typeof CreateTagSchema>
-export type UpdateTagNameDTO = z.infer<typeof UpdateTagNameSchema>
+export type UpdateTagNameDTO = CreateTagDTO & {
+  id: number
+}
 export type DeleteTagDTO = UpdateTagNameDTO
 
 export type TagOptionRecord = {
@@ -26,6 +16,6 @@ export type TagOptionRecord = {
   tagType: TagType
 }
 
-export type WithCountTagDTO = z.infer<typeof UpdateTagNameSchema> & {
+export type WithCountTagDTO = UpdateTagNameDTO & {
   count: number
 }

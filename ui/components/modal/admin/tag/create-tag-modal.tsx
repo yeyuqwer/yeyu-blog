@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { sileo } from 'sileo'
 import { useTagCreateMutation } from '@/hooks/api/tag'
-import { CreateTagSchema } from '@/lib/api/tag'
+import { createTagSchema } from '@/lib/api/tag/schema'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/ui/shadcn/dialog'
@@ -22,7 +22,7 @@ export default function CreateTagModal() {
   const { mutate: createTag, isPending } = useTagCreateMutation()
 
   const form = useForm<CreateTagDTO>({
-    resolver: zodResolver(CreateTagSchema),
+    resolver: zodResolver(createTagSchema),
     defaultValues: {
       tagName: '',
       tagType: TagType.BLOG,

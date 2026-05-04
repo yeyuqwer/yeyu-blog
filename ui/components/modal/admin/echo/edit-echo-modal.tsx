@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { sileo } from 'sileo'
 import { useEchoUpdateMutation } from '@/hooks/api/echo'
-import { UpdateEchoSchema } from '@/lib/api/echo'
+import { updateEchoSchema } from '@/lib/api/echo/schema'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/ui/shadcn/dialog'
@@ -31,7 +31,7 @@ export default function EditEchoModal() {
   }
 
   const form = useForm<UpdateEchoDTO>({
-    resolver: zodResolver(UpdateEchoSchema),
+    resolver: zodResolver(updateEchoSchema),
     defaultValues: {
       content: '',
       reference: '',

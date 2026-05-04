@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { sileo } from 'sileo'
 import { useTagUpdateMutation } from '@/hooks/api/tag'
-import { UpdateTagNameSchema } from '@/lib/api/tag'
+import { updateTagNameSchema } from '@/lib/api/tag/schema'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
 import {
@@ -29,7 +29,7 @@ export default function EditTagModal() {
   const { mutate: updateTagName, isPending } = useTagUpdateMutation()
 
   const form = useForm<UpdateTagNameDTO>({
-    resolver: zodResolver(UpdateTagNameSchema),
+    resolver: zodResolver(updateTagNameSchema),
     mode: 'onBlur',
   })
 

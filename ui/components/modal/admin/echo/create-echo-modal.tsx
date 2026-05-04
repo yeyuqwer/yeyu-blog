@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { sileo } from 'sileo'
 import { useEchoCreateMutation } from '@/hooks/api/echo'
-import { CreateEchoSchema } from '@/lib/api/echo'
+import { createEchoSchema } from '@/lib/api/echo/schema'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
 import {
@@ -30,7 +30,7 @@ export default function CreateEchoModal() {
   const { mutate: createEcho, isPending } = useEchoCreateMutation()
 
   const form = useForm<CreateEchoDTO>({
-    resolver: zodResolver(CreateEchoSchema),
+    resolver: zodResolver(createEchoSchema),
     defaultValues: {
       content: '',
       reference: '',
