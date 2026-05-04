@@ -1,6 +1,6 @@
 import type { ComponentProps, FC } from 'react'
 import { notFound } from 'next/navigation'
-import { processor } from '@/lib/core/markdown'
+import { processor } from '@/lib/core/markdown/processor'
 import { prisma } from '@/prisma/instance'
 import ArticleDisplayPage from '@/ui/components/shared/article-display-page'
 import CommentCard from '@/ui/components/shared/comment-card'
