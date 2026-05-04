@@ -18,7 +18,7 @@
 
 - Next.js 16 / React 19 / TypeScript 6
 - Tailwind CSS 4 / shadcn/ui / Radix UI / Motion
-- Better Auth / Wagmi / Viem / SIWE
+- Better Auth / Viem / SIWE
 - Prisma 7 / PostgreSQL / `@prisma/adapter-pg`
 - TanStack Query / TanStack Table / Zustand
 - UploadThing / Shiki / Unified / Remark / Rehype
@@ -174,6 +174,7 @@ pnpm dev
 - [Arthals' Ink](https://arthals.ink/)
 - [grtblog](https://github.com/grtsinry43/grtblog)
 - [Arthals-Ink](https://github.com/zhuozhiyongde/Arthals-Ink)
-- [Anthony Fu](https://antfu.me/)
+- [Anthony Fu](https://github.com/antfu/antfu.me)
 - [Victor Williams](https://www.victorwilliams.me/)
 - [Vercel Fonts](https://vercel.com/font)
+- [WendRevival](https://x.com/WendRevival/status/2021680550226829780)
