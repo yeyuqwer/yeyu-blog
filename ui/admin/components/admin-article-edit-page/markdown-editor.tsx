@@ -5,6 +5,7 @@ import { sileo } from 'sileo'
 import { customMarkdownTheme } from '@/lib/core/markdown'
 import { simpleProcessor } from '@/lib/core/markdown/simple-processor'
 import { MarkdownCodeBlockEnhancer } from '@/ui/components/shared/markdown-code-block-enhancer'
+import { compressImageFiles } from './compress-image-files'
 import { useUploadThing } from './uploadthing'
 import { useMarkdownAutoSave } from './use-markdown-auto-save'
 
@@ -18,6 +19,7 @@ export default function MarkdownEditor({
   previewTitle?: string
 }) {
   const [html, setHtml] = useState('')
+  const [isCompressing, setIsCompressing] = useState(false)
   const previewId = useId()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   useMarkdownAutoSave({ value, onChange })
@@ -36,6 +38,8 @@ export default function MarkdownEditor({
     },
   })
 
+  const isImageProcessing = isCompressing || isUploading
+
   const insertText = (text: string) => {
     const textarea = textareaRef.current
     if (textarea === null) return
@@ -52,7 +56,24 @@ export default function MarkdownEditor({
     }, 0)
   }
 
-  const handlePaste = async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+  const uploadCompressedImages = (files: File[]) => {
+    setIsCompressing(true)
+    sileo.info({ title: '正在压缩图片...' })
+
+    void compressImageFiles(files).then(
+      async compressedFiles => {
+        setIsCompressing(false)
+        sileo.info({ title: '正在上传图片...' })
+        await startUpload(compressedFiles)
+      },
+      (error: Error) => {
+        setIsCompressing(false)
+        sileo.error({ title: error.message })
+      },
+    )
+  }
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const items = e.clipboardData.items
     const files: File[] = []
     for (let i = 0; i < items.length; i++) {
@@ -63,17 +84,15 @@ export default function MarkdownEditor({
     }
     if (files.length > 0) {
       e.preventDefault()
-      sileo.info({ title: '正在上传图片...' })
-      await startUpload(files)
+      uploadCompressedImages(files)
     }
   }
 
-  const handleDrop = async (e: React.DragEvent<HTMLTextAreaElement>) => {
+  const handleDrop = (e: React.DragEvent<HTMLTextAreaElement>) => {
     e.preventDefault()
     const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'))
     if (files.length > 0) {
-      sileo.info({ title: '正在上传图片...' })
-      await startUpload(files)
+      uploadCompressedImages(files)
     }
   }
 
@@ -96,12 +115,12 @@ export default function MarkdownEditor({
     <div className="flex h-[800px] w-full flex-row gap-2 rounded-md border bg-background p-2 shadow-sm">
       <textarea
         ref={textareaRef}
-        className={`h-full w-1/2 resize-none rounded-md border bg-muted/30 p-4 focus:outline-none focus:ring-2 focus:ring-primary ${isUploading ? 'cursor-not-allowed opacity-50' : ''}`}
+        className={`h-full w-1/2 resize-none rounded-md border bg-muted/30 p-4 focus:outline-none focus:ring-2 focus:ring-primary ${isImageProcessing ? 'cursor-not-allowed opacity-50' : ''}`}
         value={value}
         onChange={e => onChange(e.target.value)}
         onPaste={handlePaste}
         onDrop={handleDrop}
-        disabled={isUploading}
+        disabled={isImageProcessing}
         placeholder="在此输入 Markdown... (支持粘贴/拖拽上传图片)"
       />
       <div
