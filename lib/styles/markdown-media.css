@@ -6,6 +6,7 @@
   box-sizing: border-box;
   width: 100%;
   margin: 0 auto;
+  overflow: hidden;
   border-radius: var(--md-image-frame-radius);
   background-color: #ffffff;
   padding: var(--md-image-frame-padding);
@@ -17,4 +18,24 @@
   height: auto;
   margin: 0 !important;
   border-radius: var(--md-image-radius);
+  transition:
+    filter 500ms ease,
+    opacity 500ms ease,
+    transform 500ms ease;
+}
+
+.markdown-content .md-image-frame > img[data-article-image-loading="true"] {
+  opacity: 0.72;
+  filter: blur(12px);
+  transform: scale(1.015);
+}
+
+html.dark .markdown-content .md-image-frame {
+  background-color: #18181b;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .markdown-content .md-image-frame > img {
+    transition-duration: 1ms;
+  }
 }

@@ -3,6 +3,7 @@ import { customMarkdownTheme } from '@/lib/core/markdown'
 import { toDisplayDate } from '@/lib/utils/time'
 import { MarkdownCodeBlockEnhancer } from '@/ui/components/shared/markdown-code-block-enhancer'
 import TagItemBadge from '@/ui/components/shared/tag-item-badge'
+import { ArticleImageLoadEnhancer } from './article-image-load-enhancer'
 import { PostToc } from './post-toc'
 import { extractHeadings, extractTitleAndBody } from './utils'
 
@@ -75,6 +76,7 @@ export default function ArticleDisplayPage({
           className={customMarkdownTheme}
           dangerouslySetInnerHTML={{ __html: body }}
         />
+        <ArticleImageLoadEnhancer rootSelector="#article-content" />
         <MarkdownCodeBlockEnhancer rootSelector="#article-content" />
         <PostToc headings={headings} />
       </motion.article>
