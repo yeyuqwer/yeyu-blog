@@ -4,17 +4,18 @@ import { auth } from '@/auth'
 import { clientEnv } from '@/config/env/client-env'
 import { BadRequestError } from '@/lib/common/errors/request'
 
-const ADMIN_EMAILS = clientEnv.NEXT_PUBLIC_ADMIN_EMAILS.split(',')
+const adminEmails = clientEnv.NEXT_PUBLIC_ADMIN_EMAILS.split(',')
   .map(email => email.trim())
+  .map(email => email.toLowerCase())
   .filter(email => email.length > 0)
 
-const ADMIN_WALLET_ADDRESS = clientEnv.NEXT_PUBLIC_ADMIN_WALLET_ADDRESS?.trim().toLowerCase()
+export const adminWalletAddress = clientEnv.NEXT_PUBLIC_ADMIN_WALLET_ADDRESS?.trim().toLowerCase()
 
 const isAdminWalletAddress = (walletAddress?: string | null) =>
   walletAddress !== null &&
   walletAddress !== undefined &&
-  ADMIN_WALLET_ADDRESS !== undefined &&
-  walletAddress.toLowerCase() === ADMIN_WALLET_ADDRESS
+  adminWalletAddress !== undefined &&
+  walletAddress.toLowerCase() === adminWalletAddress
 
 const isWalletEmail = (email: string) => {
   const at = email.indexOf('@')
@@ -32,12 +33,12 @@ export const isAdminUser = (user?: { name?: string | null; email?: string | null
     return false
   }
 
-  if (isWalletSessionUser(user) && ADMIN_WALLET_ADDRESS !== undefined) {
+  if (isWalletSessionUser(user) && adminWalletAddress !== undefined) {
     return isAdminWalletAddress(user.name)
   }
 
-  if (ADMIN_EMAILS.length > 0) {
-    return ADMIN_EMAILS.includes(user.email)
+  if (adminEmails.length > 0) {
+    return adminEmails.includes(user.email.toLowerCase())
   }
 
   return false
