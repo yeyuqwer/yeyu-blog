@@ -1,0 +1,35 @@
+:root[data-brand-theme="sky"] {
+  /* Theme scale (shadcn/tailwind style) */
+  --theme-50: hsl(211 100% 98%);
+  --theme-100: hsl(211 86% 94%);
+  --theme-200: hsl(211 82% 87%);
+  --theme-300: hsl(211 78% 76%);
+  --theme-400: hsl(211 72% 64%);
+  --theme-500: hsl(212 65% 52%);
+  --theme-600: hsl(213 68% 42%);
+  --theme-700: hsl(214 62% 34%);
+  --theme-800: hsl(215 58% 28%);
+  --theme-900: hsl(216 52% 22%);
+  --theme-950: hsl(218 48% 14%);
+
+  /* Semantic brand tokens */
+  --theme-primary: var(--theme-700);
+  --theme-primary-foreground: hsl(0 0% 100%);
+  --theme-background: var(--theme-100);
+  --theme-surface: var(--theme-50);
+  --theme-active-text: hsl(0 0% 100%);
+  --theme-indicator: var(--theme-500);
+  --theme-hover-background: var(--theme-200);
+  --theme-border: var(--theme-300);
+  --theme-muted: var(--theme-200);
+  --theme-muted-foreground: var(--theme-800);
+  --theme-ring: var(--theme-400);
+
+  /* Background animation tokens (light mode) */
+  --bg-animate-base-start: hsl(214 62% 34%);
+  --bg-animate-base-end: hsl(211 76% 70%);
+  --bg-animate-c-0-start: hsl(212 68% 58%);
+  --bg-animate-c-1-start: hsl(216 52% 30%);
+  --bg-animate-c-0-end: hsl(211 86% 94%);
+  --bg-animate-c-1-end: hsl(211 78% 76%);
+}

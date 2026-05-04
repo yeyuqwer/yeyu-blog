@@ -22,6 +22,11 @@ export const brandThemeOptions = [
     cssFile: 'indigo.css',
   },
   {
+    id: 'sky',
+    label: '晴空蓝',
+    cssFile: 'sky.css',
+  },
+  {
     id: 'leaf',
     label: '新叶绿',
     cssFile: 'leaf.css',
