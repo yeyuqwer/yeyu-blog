@@ -17,12 +17,6 @@
 
 @import "./scrollbar.css";
 
-@import "./markdown-heading-anchor.css";
-
-@import "./markdown-code.css";
-
-@import "./markdown-media.css";
-
-@import "./markdown-task-list.css";
+@import "./markdown/index.css";
 
 @import "./root.css";
