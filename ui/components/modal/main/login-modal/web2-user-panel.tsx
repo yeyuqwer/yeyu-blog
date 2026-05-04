@@ -1,7 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { disconnect } from 'wagmi/actions'
-import { isAdminLoggedIn, signOut, useSession, wagmiConfig } from '@/lib/core'
+import { isAdminLoggedIn, signOut, useSession } from '@/lib/core/auth'
+import { wagmiConfig } from '@/lib/core/web3'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
 

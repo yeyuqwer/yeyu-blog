@@ -1,4 +1,4 @@
-import type { SoundAsset } from '@/lib/utils/sound/sound-types'
+import type { SoundAsset } from '@/lib/core/sound/sound-types'
 
 export const uChatScrollButtonSound: SoundAsset = {
   name: 'u-chat-scroll-button',

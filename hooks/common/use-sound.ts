@@ -1,8 +1,8 @@
 'use client'
 
-import type { SoundAsset, UseSoundOptions, UseSoundReturn } from '@/lib/utils/sound/sound-types'
+import type { SoundAsset, UseSoundOptions, UseSoundReturn } from '@/lib/core/sound'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { decodeAudioData, getAudioContext } from '@/lib/utils/sound/sound-engine'
+import { decodeAudioData, getAudioContext } from '@/lib/core/sound'
 
 export function useSound(sound: SoundAsset, options: UseSoundOptions = {}): UseSoundReturn {
   const {
@@ -21,6 +21,7 @@ export function useSound(sound: SoundAsset, options: UseSoundOptions = {}): UseS
   const sourceRef = useRef<AudioBufferSourceNode | null>(null)
   const gainRef = useRef<GainNode | null>(null)
   const bufferRef = useRef<AudioBuffer | null>(null)
+  const isStoppingRef = useRef(false)
 
   useEffect(() => {
     let cancelled = false
@@ -36,14 +37,14 @@ export function useSound(sound: SoundAsset, options: UseSoundOptions = {}): UseS
   }, [sound.dataUri])
 
   const stop = useCallback(() => {
-    if (sourceRef.current) {
-      try {
-        sourceRef.current.stop()
-      } catch {
-        // Already stopped
-      }
+    const source = sourceRef.current
+
+    if (source !== null) {
+      isStoppingRef.current = true
       sourceRef.current = null
+      source.stop()
     }
+
     setIsPlaying(false)
     onStop?.()
   }, [onStop])
@@ -73,6 +74,12 @@ export function useSound(sound: SoundAsset, options: UseSoundOptions = {}): UseS
       gain.connect(ctx.destination)
 
       source.onended = () => {
+        if (isStoppingRef.current) {
+          isStoppingRef.current = false
+          return
+        }
+
+        sourceRef.current = null
         setIsPlaying(false)
         onEnd?.()
       }
@@ -99,12 +106,12 @@ export function useSound(sound: SoundAsset, options: UseSoundOptions = {}): UseS
 
   useEffect(() => {
     return () => {
-      if (sourceRef.current) {
-        try {
-          sourceRef.current.stop()
-        } catch {
-          // Already stopped
-        }
+      const source = sourceRef.current
+
+      if (source !== null) {
+        isStoppingRef.current = true
+        sourceRef.current = null
+        source.stop()
       }
     }
   }, [])

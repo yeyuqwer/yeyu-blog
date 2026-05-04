@@ -56,7 +56,14 @@ export async function playSound(
   source.connect(gain)
   gain.connect(ctx.destination)
 
+  let isStopped = false
+
   source.onended = () => {
+    if (isStopped) {
+      return
+    }
+
+    isStopped = true
     onEnd?.()
   }
 
@@ -64,11 +71,12 @@ export async function playSound(
 
   return {
     stop: () => {
-      try {
-        source.stop()
-      } catch {
-        // No-op if already stopped.
+      if (isStopped) {
+        return
       }
+
+      isStopped = true
+      source.stop()
     },
   }
 }
