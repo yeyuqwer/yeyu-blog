@@ -97,12 +97,6 @@ const className = `
   [&_mark]:rounded-sm [&_mark]:bg-[#33a6b8]/30 [&_mark]:px-1 [&_mark]:text-current
   dark:[&_mark]:bg-[#f596aa]/35
 
-  [&_.hljs]:px-5 [&_.hljs]:py-0
-  [&_pre.shiki]:py-0
-  [&_pre.shiki_code]:flex [&_pre.shiki_code]:flex-col
-  [&_pre.shiki_.line]:block
-  [&_pre.shiki_.line:first-child:empty]:hidden
-  [&_pre.shiki_.line:last-child:empty]:hidden
 `
 
 export const customMarkdownTheme = className

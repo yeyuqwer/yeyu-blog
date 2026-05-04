@@ -122,7 +122,7 @@ const isCodeBlockPre = (node: ElementLike): boolean => {
   if (node.tagName !== 'pre') return false
 
   const preClassList = readClassList(node.properties)
-  if (preClassList.includes('shiki') || preClassList.includes('hljs')) return true
+  if (preClassList.includes('hljs')) return true
 
   return findCodeElement(node) != null
 }

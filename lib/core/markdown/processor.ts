@@ -1,18 +1,6 @@
 import 'server-only'
 
-import type { BuiltinTheme } from 'shiki'
-import rehypeShiki from '@shikijs/rehype'
-import {
-  transformerMetaHighlight,
-  transformerMetaWordHighlight,
-  transformerNotationDiff,
-  transformerNotationErrorLevel,
-  transformerNotationFocus,
-  transformerNotationHighlight,
-  transformerNotationWordHighlight,
-  transformerRemoveLineBreak,
-  transformerRemoveNotationEscape,
-} from '@shikijs/transformers'
+import rehypeHighlight from 'rehype-highlight'
 import rehypeSlug from 'rehype-slug'
 import rehypeStringify from 'rehype-stringify'
 import remarkGfm from 'remark-gfm'
@@ -28,25 +16,7 @@ export const processor = unified()
   .use(remarkGfm)
   .use(remarkRehype)
   .use(rehypeSlug)
-  .use(rehypeShiki, {
-    themes: {
-      dark: 'catppuccin-mocha',
-      light: 'catppuccin-mocha',
-    } satisfies Record<'dark' | 'light', BuiltinTheme>,
-    defaultColor: false,
-    addLanguageClass: true,
-    transformers: [
-      transformerRemoveNotationEscape(),
-      transformerNotationDiff(),
-      transformerNotationHighlight(),
-      transformerNotationFocus(),
-      transformerNotationWordHighlight(),
-      transformerNotationErrorLevel(),
-      transformerMetaHighlight(),
-      transformerMetaWordHighlight(),
-      transformerRemoveLineBreak(),
-    ],
-  })
+  .use(rehypeHighlight, { detect: false })
   .use(rehypeCodeBlockRenderer as never)
   .use(rehypeImageFrameRenderer as never)
   .use(rehypeHeadingAnchorRenderer as never)

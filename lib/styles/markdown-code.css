@@ -1,7 +1,23 @@
 /* * markdown 渲染时的代码主题 */
-/* ! shiki 的双主题变量由 @shikijs/rehype 注入 */
-.markdown-content .md-code-block {
+.markdown-content {
   --md-code-radius: 0.5rem;
+  --md-code-bg: #1e1e2e;
+  --md-code-border: #313244;
+  --md-code-foreground: #cdd6f4;
+  --md-code-muted: #6c7086;
+  --md-code-subtle: #a6adc8;
+  --md-code-red: #f38ba8;
+  --md-code-peach: #fab387;
+  --md-code-yellow: #f9e2af;
+  --md-code-green: #a6e3a1;
+  --md-code-teal: #94e2d5;
+  --md-code-sky: #89dceb;
+  --md-code-blue: #89b4fa;
+  --md-code-mauve: #cba6f7;
+  --md-code-pink: #f5c2e7;
+}
+
+.markdown-content .md-code-block {
   --md-code-copy-offset: 0.5rem;
   --md-code-copy-radius: calc(var(--md-code-radius) - 0.125rem);
   position: relative;
@@ -52,172 +68,36 @@
 }
 
 .markdown-content pre {
-  border: 1px solid #3f3f46;
+  border: 1px solid var(--md-code-border);
   border-radius: var(--md-code-radius);
-  background-color: var(--tw-prose-pre-bg);
+  background-color: var(--md-code-bg);
   font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
-}
-
-html.dark .markdown-content pre {
-  border-color: transparent;
-  background-color: var(--tw-prose-invert-pre-bg);
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .markdown-content pre code,
-.markdown-content pre.shiki,
-.markdown-content pre.shiki code,
 .markdown-content .hljs {
   font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace !important;
 }
 
 .markdown-content pre code {
   background-color: transparent !important;
-}
-
-.markdown-content pre.shiki {
-  color: var(--shiki-dark);
-  background-color: var(--tw-prose-pre-bg) !important;
-}
-
-.markdown-content pre.shiki span {
-  color: var(--shiki-dark);
-  background-color: transparent !important;
-}
-
-html.dark .markdown-content pre.shiki {
-  color: var(--shiki-dark);
-  background-color: var(--tw-prose-invert-pre-bg) !important;
-}
-
-html.dark .markdown-content pre.shiki span {
-  color: var(--shiki-dark);
-  background-color: transparent !important;
-}
-
-/* * shiki transformers: line / word decorations */
-.markdown-content pre.shiki .line {
+  border-radius: inherit;
+  color: var(--md-code-foreground);
   display: block;
-  padding: 0 1.25rem;
+  padding: 1rem 1.25rem;
 }
 
-.markdown-content pre.shiki .line > span:last-child {
-  margin-right: 1.25rem;
-}
-
-.markdown-content pre.shiki .line::after {
-  content: " ";
-}
-
-.markdown-content pre.shiki .line.highlighted,
-.markdown-content pre.shiki .line.diff {
-  position: relative;
-  overflow-wrap: anywhere;
-}
-
-.markdown-content pre.shiki .line.highlighted::before,
-.markdown-content pre.shiki .line.diff::before {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 2px;
-  content: "";
-}
-
-.markdown-content pre.shiki .line.highlighted {
-  background-color: rgba(51, 166, 184, 0.2);
-}
-
-html.dark .markdown-content pre.shiki .line.highlighted {
-  background-color: rgba(148, 163, 184, 0.14);
-}
-
-.markdown-content pre.shiki .line.highlighted::before {
-  background-color: #33a6b8;
-}
-
-html.dark .markdown-content pre.shiki .line.highlighted::before {
-  background-color: #94a3b8;
-}
-
-.markdown-content pre.shiki .line.diff.add {
-  background-color: rgba(34, 197, 94, 0.15);
-}
-
-.markdown-content pre.shiki .line.diff.add::before {
-  background-color: #22c55e;
-}
-
-.markdown-content pre.shiki .line.diff.add::after {
-  position: absolute;
-  left: 0;
-  color: #22c55e;
-  content: " +";
-}
-
-.markdown-content pre.shiki .line.diff.remove {
-  background-color: rgba(239, 68, 68, 0.15);
-}
-
-.markdown-content pre.shiki .line.diff.remove::before {
-  background-color: #ef4444;
-}
-
-.markdown-content pre.shiki .line.diff.remove::after {
-  position: absolute;
-  left: 0;
-  color: #ef4444;
-  content: " -";
-}
-
-html.dark .markdown-content pre.shiki .line.diff.add {
-  background-color: rgba(34, 197, 94, 0.2);
-}
-
-html.dark .markdown-content pre.shiki .line.diff.remove {
-  background-color: rgba(244, 63, 94, 0.2);
-}
-
-.markdown-content pre.shiki .line.highlighted span,
-.markdown-content pre.shiki .line.diff span {
-  background-color: transparent !important;
-}
-
-.markdown-content pre.shiki.has-focused .line:not(.focused) {
-  opacity: 0.55;
-  filter: blur(0.08rem);
-  transition: opacity 0.2s ease;
-}
-
-.markdown-content pre.shiki span.highlighted-word {
-  border-radius: 0.25rem;
-  background-color: rgba(51, 166, 184, 0.24) !important;
-}
-
-html.dark .markdown-content pre.shiki span.highlighted-word {
-  background-color: rgba(148, 163, 184, 0.24) !important;
-}
-
-.markdown-content pre.shiki::-webkit-scrollbar-track {
-  margin-left: 1rem;
-  margin-right: var(--sr-margin, 0);
-}
-
-.markdown-content pre.shiki::-webkit-scrollbar {
-  background-color: transparent !important;
-}
-
-/* Highlight.js theme for rehype-highlight */
 .markdown-content .hljs {
   display: block;
-  overflow-x: auto;
-  padding: 0.5em;
-  background: #1a1b26 !important;
-  color: #c0caf5 !important;
+  background: var(--md-code-bg) !important;
+  color: var(--md-code-foreground) !important;
 }
 
 .markdown-content pre > code.hljs {
   background: transparent !important;
+  padding: 1rem 1.25rem !important;
 }
 
 .markdown-content .hljs-emphasis {
@@ -229,11 +109,12 @@ html.dark .markdown-content pre.shiki span.highlighted-word {
 }
 
 .markdown-content .hljs-subst {
-  color: #c0caf5 !important;
+  color: var(--md-code-foreground) !important;
 }
 
-.markdown-content .hljs-comment {
-  color: #6c7086 !important;
+.markdown-content .hljs-comment,
+.markdown-content .hljs-quote {
+  color: var(--md-code-muted) !important;
 }
 
 .markdown-content .hljs-keyword,
@@ -241,28 +122,38 @@ html.dark .markdown-content pre.shiki span.highlighted-word {
 .markdown-content .hljs-meta .hljs-keyword,
 .markdown-content .hljs-doctag,
 .markdown-content .hljs-section {
-  color: #bb9af7 !important;
+  color: var(--md-code-mauve) !important;
 }
 
 .markdown-content .hljs-attr {
-  color: #7dcfff !important;
+  color: var(--md-code-sky) !important;
+}
+
+.markdown-content .hljs-property,
+.markdown-content .hljs-params {
+  color: var(--md-code-subtle) !important;
 }
 
 .markdown-content .hljs-attribute {
-  color: #9ece6a !important;
+  color: var(--md-code-green) !important;
 }
 
 .markdown-content .hljs-name,
 .markdown-content .hljs-type,
 .markdown-content .hljs-number,
 .markdown-content .hljs-selector-id,
-.markdown-content .hljs-quote,
 .markdown-content .hljs-template-tag {
-  color: #e0af68 !important;
+  color: var(--md-code-peach) !important;
 }
 
 .markdown-content .hljs-selector-class {
-  color: #e0af68 !important;
+  color: var(--md-code-yellow) !important;
+}
+
+.markdown-content .hljs-tag,
+.markdown-content .hljs-operator,
+.markdown-content .hljs-punctuation {
+  color: var(--md-code-teal) !important;
 }
 
 .markdown-content .hljs-string,
@@ -272,117 +163,37 @@ html.dark .markdown-content pre.shiki span.highlighted-word {
 .markdown-content .hljs-template-variable,
 .markdown-content .hljs-link,
 .markdown-content .hljs-selector-attr {
-  color: #9ece6a !important;
+  color: var(--md-code-green) !important;
 }
 
 .markdown-content .hljs-meta,
 .markdown-content .hljs-selector-pseudo {
-  color: #7dcfff !important;
+  color: var(--md-code-sky) !important;
 }
 
 .markdown-content .hljs-built_in,
 .markdown-content .hljs-title,
 .markdown-content .hljs-literal {
-  color: #7aa2f7 !important;
+  color: var(--md-code-blue) !important;
 }
 
 .markdown-content .hljs-bullet,
 .markdown-content .hljs-code {
-  color: #e0af68 !important;
+  color: var(--md-code-peach) !important;
 }
 
 .markdown-content .hljs-meta .hljs-string {
-  color: #9ece6a !important;
+  color: var(--md-code-green) !important;
 }
 
 .markdown-content .hljs-deletion {
-  color: #ff757f !important;
+  color: var(--md-code-red) !important;
 }
 
 .markdown-content .hljs-addition {
-  color: #9ece6a !important;
+  color: var(--md-code-green) !important;
 }
 
-html.dark .markdown-content .hljs {
-  background: #1a1b26 !important;
-  color: #c0caf5 !important;
-}
-
-html.dark .markdown-content pre > code.hljs {
-  background: transparent !important;
-}
-
-html.dark .markdown-content .hljs-subst {
-  color: #c0caf5 !important;
-}
-
-html.dark .markdown-content .hljs-comment {
-  color: #6c7086 !important;
-}
-
-html.dark .markdown-content .hljs-keyword,
-html.dark .markdown-content .hljs-selector-tag,
-html.dark .markdown-content .hljs-meta .hljs-keyword,
-html.dark .markdown-content .hljs-doctag,
-html.dark .markdown-content .hljs-section {
-  color: #bb9af7 !important;
-}
-
-html.dark .markdown-content .hljs-attr {
-  color: #7dcfff !important;
-}
-
-html.dark .markdown-content .hljs-attribute {
-  color: #9ece6a !important;
-}
-
-html.dark .markdown-content .hljs-name,
-html.dark .markdown-content .hljs-type,
-html.dark .markdown-content .hljs-number,
-html.dark .markdown-content .hljs-selector-id,
-html.dark .markdown-content .hljs-quote,
-html.dark .markdown-content .hljs-template-tag {
-  color: #e0af68 !important;
-}
-
-html.dark .markdown-content .hljs-selector-class {
-  color: #e0af68 !important;
-}
-
-html.dark .markdown-content .hljs-string,
-html.dark .markdown-content .hljs-regexp,
-html.dark .markdown-content .hljs-symbol,
-html.dark .markdown-content .hljs-variable,
-html.dark .markdown-content .hljs-template-variable,
-html.dark .markdown-content .hljs-link,
-html.dark .markdown-content .hljs-selector-attr {
-  color: #9ece6a !important;
-}
-
-html.dark .markdown-content .hljs-meta,
-html.dark .markdown-content .hljs-selector-pseudo {
-  color: #7dcfff !important;
-}
-
-html.dark .markdown-content .hljs-built_in,
-html.dark .markdown-content .hljs-title,
-html.dark .markdown-content .hljs-literal {
-  color: #7aa2f7 !important;
-}
-
-html.dark .markdown-content .hljs-bullet,
-html.dark .markdown-content .hljs-code {
-  color: #e0af68 !important;
-}
-
-html.dark .markdown-content .hljs-meta .hljs-string {
-  color: #9ece6a !important;
-}
-
-html.dark .markdown-content .hljs-deletion {
-  color: #ff757f !important;
-}
-
-html.dark .markdown-content .hljs-addition {
-  color: #9ece6a !important;
+.markdown-content .hljs-char.escape_ {
+  color: var(--md-code-pink) !important;
 }
