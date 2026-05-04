@@ -11,6 +11,9 @@ import { Button } from '@/ui/shadcn/button'
 import { GitHubIcon } from './assets/github-icon'
 import { GoogleIcon } from './assets/google-icon'
 
+const loginPanelButtonClassName =
+  'h-10 min-w-0 cursor-pointer rounded-xl border-theme-border/70 bg-theme-surface/50 px-4 text-theme-primary text-sm hover:border-theme-indicator/40 hover:bg-theme-hover-background/70 hover:text-theme-primary focus-visible:ring-theme-ring/25 disabled:cursor-not-allowed dark:border-theme-400/20 dark:bg-theme-950/35 dark:text-theme-100 dark:hover:bg-theme-900/45 dark:hover:text-theme-50'
+
 export const LoginPanel = ({
   isLoginPending,
   setIsWalletSigningIn,
@@ -97,33 +100,33 @@ export const LoginPanel = ({
         type="button"
         onClick={() => signIn.social({ provider: 'github', callbackURL: '/admin' })}
         className={cn(
-          'flex cursor-pointer items-center text-base',
+          loginPanelButtonClassName,
           connectors.length > 0 ? 'justify-start' : 'justify-center',
         )}
         disabled={isActionPending}
       >
-        <GitHubIcon className="size-5" />
-        GitHub
+        <GitHubIcon className="size-5 shrink-0" />
+        <span className="truncate">GitHub</span>
       </Button>
 
       <Button
         type="button"
         onClick={() => signIn.social({ provider: 'google', callbackURL: '/admin' })}
         className={cn(
-          'flex cursor-pointer items-center text-base',
+          loginPanelButtonClassName,
           connectors.length > 0 ? 'justify-start' : 'justify-center',
         )}
         disabled={isActionPending}
       >
-        <GoogleIcon className="size-5" />
-        Google
+        <GoogleIcon className="size-5 shrink-0" />
+        <span className="truncate">Google</span>
       </Button>
 
       {connectors.map(connector => (
         <Button
           key={connector.uid}
           type="button"
-          className="flex cursor-pointer items-center justify-start px-3 text-base"
+          className={cn(loginPanelButtonClassName, 'justify-start px-3')}
           onClick={() => handleWalletConnect(connector)}
           disabled={isActionPending}
         >
@@ -131,15 +134,15 @@ export const LoginPanel = ({
             <Image
               src={connector.icon}
               alt={connector.name}
-              className="size-5"
+              className="size-5 shrink-0"
               width={20}
               height={20}
               unoptimized
             />
           ) : (
-            <Wallet2 className="size-5" />
+            <Wallet2 className="size-5 shrink-0" />
           )}
-          {connector.name}
+          <span className="truncate">{connector.name}</span>
         </Button>
       ))}
     </>

@@ -51,9 +51,9 @@ const LoginModalContent = () => {
 
         <main
           className={cn(
-            'grid gap-4 font-mono',
+            'grid gap-3 font-mono',
             !isLoginPending && !isEmailUser && !isWalletUser && connectors.length > 0
-              ? 'grid-cols-2'
+              ? 'grid-cols-1 sm:grid-cols-2'
               : 'grid-cols-1',
           )}
         >
