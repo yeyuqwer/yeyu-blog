@@ -1,9 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRef } from 'react'
-import { disconnect } from 'wagmi/actions'
-import { isAdminLoggedIn, signOut, useSession } from '@/lib/core/auth'
-import { wagmiConfig } from '@/lib/core/web3'
+import { signOut, useSession } from '@/lib/core/auth/client'
+import { isAdminLoggedIn } from '@/lib/core/auth/utils'
 import { useModalStore } from '@/store/use-modal-store'
 import { Button } from '@/ui/shadcn/button'
 import { LayoutGridIcon, type LayoutGridIconHandle } from '@/ui/shadcn/layout-grid'
@@ -20,7 +19,6 @@ export const Web2UserPanel = () => {
   const isSessionAdmin = isAdminLoggedIn({ data: session })
 
   const handleSignOut = async () => {
-    await disconnect(wagmiConfig)
     await signOut()
     await refetchSession()
   }

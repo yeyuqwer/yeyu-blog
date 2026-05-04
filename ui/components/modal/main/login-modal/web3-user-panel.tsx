@@ -1,9 +1,8 @@
+import type { Address } from 'viem'
 import Link from 'next/link'
 import { useRef } from 'react'
-import { type Address, isAddress } from 'viem'
-import { disconnect } from 'wagmi/actions'
-import { isAdminLoggedIn, signOut, useSession } from '@/lib/core/auth'
-import { wagmiConfig } from '@/lib/core/web3'
+import { signOut, useSession } from '@/lib/core/auth/client'
+import { isAdminLoggedIn } from '@/lib/core/auth/utils'
 import { useModalStore } from '@/store/use-modal-store'
 import { AccountIcon } from '@/ui/components/shared/account-icon'
 import { Button } from '@/ui/shadcn/button'
@@ -15,12 +14,11 @@ export const Web3UserPanel = () => {
   const adminIconRef = useRef<LayoutGridIconHandle>(null)
   const logoutIconRef = useRef<LogoutIconHandle>(null)
   const { data: session, refetch: refetchSession } = useSession()
-  const userName = session?.user?.name
-  const walletAddress = userName != null && isAddress(userName) ? (userName as Address) : undefined
+  const userName = session?.user?.name?.trim()
+  const walletAddress = userName != null && userName.length > 0 ? (userName as Address) : undefined
   const isSessionAdmin = isAdminLoggedIn({ data: session })
 
   const handleSignOut = async () => {
-    await disconnect(wagmiConfig)
     await signOut()
     await refetchSession()
   }

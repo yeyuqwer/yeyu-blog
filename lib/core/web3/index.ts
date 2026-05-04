@@ -1,1 +1,1 @@
-export * from './wagmi-config'
+export * from './injected-wallet'
