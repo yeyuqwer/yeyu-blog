@@ -13,8 +13,8 @@
     "postinstall": "prisma generate --config ./prisma/prisma.config.ts",
     "postbuild": "next-sitemap",
     "prepare": "husky",
-    "commit": "git-cz",
-    "qwer": "git-cz"
+    "commit": "czg",
+    "qwer": "czg"
   },
   "dependencies": {
     "@cfx-kit/wallet-avatar": "^0.0.5",
@@ -81,8 +81,7 @@
     "@types/pg": "^8.20.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "commitizen": "^4.3.1",
-    "cz-git": "^1.13.0",
+    "czg": "1.13.1-beta.1",
     "dotenv-cli": "^11.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
@@ -100,10 +99,5 @@
       "prisma",
       "sharp"
     ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "node_modules/cz-git"
-    }
   }
 }
