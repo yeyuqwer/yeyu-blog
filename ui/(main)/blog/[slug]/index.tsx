@@ -21,7 +21,7 @@ export async function BlogDetail({ slug }: { slug: string }) {
     },
   })
 
-  if (record == null || record.content.length === 0) notFound()
+  if (record == null) notFound()
 
   const { tagLinks, ...blog } = record
   const sanitizedBlogHtml = await processor.process(blog.content)

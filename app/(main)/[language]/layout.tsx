@@ -3,7 +3,8 @@ import { seoMetadata } from '@/config/seo'
 import { languages } from '@/lib/i18n/config'
 import { getRouteLanguage } from '@/lib/i18n/get-route-language'
 
-export const dynamicParams = false
+// Allow new blog slugs after deployment; getRouteLanguage still validates the language.
+export const dynamicParams = true
 
 export function generateStaticParams() {
   return languages.map(language => ({ language }))
