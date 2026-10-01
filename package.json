@@ -30,7 +30,7 @@
     "better-auth": "^1.7.6",
     "class-variance-authority": "^0.7.1",
     "cmdk": "^1.1.1",
-    "cn": "^0.3.0",
+    "cn": "^0.4.0",
     "drizzle-orm": "^0.45.2",
     "embla-carousel-react": "^8.6.0",
     "ky": "^2.1.0",
