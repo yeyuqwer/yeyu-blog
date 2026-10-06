@@ -1,13 +1,11 @@
 'use client'
 
-import type { ComponentProps } from 'react'
 import { Languages } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { getRoutePathname } from '@/lib/i18n/get-route-pathname'
 import { cn } from '@/lib/utils/common/shadcn'
-import { useHasCompletedHomeLoading, useHomeLoadingActions } from '@/store/use-home-loading-store'
 import { HandwritingWordmark } from '@/ui/(main)/layout/header/handwriting-wordmark'
 import { useLanguage, useTranslations } from '@/ui/components/provider/main/language-provider'
 import {
@@ -19,58 +17,10 @@ import { navigationConfig } from './constant'
 import { useScrollVisibility } from './hooks/use-scroll-visibility'
 import { NavItem } from './nav-item'
 
-const navigationEntranceDelay = 0.08
-const navigationEntranceStagger = 0.07
-
-function getHeaderAnimation({
-  isHeaderVisible,
-  isWaitingForHomeLoading,
-  shouldReduceMotion,
-}: {
-  isHeaderVisible: boolean
-  isWaitingForHomeLoading: boolean
-  shouldReduceMotion: boolean | null
-}): ComponentProps<typeof motion.header>['animate'] {
-  if (isWaitingForHomeLoading) return { opacity: 0, scale: 0.98, y: -16 }
-  if (isHeaderVisible) return { opacity: 1, scale: 1, y: 0 }
-
-  return { opacity: 0, scale: 1, y: shouldReduceMotion ? 0 : '-140%' }
-}
-
-function getHeaderTransition({
-  hasEntered,
-  headerEntranceDelay,
-  isHeaderVisible,
-  isWaitingForHomeLoading,
-  shouldReduceMotion,
-}: {
-  hasEntered: boolean
-  headerEntranceDelay: number
-  isHeaderVisible: boolean
-  isWaitingForHomeLoading: boolean
-  shouldReduceMotion: boolean | null
-}): ComponentProps<typeof motion.header>['transition'] {
-  if (shouldReduceMotion || isWaitingForHomeLoading) return { duration: 0 }
-
-  if (!hasEntered) {
-    return {
-      delay: headerEntranceDelay,
-      duration: 0.48,
-      ease: [0.16, 1, 0.3, 1],
-    }
-  }
-
-  if (isHeaderVisible) return { duration: 0.22, ease: [0.22, 1, 0.36, 1] }
-
-  return { duration: 0.18, ease: [0.4, 0, 1, 1] }
-}
-
 export default function Header() {
   const pathname = usePathname()
   const isHeaderVisible = useScrollVisibility()
   const shouldReduceMotion = useReducedMotion()
-  const hasCompletedHomeLoading = useHasCompletedHomeLoading()
-  const { completeHomeLoading } = useHomeLoadingActions()
   const [hasEntered, setHasEntered] = useState(false)
   const [wordmarkAnimationKey, setWordmarkAnimationKey] = useState(0)
   const { language, toggleLanguage } = useLanguage()
@@ -78,40 +28,34 @@ export default function Header() {
   const languageOffset = language === 'en' ? '100%' : '-100%'
   const languagePathPrefix = `/${language}`
   const currentPathname = getRoutePathname(pathname)
-  const isWaitingForHomeLoading =
-    currentPathname === '/' && !hasCompletedHomeLoading && !shouldReduceMotion
-  const headerEntranceDelay = currentPathname === '/' ? 0.24 : 0
-  const headerAnimation = getHeaderAnimation({
-    isHeaderVisible,
-    isWaitingForHomeLoading,
-    shouldReduceMotion,
-  })
-  const headerTransition = getHeaderTransition({
-    hasEntered,
-    headerEntranceDelay,
-    isHeaderVisible,
-    isWaitingForHomeLoading,
-    shouldReduceMotion,
-  })
-
-  useEffect(() => {
-    if (currentPathname !== '/' && !hasCompletedHomeLoading) completeHomeLoading()
-  }, [completeHomeLoading, currentPathname, hasCompletedHomeLoading])
 
   return (
     <motion.header
-      aria-hidden={isWaitingForHomeLoading}
+      aria-hidden={!isHeaderVisible}
       className={cn(
         'sticky top-5 z-20 mx-auto mt-5 mb-4 h-10 w-[calc(100%-2rem)] max-w-[550px] overflow-hidden rounded-full bg-black font-header text-white shadow-[0_4px_10px_rgba(0,0,0,0.1)] transition-[background-color,box-shadow] duration-300 sm:h-12 dark:bg-white/15 dark:shadow-[0_10px_28px_rgba(0,0,0,0.24)] dark:backdrop-blur-xl',
-        (!isHeaderVisible || isWaitingForHomeLoading) && 'pointer-events-none',
+        !isHeaderVisible && 'pointer-events-none',
       )}
       initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.98, y: -16 }}
-      animate={headerAnimation}
-      inert={isWaitingForHomeLoading}
-      onAnimationComplete={() => {
-        if (!isWaitingForHomeLoading && !hasEntered) setHasEntered(true)
+      animate={{
+        opacity: isHeaderVisible ? 1 : 0,
+        scale: 1,
+        y: isHeaderVisible || shouldReduceMotion ? 0 : '-140%',
       }}
-      transition={headerTransition}
+      inert={!isHeaderVisible}
+      onAnimationComplete={() => {
+        if (!hasEntered) setHasEntered(true)
+      }}
+      transition={
+        shouldReduceMotion
+          ? { duration: 0 }
+          : !hasEntered
+            ? { duration: 0.48, ease: [0.16, 1, 0.3, 1] }
+            : {
+                duration: isHeaderVisible ? 0.22 : 0.18,
+                ease: isHeaderVisible ? [0.22, 1, 0.36, 1] : [0.4, 0, 1, 1],
+              }
+      }
     >
       <div className="grid h-full grid-cols-[5rem_1fr] items-center sm:grid-cols-[7rem_1fr]">
         <WaveLink
@@ -121,11 +65,7 @@ export default function Header() {
           aria-label={translations.header.homeLabel}
           onClick={() => setWordmarkAnimationKey(animationKey => animationKey + 1)}
         >
-          <HandwritingWordmark
-            key={wordmarkAnimationKey}
-            delay={wordmarkAnimationKey === 0 ? headerEntranceDelay : 0}
-            isVisible={!isWaitingForHomeLoading}
-          />
+          <HandwritingWordmark key={wordmarkAnimationKey} />
         </WaveLink>
 
         <nav
@@ -163,19 +103,12 @@ export default function Header() {
                     isActive && 'after:[clip-path:inset(0)]',
                   )}
                   initial={shouldReduceMotion ? false : { opacity: 0, y: -8 }}
-                  animate={
-                    shouldReduceMotion || !isWaitingForHomeLoading
-                      ? { opacity: 1, y: 0 }
-                      : { opacity: 0, y: -8 }
-                  }
+                  animate={{ opacity: 1, y: 0 }}
                   transition={
                     shouldReduceMotion
                       ? { duration: 0 }
                       : {
-                          delay:
-                            headerEntranceDelay +
-                            navigationEntranceDelay +
-                            routeIndex * navigationEntranceStagger,
+                          delay: routeIndex * 0.07,
                           duration: 0.36,
                           ease: [0.22, 1, 0.36, 1],
                         }

@@ -1,12 +1,30 @@
 'use client'
 
+import dynamic from 'next/dynamic'
+import { startTransition, useEffect, useState } from 'react'
 import { useIsBackgroundOnly } from '@/store/use-sky-background-store'
 import { Background } from './background'
 import { SkyBackgroundSync } from './background/sky-background-sync'
-import { DraggableFloatingMenu } from './draggable-floating-menu'
+
+const DraggableFloatingMenu = dynamic(
+  () => import('./draggable-floating-menu').then(module => module.DraggableFloatingMenu),
+  { ssr: false },
+)
 
 export function MainStage({ children }: { children: React.ReactNode }) {
   const isBackgroundOnly = useIsBackgroundOnly()
+  const [areEffectsReady, setAreEffectsReady] = useState(false)
+
+  useEffect(() => {
+    // Let the page paint before downloading and mounting decorative effects.
+    let frameId = requestAnimationFrame(() => {
+      frameId = requestAnimationFrame(() => {
+        startTransition(() => setAreEffectsReady(true))
+      })
+    })
+
+    return () => cancelAnimationFrame(frameId)
+  }, [])
 
   return (
     <div
@@ -15,8 +33,8 @@ export function MainStage({ children }: { children: React.ReactNode }) {
     >
       <SkyBackgroundSync />
       {children}
-      <Background />
-      <DraggableFloatingMenu />
+      <Background isCanvasReady={areEffectsReady} />
+      {areEffectsReady && <DraggableFloatingMenu />}
     </div>
   )
 }

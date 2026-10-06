@@ -1,6 +1,7 @@
 'use client'
 
-import type { CSSProperties, FC } from 'react'
+import type { CSSProperties } from 'react'
+import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 import {
   useCloudSpeed,
@@ -9,9 +10,13 @@ import {
   useSkyBackgroundTimeState,
 } from '@/store/use-sky-background-store'
 import './background.css'
-import { SkyBackgroundCanvas } from './sky-background-canvas'
 
-export const Background: FC = () => {
+const SkyBackgroundCanvas = dynamic(
+  () => import('./sky-background-canvas').then(module => module.SkyBackgroundCanvas),
+  { ssr: false },
+)
+
+export function Background({ isCanvasReady }: { isCanvasReady: boolean }) {
   const cloudSpeed = useCloudSpeed()
   const isCloudAnimationRunning = useIsCloudAnimationRunning()
   const isInitialized = useIsSkyBackgroundInitialized()
@@ -53,17 +58,19 @@ export const Background: FC = () => {
       style={backgroundStyle}
     >
       <div className="site-sky-stars" />
-      <SkyBackgroundCanvas
-        colors={[
-          timeState.skyTop,
-          timeState.skyUpper,
-          timeState.skyMiddle,
-          timeState.skyLower,
-          timeState.skyBottom,
-        ]}
-        isAnimationRunning={isCloudAnimationRunning && isPageVisible}
-        speed={cloudSpeed}
-      />
+      {isCanvasReady && (
+        <SkyBackgroundCanvas
+          colors={[
+            timeState.skyTop,
+            timeState.skyUpper,
+            timeState.skyMiddle,
+            timeState.skyLower,
+            timeState.skyBottom,
+          ]}
+          isAnimationRunning={isCloudAnimationRunning && isPageVisible}
+          speed={cloudSpeed}
+        />
+      )}
     </div>
   )
 }
