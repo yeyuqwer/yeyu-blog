@@ -77,8 +77,8 @@ export function SkyBackgroundControls() {
           max={maxPreviewMinutesOfDay}
           min={minPreviewMinutesOfDay}
           step={previewMinutesStep}
-          value={[minutesOfDay]}
-          onValueChange={([nextMinutesOfDay]) => setMinutesOfDay(nextMinutesOfDay)}
+          value={minutesOfDay}
+          onValueChange={setMinutesOfDay}
         />
         <div className="flex items-center justify-between gap-4">
           <span className="text-foreground/65 text-xs">{translations.common.useRealTime}</span>
@@ -112,8 +112,8 @@ export function SkyBackgroundControls() {
           max={maxCloudSpeed}
           min={minCloudSpeed}
           step={cloudSpeedStep}
-          value={[cloudSpeed]}
-          onValueChange={([nextCloudSpeed]) => setCloudSpeed(nextCloudSpeed)}
+          value={cloudSpeed}
+          onValueChange={setCloudSpeed}
         />
         <div className="flex items-center justify-between gap-4">
           <span className="text-foreground/65 text-xs">{translations.common.cloudMotion}</span>
