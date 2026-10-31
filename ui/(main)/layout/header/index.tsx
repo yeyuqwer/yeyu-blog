@@ -1,7 +1,6 @@
 'use client'
 
 import { Languages } from 'lucide-react'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { getRoutePathname } from '@/lib/i18n/get-route-pathname'
@@ -20,44 +19,23 @@ import { NavItem } from './nav-item'
 export default function Header() {
   const pathname = usePathname()
   const isHeaderVisible = useScrollVisibility()
-  const shouldReduceMotion = useReducedMotion()
-  const [hasEntered, setHasEntered] = useState(false)
   const [wordmarkAnimationKey, setWordmarkAnimationKey] = useState(0)
   const { language, toggleLanguage } = useLanguage()
   const translations = useTranslations()
-  const languageOffset = language === 'en' ? '100%' : '-100%'
   const languagePathPrefix = `/${language}`
   const currentPathname = getRoutePathname(pathname)
 
   return (
-    <motion.header
+    <header
       aria-hidden={!isHeaderVisible}
       className={cn(
-        'font-header sticky top-5 z-20 mx-auto mt-5 mb-4 h-10 w-[calc(100%-2rem)] max-w-[550px] overflow-hidden rounded-full bg-black text-white shadow-[0_4px_10px_rgba(0,0,0,0.1)] transition-[background-color,box-shadow] duration-300 sm:h-12 dark:bg-white/15 dark:shadow-[0_10px_28px_rgba(0,0,0,0.24)] dark:backdrop-blur-xl',
+        'font-header sticky top-5 z-20 mx-auto mt-5 mb-4 h-10 w-[calc(100%-2rem)] max-w-[550px] overflow-hidden rounded-full bg-black text-white shadow-[0_4px_10px_rgba(0,0,0,0.1)] transition-[opacity,translate,background-color,box-shadow] duration-300 data-[hidden]:-translate-y-[140%] data-[hidden]:opacity-0 motion-reduce:transition-none sm:h-12 dark:bg-white/15 dark:shadow-[0_10px_28px_rgba(0,0,0,0.24)] dark:backdrop-blur-xl',
         !isHeaderVisible && 'pointer-events-none',
       )}
-      initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.98, y: -16 }}
-      animate={{
-        opacity: isHeaderVisible ? 1 : 0,
-        scale: 1,
-        y: isHeaderVisible || shouldReduceMotion ? 0 : '-140%',
-      }}
+      data-hidden={!isHeaderVisible ? '' : undefined}
       inert={!isHeaderVisible}
-      onAnimationComplete={() => {
-        if (!hasEntered) setHasEntered(true)
-      }}
-      transition={
-        shouldReduceMotion
-          ? { duration: 0 }
-          : !hasEntered
-            ? { duration: 0.48, ease: [0.16, 1, 0.3, 1] }
-            : {
-                duration: isHeaderVisible ? 0.22 : 0.18,
-                ease: isHeaderVisible ? [0.22, 1, 0.36, 1] : [0.4, 0, 1, 1],
-              }
-      }
     >
-      <div className="grid h-full grid-cols-[5rem_1fr] items-center sm:grid-cols-[7rem_1fr]">
+      <div className="motion-safe:animate-header-enter grid h-full grid-cols-[5rem_1fr] items-center sm:grid-cols-[7rem_1fr]">
         <WaveLink
           href={languagePathPrefix}
           withWaveUnderline={false}
@@ -94,25 +72,15 @@ export default function Header() {
                   isActive ? 'font-bold text-white' : 'font-normal text-white/90 hover:text-white',
                 )}
               >
-                <motion.span
+                <span
                   className={cn(
                     waveLinkUnderlineClassName,
                     'after:-bottom-1 after:bg-[color-mix(in_srgb,var(--theme-accent)_50%,white)]',
-                    'inline-flex items-center',
+                    'motion-safe:animate-header-item inline-flex items-center',
                     isLanguageRoute && 'gap-1',
                     isActive && 'after:[clip-path:inset(0)]',
                   )}
-                  initial={shouldReduceMotion ? false : { opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={
-                    shouldReduceMotion
-                      ? { duration: 0 }
-                      : {
-                          delay: routeIndex * 0.07,
-                          duration: 0.36,
-                          ease: [0.22, 1, 0.36, 1],
-                        }
-                  }
+                  style={{ animationDelay: `${routeIndex * 70}ms` }}
                 >
                   {isLanguageRoute && (
                     <Languages aria-hidden="true" className="size-3.5 shrink-0 sm:size-4" />
@@ -123,30 +91,21 @@ export default function Header() {
                       isLanguageRoute && 'w-5 text-center',
                     )}
                   >
-                    <AnimatePresence initial={false}>
-                      <motion.span
-                        key={language}
-                        aria-hidden="true"
-                        className="col-start-1 row-start-1 flex items-center justify-center"
-                        initial={shouldReduceMotion ? false : { opacity: 0, y: languageOffset }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: languageOffset }}
-                        transition={
-                          shouldReduceMotion
-                            ? { duration: 0 }
-                            : { duration: 0.32, ease: [0.22, 1, 0.36, 1] }
-                        }
-                      >
-                        {translations.header.routes[route.pathName]}
-                      </motion.span>
-                    </AnimatePresence>
+                    <span
+                      key={language}
+                      aria-hidden="true"
+                      className="motion-safe:animate-header-label col-start-1 row-start-1 flex items-center justify-center [--site-language-offset:-100%] data-[language=en]:[--site-language-offset:100%]"
+                      data-language={language}
+                    >
+                      {translations.header.routes[route.pathName]}
+                    </span>
                   </span>
-                </motion.span>
+                </span>
               </NavItem>
             )
           })}
         </nav>
       </div>
-    </motion.header>
+    </header>
   )
 }

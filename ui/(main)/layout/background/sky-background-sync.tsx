@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useLayoutEffect } from 'react'
+import { useEffect } from 'react'
 import {
   useIsSkyBackgroundInitialized,
   useIsUsingRealTime,
@@ -15,7 +15,7 @@ export function SkyBackgroundSync() {
   const isUsingRealTime = useIsUsingRealTime()
   const { initializeSkyBackground, setRealTimeMinutesOfDay } = useSkyBackgroundActions()
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const now = new Date()
 
     initializeSkyBackground(getMinutesOfDay(now))

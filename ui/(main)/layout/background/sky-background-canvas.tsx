@@ -299,13 +299,13 @@ export function SkyBackgroundCanvas({
     renderer.setColors(colorsRef.current)
 
     const resize = () => {
-      renderer.resize()
-      renderer.render(skyTimeRef.current)
+      if (renderer.resize()) renderer.render(skyTimeRef.current)
     }
     const resizeObserver = new ResizeObserver(resize)
 
     resizeObserver.observe(canvas)
-    resize()
+    renderer.resize()
+    renderer.render(skyTimeRef.current)
     readyFrameRef.current = requestAnimationFrame(() => {
       readyFrameRef.current = null
       setIsReady(true)
@@ -320,6 +320,8 @@ export function SkyBackgroundCanvas({
   }, [])
 
   useEffect(() => {
+    if (colorsRef.current === colors) return
+
     colorsRef.current = colors
     const renderer = rendererRef.current
     if (!renderer) return
@@ -337,7 +339,6 @@ export function SkyBackgroundCanvas({
       animationFrameRef.current = null
     }
 
-    renderer.render(skyTimeRef.current)
     if (!isAnimationRunning || prefersReducedMotion) return
 
     let previousFrameTime = performance.now()
@@ -474,8 +475,11 @@ const createSkyRenderer = (canvas: HTMLCanvasElement) => {
       const width = Math.max(1, Math.round(desiredWidth * renderScale))
       const height = Math.max(1, Math.round(desiredHeight * renderScale))
 
-      if (canvas.width !== width) canvas.width = width
-      if (canvas.height !== height) canvas.height = height
+      if (canvas.width === width && canvas.height === height) return false
+
+      canvas.width = width
+      canvas.height = height
+      return true
     },
     setColors: (colors: readonly string[]) => {
       const palette = getSkyPalette(colors)

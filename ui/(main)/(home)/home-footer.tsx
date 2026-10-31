@@ -1,7 +1,5 @@
 'use client'
 
-import type { Variants } from 'motion/react'
-import * as motion from 'motion/react-client'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
 import { GitHubIcon, GmailIcon, XIcon } from './assets/social-icons'
 import { HomeTextMotion } from './home-motion'
@@ -24,24 +22,6 @@ const socialLinks = [
   },
 ]
 
-const socialLinksVariants: Variants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.07,
-    },
-  },
-}
-
-const socialLinkVariants: Variants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] },
-  },
-}
-
 export default function HomeFooter() {
   const translations = useTranslations()
 
@@ -53,25 +33,21 @@ export default function HomeFooter() {
         </p>
       </HomeTextMotion>
 
-      <motion.nav
-        aria-label={translations.home.socialLinksLabel}
-        className="flex justify-end gap-6"
-        variants={socialLinksVariants}
-      >
-        {socialLinks.map(({ Icon, name, url }) => (
-          <motion.a
+      <nav aria-label={translations.home.socialLinksLabel} className="flex justify-end gap-6">
+        {socialLinks.map(({ Icon, name, url }, index) => (
+          <a
             aria-label={name}
-            className="size-5 text-zinc-700 transition-colors hover:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black dark:text-zinc-300 dark:hover:text-white dark:focus-visible:outline-white"
+            className="motion-safe:animate-entry-icon size-5 text-zinc-700 transition-colors hover:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black dark:text-zinc-300 dark:hover:text-white dark:focus-visible:outline-white"
             href={url}
             key={url}
             target="_blank"
             rel="noreferrer"
-            variants={socialLinkVariants}
+            style={{ animationDelay: `${index * 70}ms` }}
           >
             <Icon aria-hidden="true" className="size-full" />
-          </motion.a>
+          </a>
         ))}
-      </motion.nav>
+      </nav>
     </footer>
   )
 }

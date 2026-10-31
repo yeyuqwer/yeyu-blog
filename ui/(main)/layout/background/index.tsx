@@ -1,27 +1,38 @@
 'use client'
 
 import type { CSSProperties } from 'react'
-import dynamic from 'next/dynamic'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   useCloudSpeed,
   useIsCloudAnimationRunning,
   useIsSkyBackgroundInitialized,
   useSkyBackgroundTimeState,
 } from '@/store/use-sky-background-store'
-import './background.css'
+import { SkyBackgroundCanvas } from './sky-background-canvas'
+import { SkyBackgroundSync } from './sky-background-sync'
 
-const SkyBackgroundCanvas = dynamic(
-  () => import('./sky-background-canvas').then(module => module.SkyBackgroundCanvas),
-  { ssr: false },
-)
-
-export function Background({ isCanvasReady }: { isCanvasReady: boolean }) {
+export function Background() {
   const cloudSpeed = useCloudSpeed()
   const isCloudAnimationRunning = useIsCloudAnimationRunning()
   const isInitialized = useIsSkyBackgroundInitialized()
   const [isPageVisible, setIsPageVisible] = useState(true)
   const { timeState } = useSkyBackgroundTimeState()
+  const colors = useMemo(
+    () => [
+      timeState.skyTop,
+      timeState.skyUpper,
+      timeState.skyMiddle,
+      timeState.skyLower,
+      timeState.skyBottom,
+    ],
+    [
+      timeState.skyTop,
+      timeState.skyUpper,
+      timeState.skyMiddle,
+      timeState.skyLower,
+      timeState.skyBottom,
+    ],
+  )
   const backgroundStyle = {
     '--site-sky-sky-bottom': timeState.skyBottom,
     '--site-sky-sky-lower': timeState.skyLower,
@@ -57,16 +68,11 @@ export function Background({ isCanvasReady }: { isCanvasReady: boolean }) {
       data-initialized={isInitialized ? '' : undefined}
       style={backgroundStyle}
     >
+      <SkyBackgroundSync />
       <div className="site-sky-stars" />
-      {isCanvasReady && (
+      {isInitialized && (
         <SkyBackgroundCanvas
-          colors={[
-            timeState.skyTop,
-            timeState.skyUpper,
-            timeState.skyMiddle,
-            timeState.skyLower,
-            timeState.skyBottom,
-          ]}
+          colors={colors}
           isAnimationRunning={isCloudAnimationRunning && isPageVisible}
           speed={cloudSpeed}
         />

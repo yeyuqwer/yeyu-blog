@@ -1,4 +1,3 @@
-import * as motion from 'motion/react-client'
 import { customMarkdownTheme } from '@/lib/core/markdown/markdown-style'
 import { toDisplayDate } from '@/lib/utils/common/time'
 import { MarkdownCodeBlockEnhancer } from '@/ui/components/shared/markdown-code-block-enhancer'
@@ -8,22 +7,6 @@ import { ArticleScrollProgress } from './article-scroll-progress'
 import './media.css'
 import { extractHeadings } from './utils/extract-headings'
 import { extractTitleAndBody } from './utils/extract-title-and-body'
-
-const articleVariants = {
-  hidden: {
-    opacity: 0,
-    y: 40,
-  },
-  visible: {
-    opacity: 1,
-    y: [30, -2, 0],
-    transition: {
-      type: 'tween' as const,
-      ease: 'easeInOut' as const,
-      duration: 0.8,
-    },
-  },
-}
 
 export default function ArticleDisplayPage({
   createdAt,
@@ -43,10 +26,7 @@ export default function ArticleDisplayPage({
 
   return (
     <div className="z-10 min-h-dvh">
-      <motion.article
-        className="flex max-w-3xl flex-1 flex-col gap-4 rounded-sm px-6 py-2"
-        variants={articleVariants}
-      >
+      <article className="motion-safe:animate-entry-bounce flex max-w-3xl flex-1 flex-col gap-4 rounded-sm px-6 py-2 [--site-entry-overshoot:-2px]">
         {sanitizedTitleHtml != null ? (
           <header className="flex flex-col items-center justify-center gap-3 text-center">
             <h1
@@ -91,7 +71,7 @@ export default function ArticleDisplayPage({
         <ArticleScrollProgress
           sections={headings.map(({ id, level, text }) => ({ id, label: text, level }))}
         />
-      </motion.article>
+      </article>
     </div>
   )
 }

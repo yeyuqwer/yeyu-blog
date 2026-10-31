@@ -25,10 +25,10 @@ export default function ProfileSection() {
       </HomeAvatarMotion>
 
       <div className="flex flex-col items-center text-center md:translate-y-[5px] md:items-start md:text-left">
-        <HomeTextMotion>
+        <HomeTextMotion delay={80}>
           <h1 className="text-xl leading-8 font-bold sm:text-2xl">{translations.home.greeting}</h1>
         </HomeTextMotion>
-        <HomeTextMotion>
+        <HomeTextMotion delay={160}>
           <p className="mt-[22px] text-[16px] leading-8 font-bold">{translations.home.role}</p>
         </HomeTextMotion>
         <TechStack />

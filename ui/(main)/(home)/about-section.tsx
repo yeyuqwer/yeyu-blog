@@ -8,8 +8,8 @@ export default function AboutSection() {
 
   return (
     <div className="mt-10 space-y-7 text-[16px] leading-8">
-      {translations.home.about.map(section => (
-        <HomeTextMotion key={section.id}>
+      {translations.home.about.map((section, index) => (
+        <HomeTextMotion key={section.id} delay={320 + index * 80}>
           {section.paragraphs.map(paragraph => (
             <p key={paragraph}>{paragraph}</p>
           ))}

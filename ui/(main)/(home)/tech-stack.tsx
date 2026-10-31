@@ -1,7 +1,5 @@
 'use client'
 
-import type { Variants } from 'motion/react'
-import * as motion from 'motion/react-client'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
 import {
   FigmaIcon,
@@ -21,38 +19,24 @@ const techStackData = [
   { name: 'Figma', Icon: FigmaIcon },
 ]
 
-const techStackVariants: Variants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.07,
-    },
-  },
-}
-
-const techStackItemVariants: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
-  },
-}
-
 export default function TechStack() {
   const translations = useTranslations()
 
   return (
-    <motion.ul
+    <ul
       aria-label={translations.home.techStackLabel}
       className="mt-[21px] grid grid-cols-6 gap-[10px]"
-      variants={techStackVariants}
     >
-      {techStackData.map(({ Icon, name }) => (
-        <motion.li key={name} title={name} className="size-6" variants={techStackItemVariants}>
+      {techStackData.map(({ Icon, name }, index) => (
+        <li
+          key={name}
+          title={name}
+          className="motion-safe:animate-entry-icon size-6"
+          style={{ animationDelay: `${160 + index * 70}ms` }}
+        >
           <Icon role="img" aria-label={name} className="size-full" />
-        </motion.li>
+        </li>
       ))}
-    </motion.ul>
+    </ul>
   )
 }

@@ -78,8 +78,6 @@
   border: clamp(4px, 0.55vw, 8px) solid rgb(255 255 255 / 0.42);
   background: rgb(252 254 255 / 0.9);
   background-clip: padding-box;
-  -webkit-backdrop-filter: blur(12px) saturate(112%);
-  backdrop-filter: blur(12px) saturate(112%);
   box-shadow:
     0 8px 24px rgb(15 23 42 / 0.12),
     0 28px 72px rgb(15 23 42 / 0.16),

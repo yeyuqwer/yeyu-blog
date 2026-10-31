@@ -1,5 +1,4 @@
 import type { BlogListItem } from '@/lib/api/blog/type'
-import * as motion from 'motion/react-client'
 import { MainEmptyState } from '@/ui/components/shared/main-empty-state'
 import { MainScrollBlur } from '@/ui/components/shared/main-scroll-blur'
 import { ViewportRevealItem, ViewportRevealList } from '@/ui/components/shared/viewport-reveal-list'
@@ -36,7 +35,7 @@ export const ArticleList = ({ items }: { items: BlogListItem[] }) => {
   return (
     <>
       <ViewportRevealList>
-        <div className="group/list flex flex-col gap-10">
+        <div className="flex flex-col gap-10">
           {sortedYears.map(year => (
             <div key={year} className="flex flex-col gap-1">
               <ViewportRevealItem
@@ -48,16 +47,7 @@ export const ArticleList = ({ items }: { items: BlogListItem[] }) => {
               <div className="flex flex-col">
                 {groupedItems[year].map(v => (
                   <ViewportRevealItem as="div" key={v.id}>
-                    <motion.div
-                      inherit={false}
-                      className="transition-opacity group-hover/list:opacity-50! hover:opacity-100!"
-                      whileHover={{
-                        scale: 1.01,
-                        transition: { type: 'spring', stiffness: 200, damping: 25 },
-                      }}
-                    >
-                      <ArticleLink slug={v.slug} title={v.title} createdAt={v.createdAt} />
-                    </motion.div>
+                    <ArticleLink slug={v.slug} title={v.title} createdAt={v.createdAt} />
                   </ViewportRevealItem>
                 ))}
               </div>
