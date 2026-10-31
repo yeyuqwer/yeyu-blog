@@ -17,7 +17,7 @@ export function AdminDashboardLink() {
       onClick={closeModal}
       className={cn(
         buttonVariants(),
-        'h-10 w-full cursor-pointer rounded-xl bg-black px-4 text-white shadow-none hover:bg-zinc-800 hover:text-white hover:shadow-none focus-visible:border-black focus-visible:ring-black/25 dark:bg-white dark:text-black dark:focus-visible:border-white dark:focus-visible:ring-white/35 dark:hover:bg-zinc-200 dark:hover:text-black',
+        'h-10 w-full cursor-pointer rounded-xl bg-black px-4 text-white shadow-none hover:bg-zinc-800 hover:text-white hover:shadow-none focus-visible:border-black focus-visible:ring-black/25 dark:bg-white dark:text-black dark:hover:bg-zinc-200 dark:hover:text-black dark:focus-visible:border-white dark:focus-visible:ring-white/35',
       )}
       onMouseEnter={() => {
         iconRef.current?.startAnimation()

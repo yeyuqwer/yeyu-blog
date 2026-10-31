@@ -19,7 +19,7 @@ export const Web3UserPanel = () => {
         <AccountIcon account={walletAddress} className="size-16 rounded-full shadow-sm" />
         <div className="space-y-1 text-center">
           <p className="text-muted-foreground text-xs">{translations.loginModal.walletAddress}</p>
-          <p className="break-all font-medium text-sm">{walletAddress}</p>
+          <p className="text-sm font-medium break-all">{walletAddress}</p>
         </div>
       </div>
 

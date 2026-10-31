@@ -55,7 +55,7 @@ export function MainConfirmModal({
             onClick={onClose}
             disabled={isPending}
             className={cn(
-              'h-9 cursor-pointer rounded-lg border-black/20 bg-black/[0.03] px-3 text-black shadow-none hover:border-black/35 hover:bg-black/[0.08] hover:text-black focus-visible:ring-black/25 dark:border-white/20 dark:bg-white/[0.06] dark:text-white dark:focus-visible:ring-white/30 dark:hover:border-white/30 dark:hover:bg-white/[0.12] dark:hover:text-white',
+              'h-9 cursor-pointer rounded-lg border-black/20 bg-black/[0.03] px-3 text-black shadow-none hover:border-black/35 hover:bg-black/[0.08] hover:text-black focus-visible:ring-black/25 dark:border-white/20 dark:bg-white/[0.06] dark:text-white dark:hover:border-white/30 dark:hover:bg-white/[0.12] dark:hover:text-white dark:focus-visible:ring-white/30',
               cancelButtonClassName,
             )}
           >
@@ -69,7 +69,7 @@ export function MainConfirmModal({
             }}
             disabled={isPending}
             className={cn(
-              'h-9 cursor-pointer rounded-lg bg-black px-3 text-white shadow-[0_8px_18px_rgba(0,0,0,0.2)] hover:bg-zinc-800 hover:text-white focus-visible:ring-black/25 disabled:cursor-not-allowed disabled:bg-black disabled:text-white disabled:opacity-45 dark:bg-white dark:text-black dark:shadow-[0_8px_18px_rgba(0,0,0,0.3)] dark:disabled:bg-white dark:disabled:text-black dark:focus-visible:ring-white/30 dark:hover:bg-zinc-200 dark:hover:text-black',
+              'h-9 cursor-pointer rounded-lg bg-black px-3 text-white shadow-[0_8px_18px_rgba(0,0,0,0.2)] hover:bg-zinc-800 hover:text-white focus-visible:ring-black/25 disabled:cursor-not-allowed disabled:bg-black disabled:text-white disabled:opacity-45 dark:bg-white dark:text-black dark:shadow-[0_8px_18px_rgba(0,0,0,0.3)] dark:hover:bg-zinc-200 dark:hover:text-black dark:focus-visible:ring-white/30 dark:disabled:bg-white dark:disabled:text-black',
               confirmButtonClassName,
             )}
           >
@@ -84,7 +84,7 @@ export function MainConfirmModal({
         contentClassName,
       )}
       titleClassName={cn(
-        'text-center font-bold text-black text-xl dark:text-white',
+        'text-center text-xl font-bold text-black dark:text-white',
         titleClassName,
       )}
       descriptionClassName={cn(

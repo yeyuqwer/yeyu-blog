@@ -73,7 +73,7 @@ export default function CommentCard({
             <div className="mb-4 flex justify-end">
               <button
                 type="button"
-                className="inline-flex h-8 items-center gap-2 rounded-lg bg-black px-2.5 font-medium text-white text-xs shadow-[0_6px_16px_rgba(0,0,0,0.16)] transition-colors hover:bg-zinc-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/25 dark:bg-white dark:text-black dark:shadow-[0_6px_16px_rgba(0,0,0,0.28)] dark:focus-visible:ring-white/30 dark:hover:bg-zinc-200 dark:hover:text-black"
+                className="inline-flex h-8 items-center gap-2 rounded-lg bg-black px-2.5 text-xs font-medium text-white shadow-[0_6px_16px_rgba(0,0,0,0.16)] transition-colors hover:bg-zinc-800 hover:text-white focus-visible:ring-2 focus-visible:ring-black/25 focus-visible:outline-none dark:bg-white dark:text-black dark:shadow-[0_6px_16px_rgba(0,0,0,0.28)] dark:hover:bg-zinc-200 dark:hover:text-black dark:focus-visible:ring-white/30"
                 aria-label={translations.comments.switchSortOrder[nextSortOrder]}
                 onClick={() => {
                   setSortOrder(nextSortOrder)
@@ -104,11 +104,11 @@ export default function CommentCard({
         isPending={isDeletingComment}
       >
         {deletingComment != null ? (
-          <div className="px-1 py-2 text-black text-sm dark:text-white">
+          <div className="px-1 py-2 text-sm text-black dark:text-white">
             <p className="font-medium">
               {deletingComment.user?.name ?? deletingComment.authorName}
             </p>
-            <p className="mt-2 line-clamp-3 whitespace-pre-wrap text-black/60 text-xs dark:text-white/60">
+            <p className="mt-2 line-clamp-3 text-xs whitespace-pre-wrap text-black/60 dark:text-white/60">
               {deletingComment.content}
             </p>
           </div>

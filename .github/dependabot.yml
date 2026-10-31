@@ -2,16 +2,16 @@ version: 2
 enable-beta-ecosystems: true
 
 updates:
-  - package-ecosystem: 'npm'
-    directory: '/'
+  - package-ecosystem: "npm"
+    directory: "/"
     schedule:
-      interval: 'monthly'
-      day: 'monday'
+      interval: "monthly"
+      day: "monday"
     open-pull-requests-limit: 5
     versioning-strategy: increase
     commit-message:
-      prefix: 'chore'
-      include: 'scope'
+      prefix: "chore"
+      include: "scope"
     labels:
-      - 'dependencies'
-      - 'automerge-candidate'
+      - "dependencies"
+      - "automerge-candidate"

@@ -19,7 +19,7 @@ export function DataTablePagination({
   const canNextPage = pageIndex < pageCount - 1
 
   return (
-    <div className="flex shrink-0 items-center justify-end border-zinc-200 border-t py-2 pr-2 dark:border-zinc-800">
+    <div className="flex shrink-0 items-center justify-end border-t border-zinc-200 py-2 pr-2 dark:border-zinc-800">
       <div className="flex items-center gap-x-2 lg:gap-x-3">
         <div className="flex items-center gap-x-2">
           <Select
@@ -40,7 +40,7 @@ export function DataTablePagination({
             </SelectContent>
           </Select>
         </div>
-        <div className="flex w-[100px] items-center justify-center font-medium text-sm">
+        <div className="flex w-[100px] items-center justify-center text-sm font-medium">
           {pageIndex + 1} /{pageCount}
         </div>
         <div className="flex items-center gap-x-2">

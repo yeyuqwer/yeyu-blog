@@ -45,12 +45,12 @@ function CommentHeader({
             {formattedDisplayName}
           </span>
           {comment.isAdmin ? (
-            <span className="rounded-md bg-black/8 px-1.5 py-0.5 font-medium text-[11px] text-black dark:bg-white/10 dark:text-white">
+            <span className="rounded-md bg-black/8 px-1.5 py-0.5 text-[11px] font-medium text-black dark:bg-white/10 dark:text-white">
               {translations.comments.admin}
             </span>
           ) : null}
           {isCurrentUserComment ? (
-            <span className="rounded-md bg-black/6 px-1.5 py-0.5 font-medium text-[11px] text-black/75 dark:bg-white/8 dark:text-white/75">
+            <span className="rounded-md bg-black/6 px-1.5 py-0.5 text-[11px] font-medium text-black/75 dark:bg-white/8 dark:text-white/75">
               {translations.comments.you}
             </span>
           ) : null}
@@ -78,7 +78,7 @@ function CommentHeader({
         </div>
 
         {parentDisplayName != null ? (
-          <div className="mt-2 flex items-center gap-1.5 text-black/55 text-xs dark:text-white/55">
+          <div className="mt-2 flex items-center gap-1.5 text-xs text-black/55 dark:text-white/55">
             <CornerUpLeft className="size-3.5" />
             <span>{translations.comments.replyTo(parentDisplayName)}</span>
           </div>
@@ -86,13 +86,13 @@ function CommentHeader({
       </div>
 
       {!comment.isDeleted && (canDeleteComment || canReply) ? (
-        <div className="flex shrink-0 items-center gap-1 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
+        <div className="flex shrink-0 items-center gap-1 opacity-100 transition-opacity sm:opacity-0 sm:group-focus-within:opacity-100 sm:group-hover:opacity-100">
           {canDeleteComment ? (
             <Button
               type="button"
               variant="ghost"
               size="icon-xs"
-              className="rounded-md text-black/55 hover:bg-destructive/10 hover:text-destructive dark:text-white/55"
+              className="hover:bg-destructive/10 hover:text-destructive rounded-md text-black/55 dark:text-white/55"
               aria-label={translations.comments.deleteLabel(formattedDisplayName)}
               disabled={isDeletingComment}
               onClick={() => {
@@ -133,7 +133,7 @@ function CommentContent({ comment }: { comment: CommentTreeNode }) {
   return (
     <div className="mt-3 text-black dark:text-white">
       {comment.isDeleted ? (
-        <p className="text-black/55 text-sm dark:text-white/55">
+        <p className="text-sm text-black/55 dark:text-white/55">
           <del>{translations.comments.deleted}</del>
         </p>
       ) : (
@@ -200,7 +200,7 @@ export function CommentThreadItem({
       className={cn(
         'group',
         depth === 0 && 'pb-6',
-        depth > 0 && 'ml-4 border-black/20 border-l pl-4 sm:ml-7 dark:border-white/20',
+        depth > 0 && 'ml-4 border-l border-black/20 pl-4 sm:ml-7 dark:border-white/20',
       )}
     >
       <div className="flex items-start gap-3">

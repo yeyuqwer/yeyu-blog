@@ -59,15 +59,15 @@ export function DataTable<TData extends RowData>({
         damping: 20,
       }}
     >
-      <div className="min-h-0 min-w-0 flex-1 overflow-auto [scrollbar-color:rgba(113,113,122,0.45)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-500/45 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-400/35 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-[3px]">
+      <div className="min-h-0 min-w-0 flex-1 [scrollbar-width:thin] [scrollbar-color:rgba(113,113,122,0.45)_transparent] overflow-auto [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-500/45 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-400/35 [&::-webkit-scrollbar-track]:bg-transparent">
         <Table containerClassName="overflow-visible">
-          <TableHeader className="bg-zinc-100 dark:bg-card">
+          <TableHeader className="dark:bg-card bg-zinc-100">
             {table.getHeaderGroups().map(headerGroup => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map(header => (
                   <TableHead
                     key={header.id}
-                    className="sticky top-0 z-20 bg-zinc-100 text-zinc-500 shadow-[0_1px_0_var(--border)] dark:bg-card dark:text-zinc-200"
+                    className="dark:bg-card sticky top-0 z-20 bg-zinc-100 text-zinc-500 shadow-[0_1px_0_var(--border)] dark:text-zinc-200"
                   >
                     {header.isPlaceholder ? null : <table.FlexRender header={header} />}
                   </TableHead>

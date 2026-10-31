@@ -121,11 +121,11 @@ export function CommentManagerListItem({
   onUpdateState: (id: number, nextState: CommentState) => void
 }) {
   return (
-    <li className="rounded-sm border bg-background p-3 shadow-xs">
+    <li className="bg-background rounded-sm border p-3 shadow-xs">
       <section className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-medium text-sm">{comment.user?.name ?? comment.authorName}</h3>
+            <h3 className="text-sm font-medium">{comment.user?.name ?? comment.authorName}</h3>
             <Badge variant="outline">#{comment.id}</Badge>
             <Badge variant={commentStateBadgeVariantMap[comment.state]}>
               {commentStateLabelMap[comment.state]}
@@ -136,14 +136,14 @@ export function CommentManagerListItem({
             </Badge>
           </div>
           <CommentContent content={comment.content} />
-          <div className="mt-2 flex flex-wrap items-center gap-2 text-muted-foreground text-xs">
+          <div className="text-muted-foreground mt-2 flex flex-wrap items-center gap-2 text-xs">
             {comment.target != null ? (
               <>
                 <span>关联内容：</span>
                 <Link
                   href={comment.target.path}
                   target="_blank"
-                  className="line-clamp-1 text-foreground underline underline-offset-4"
+                  className="text-foreground line-clamp-1 underline underline-offset-4"
                 >
                   {comment.target.title}
                 </Link>
@@ -154,9 +154,9 @@ export function CommentManagerListItem({
             )}
           </div>
           {comment.user?.email != null ? (
-            <p className="mt-1 text-muted-foreground text-xs">{comment.user.email}</p>
+            <p className="text-muted-foreground mt-1 text-xs">{comment.user.email}</p>
           ) : null}
-          <time className="mt-1 block text-muted-foreground text-xs">
+          <time className="text-muted-foreground mt-1 block text-xs">
             {prettyDateTime(Date.parse(comment.createdAt))}
           </time>
         </div>

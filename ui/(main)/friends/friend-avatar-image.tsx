@@ -26,7 +26,7 @@ export function FriendAvatarImage({ avatarUrl, name }: { avatarUrl: string; name
         }}
         className={cn(
           'object-cover object-center transition-[filter,opacity,transform] duration-500 ease-out',
-          isAvatarLoaded ? 'scale-100 opacity-100 blur-0' : 'scale-105 opacity-80 blur-sm',
+          isAvatarLoaded ? 'blur-0 scale-100 opacity-100' : 'scale-105 opacity-80 blur-sm',
         )}
       />
       <span

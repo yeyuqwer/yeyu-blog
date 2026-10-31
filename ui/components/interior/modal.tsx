@@ -389,7 +389,7 @@ export function Modal({
             variants={variants.panel}
             style={{ maxWidth, maxHeight }}
             className={cn(
-              'relative flex w-full flex-col overflow-hidden rounded-[14px] border border-stone-200 bg-white text-foreground shadow-[0_28px_56px_-24px_rgba(24,22,20,0.45)] outline-none dark:border-white/[0.16] dark:bg-[#1D1D1A]',
+              'text-foreground relative flex w-full flex-col overflow-hidden rounded-[14px] border border-stone-200 bg-white shadow-[0_28px_56px_-24px_rgba(24,22,20,0.45)] outline-none dark:border-white/[0.16] dark:bg-[#1D1D1A]',
               className,
             )}
           >
@@ -398,7 +398,7 @@ export function Modal({
                 <h2
                   id={titleId}
                   className={cn(
-                    'font-medium text-[15px] text-foreground tracking-normal',
+                    'text-foreground text-[15px] font-medium tracking-normal',
                     titleClassName,
                   )}
                 >
@@ -408,7 +408,7 @@ export function Modal({
                   <p
                     id={descriptionId}
                     className={cn(
-                      'mt-1 text-[12.5px] text-muted-foreground leading-relaxed',
+                      'text-muted-foreground mt-1 text-[12.5px] leading-relaxed',
                       descriptionClassName,
                     )}
                   >
@@ -422,7 +422,7 @@ export function Modal({
                   type="button"
                   onClick={onClose}
                   aria-label={closeLabel}
-                  className="absolute top-3 right-3 grid size-7 place-items-center rounded-[7px] text-muted-foreground outline-none transition-colors duration-150 hover:bg-muted hover:text-foreground focus-visible:bg-[#4568FF]/[0.06] focus-visible:text-foreground focus-visible:shadow-[inset_0_0_0_1px_#4568FF] dark:focus-visible:bg-[#93B0FF]/[0.1] dark:focus-visible:shadow-[inset_0_0_0_1px_#93B0FF] dark:hover:bg-white/10"
+                  className="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:text-foreground absolute top-3 right-3 grid size-7 place-items-center rounded-[7px] transition-colors duration-150 outline-none focus-visible:bg-[#4568FF]/[0.06] focus-visible:shadow-[inset_0_0_0_1px_#4568FF] dark:hover:bg-white/10 dark:focus-visible:bg-[#93B0FF]/[0.1] dark:focus-visible:shadow-[inset_0_0_0_1px_#93B0FF]"
                 >
                   <X className="size-3.5" aria-hidden="true" />
                 </button>
@@ -443,7 +443,7 @@ export function Modal({
             {footer ? (
               <div
                 className={cn(
-                  'flex shrink-0 items-center justify-end gap-2 border-stone-200 border-t px-4 py-3 dark:border-white/[0.16]',
+                  'flex shrink-0 items-center justify-end gap-2 border-t border-stone-200 px-4 py-3 dark:border-white/[0.16]',
                   footerClassName,
                 )}
               >

@@ -61,7 +61,7 @@ export default function HomeFooter() {
         {socialLinks.map(({ Icon, name, url }) => (
           <motion.a
             aria-label={name}
-            className="size-5 text-zinc-700 transition-colors hover:text-black focus-visible:outline-2 focus-visible:outline-black focus-visible:outline-offset-4 dark:text-zinc-300 dark:focus-visible:outline-white dark:hover:text-white"
+            className="size-5 text-zinc-700 transition-colors hover:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black dark:text-zinc-300 dark:hover:text-white dark:focus-visible:outline-white"
             href={url}
             key={url}
             target="_blank"

@@ -66,7 +66,7 @@ export function SkyBackgroundControls() {
               {translations.common.skyTime}
             </label>
           </div>
-          <output className="shrink-0 font-medium text-foreground/70 text-xs tabular-nums">
+          <output className="text-foreground/70 shrink-0 text-xs font-medium tabular-nums">
             {timeState.label}
           </output>
         </div>
@@ -101,7 +101,7 @@ export function SkyBackgroundControls() {
               {translations.common.cloudSpeed}
             </label>
           </div>
-          <output className="shrink-0 font-medium text-foreground/70 text-xs tabular-nums">
+          <output className="text-foreground/70 shrink-0 text-xs font-medium tabular-nums">
             {cloudSpeed.toFixed(2)}x
           </output>
         </div>
@@ -128,14 +128,14 @@ export function SkyBackgroundControls() {
             onCheckedChange={setCloudAnimationRunning}
           />
         </div>
-        <div className="flex min-h-7 items-center gap-3 border-border/60 border-t pt-2 text-[11px] text-foreground/55">
+        <div className="border-border/60 text-foreground/55 flex min-h-7 items-center gap-3 border-t pt-2 text-[11px]">
           <span>
             {translations.common.phase}: {translations.common.skyPhases[timeState.phase]}
           </span>
           <button
             type="button"
             aria-label={translations.common.resetSkyBackground}
-            className="ml-auto flex size-7 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-foreground/8 hover:text-foreground focus-visible:outline-2 focus-visible:outline-theme-ring"
+            className="hover:bg-foreground/8 hover:text-foreground focus-visible:outline-theme-ring ml-auto flex size-7 cursor-pointer items-center justify-center rounded-full transition-colors focus-visible:outline-2"
             title={translations.common.resetSkyBackground}
             onClick={resetSkyBackground}
           >

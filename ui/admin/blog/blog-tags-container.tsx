@@ -62,7 +62,7 @@ export function BlogTagsContainer({
       />
       <CarouselContent className="min-w-0">
         {blogTags.length === 0 ? (
-          <CarouselItem className="m-auto text-muted-foreground">没有标签 (｡•́︿•̀｡)</CarouselItem>
+          <CarouselItem className="text-muted-foreground m-auto">没有标签 (｡•́︿•̀｡)</CarouselItem>
         ) : (
           blogTags.map((tag, i) => (
             <CarouselItem className="basis-auto" key={tag.toLowerCase()}>

@@ -2,7 +2,7 @@ name: dependabot automerge (patch only)
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, labeled]
+    types: [ opened, synchronize, reopened, labeled ]
 
 permissions:
   contents: write

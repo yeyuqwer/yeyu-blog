@@ -29,7 +29,7 @@ export const ArticleLink = ({
         {title}
         <ScaleUnderline />
       </h2>
-      <time className="shrink-0 text-sm text-zinc-400 group-hover:text-theme-accent dark:group-hover:text-white">
+      <time className="group-hover:text-theme-accent shrink-0 text-sm text-zinc-400 dark:group-hover:text-white">
         {toDisplayDate(Date.parse(String(createdAt)))}
       </time>
     </Link>

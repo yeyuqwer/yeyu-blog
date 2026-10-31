@@ -46,7 +46,7 @@ export const AdminNavbar: FC<ComponentProps<'header'>> = () => {
                 {route.pathName}
               </Link>
               {shouldShowPendingBadge ? (
-                <span className="pointer-events-none absolute right-0 bottom-0 z-10 inline-flex min-w-5 translate-x-1/3 translate-y-1/3 items-center justify-center rounded-full bg-destructive px-1.5 py-0.5 font-medium text-[10px] text-white leading-none shadow-xs">
+                <span className="bg-destructive pointer-events-none absolute right-0 bottom-0 z-10 inline-flex min-w-5 translate-x-1/3 translate-y-1/3 items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] leading-none font-medium text-white shadow-xs">
                   {formatPendingCount(pendingCount)}
                 </span>
               ) : null}

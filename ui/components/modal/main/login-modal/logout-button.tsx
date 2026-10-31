@@ -19,7 +19,7 @@ export function LogoutButton() {
       type="button"
       variant="outline"
       onClick={handleSignOut}
-      className="h-10 w-full cursor-pointer rounded-xl border-black/10 bg-black/[0.03] px-4 text-zinc-700 hover:border-black/20 hover:bg-black/[0.06] hover:text-black focus-visible:ring-black/20 dark:border-white/12 dark:bg-white/[0.06] dark:text-zinc-300 dark:focus-visible:ring-white/35 dark:hover:border-white/25 dark:hover:bg-white/[0.12] dark:hover:text-white"
+      className="h-10 w-full cursor-pointer rounded-xl border-black/10 bg-black/[0.03] px-4 text-zinc-700 hover:border-black/20 hover:bg-black/[0.06] hover:text-black focus-visible:ring-black/20 dark:border-white/12 dark:bg-white/[0.06] dark:text-zinc-300 dark:hover:border-white/25 dark:hover:bg-white/[0.12] dark:hover:text-white dark:focus-visible:ring-white/35"
       onMouseEnter={() => {
         iconRef.current?.startAnimation()
       }}

@@ -12,7 +12,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
           <div
             data-main-scroll-container
-            className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="min-h-0 flex-1 [scrollbar-width:none] overflow-y-auto overscroll-y-contain [&::-webkit-scrollbar]:hidden"
           >
             <MaxWidthWrapper className="flex min-h-full flex-col overflow-x-clip">
               <main className="flex flex-1 flex-col">{children}</main>

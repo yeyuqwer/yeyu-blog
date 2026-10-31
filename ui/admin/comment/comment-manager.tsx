@@ -223,9 +223,9 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
       {isPending ? (
         <Loading />
       ) : comments.length === 0 ? (
-        <div className="m-auto text-muted-foreground">虚无。</div>
+        <div className="text-muted-foreground m-auto">虚无。</div>
       ) : (
-        <main className="flex min-h-0 flex-1 overflow-y-auto bg-card [scrollbar-color:rgba(113,113,122,0.45)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-500/45 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-400/35 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-[3px]">
+        <main className="bg-card flex min-h-0 flex-1 [scrollbar-width:thin] [scrollbar-color:rgba(113,113,122,0.45)_transparent] overflow-y-auto [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-500/45 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-400/35 [&::-webkit-scrollbar-track]:bg-transparent">
           <ul className="w-full space-y-2">
             {comments.map(comment => (
               <CommentManagerListItem
@@ -256,11 +256,11 @@ export const CommentManager: FC<ComponentProps<'main'>> = () => {
         isPending={isDeletingComment}
       >
         {deletingComment != null ? (
-          <div className="rounded-md border bg-muted/30 p-3 text-sm">
+          <div className="bg-muted/30 rounded-md border p-3 text-sm">
             <p className="font-medium">
               {deletingComment.user?.name ?? deletingComment.authorName}
             </p>
-            <p className="mt-2 line-clamp-3 whitespace-pre-wrap text-muted-foreground text-xs">
+            <p className="text-muted-foreground mt-2 line-clamp-3 text-xs whitespace-pre-wrap">
               {deletingComment.content}
             </p>
           </div>

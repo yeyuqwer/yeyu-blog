@@ -17,7 +17,7 @@ export const LoginPanel = ({
         type="button"
         onClick={() => signIn.social({ provider: 'github', callbackURL: '/admin' })}
         className={cn(
-          'h-10 min-w-0 cursor-pointer rounded-xl border-black/10 bg-black/[0.03] px-4 text-sm text-zinc-800 hover:border-black/20 hover:bg-black/[0.06] hover:text-black focus-visible:ring-black/20 disabled:cursor-not-allowed dark:border-white/12 dark:bg-white/[0.06] dark:text-zinc-100 dark:focus-visible:ring-white/35 dark:hover:border-white/25 dark:hover:bg-white/[0.12] dark:hover:text-white',
+          'h-10 min-w-0 cursor-pointer rounded-xl border-black/10 bg-black/[0.03] px-4 text-sm text-zinc-800 hover:border-black/20 hover:bg-black/[0.06] hover:text-black focus-visible:ring-black/20 disabled:cursor-not-allowed dark:border-white/12 dark:bg-white/[0.06] dark:text-zinc-100 dark:hover:border-white/25 dark:hover:bg-white/[0.12] dark:hover:text-white dark:focus-visible:ring-white/35',
           hasWalletLogin ? 'justify-start' : 'justify-center',
         )}
         disabled={isActionPending}
@@ -30,7 +30,7 @@ export const LoginPanel = ({
         type="button"
         onClick={() => signIn.social({ provider: 'google', callbackURL: '/admin' })}
         className={cn(
-          'h-10 min-w-0 cursor-pointer rounded-xl border-black/10 bg-black/[0.03] px-4 text-sm text-zinc-800 hover:border-black/20 hover:bg-black/[0.06] hover:text-black focus-visible:ring-black/20 disabled:cursor-not-allowed dark:border-white/12 dark:bg-white/[0.06] dark:text-zinc-100 dark:focus-visible:ring-white/35 dark:hover:border-white/25 dark:hover:bg-white/[0.12] dark:hover:text-white',
+          'h-10 min-w-0 cursor-pointer rounded-xl border-black/10 bg-black/[0.03] px-4 text-sm text-zinc-800 hover:border-black/20 hover:bg-black/[0.06] hover:text-black focus-visible:ring-black/20 disabled:cursor-not-allowed dark:border-white/12 dark:bg-white/[0.06] dark:text-zinc-100 dark:hover:border-white/25 dark:hover:bg-white/[0.12] dark:hover:text-white dark:focus-visible:ring-white/35',
           hasWalletLogin ? 'justify-start' : 'justify-center',
         )}
         disabled={isActionPending}

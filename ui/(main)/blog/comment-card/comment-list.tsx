@@ -24,7 +24,7 @@ export function CommentList({
 
   if (commentTree.length === 0) {
     return (
-      <div className="rounded-lg border border-black/15 border-dashed bg-theme-surface/30 px-4 py-10 text-center text-black/55 text-sm dark:border-white/15 dark:text-white/55">
+      <div className="bg-theme-surface/30 rounded-lg border border-dashed border-black/15 px-4 py-10 text-center text-sm text-black/55 dark:border-white/15 dark:text-white/55">
         {translations.comments.empty}
       </div>
     )

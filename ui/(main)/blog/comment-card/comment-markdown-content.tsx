@@ -4,7 +4,7 @@ export function CommentMarkdownContent({ sanitizedHtmlContent }: { sanitizedHtml
   return (
     <div
       className={cn(
-        'markdown-content prose prose-sm prose-zinc dark:prose-invert max-w-none text-[15px] text-black leading-7 dark:text-white',
+        'markdown-content prose prose-sm prose-zinc dark:prose-invert max-w-none text-[15px] leading-7 text-black dark:text-white',
         'prose-headings:mt-5 prose-headings:mb-2 prose-headings:text-left prose-headings:text-black prose-headings:tracking-tight dark:prose-headings:text-white',
         'prose-h1:text-xl prose-h2:text-lg prose-h3:text-base prose-h4:text-sm prose-h5:text-sm prose-h6:text-sm',
         'prose-p:my-0 prose-p:break-words prose-p:text-black dark:prose-p:text-white [&_p+p]:mt-3 [&_p:last-child]:mb-0',

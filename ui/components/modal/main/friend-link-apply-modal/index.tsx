@@ -93,7 +93,7 @@ const FriendLinkApplyModalContent = () => {
             type="button"
             variant="outline"
             data-copied={isCopied ? 'true' : undefined}
-            className="h-9 cursor-pointer rounded-lg border-black/10 bg-black/[0.03] px-3 text-zinc-700 shadow-none hover:border-black/20 hover:bg-black/[0.06] hover:text-black data-[copied=true]:border-black/25 data-[copied=true]:bg-black/[0.08] data-[copied=true]:text-black dark:border-white/12 dark:bg-white/[0.06] dark:text-zinc-300 dark:data-[copied=true]:border-white/30 dark:data-[copied=true]:bg-white/[0.15] dark:data-[copied=true]:text-white dark:hover:border-white/25 dark:hover:bg-white/[0.12] dark:hover:text-white"
+            className="h-9 cursor-pointer rounded-lg border-black/10 bg-black/[0.03] px-3 text-zinc-700 shadow-none hover:border-black/20 hover:bg-black/[0.06] hover:text-black data-[copied=true]:border-black/25 data-[copied=true]:bg-black/[0.08] data-[copied=true]:text-black dark:border-white/12 dark:bg-white/[0.06] dark:text-zinc-300 dark:hover:border-white/25 dark:hover:bg-white/[0.12] dark:hover:text-white dark:data-[copied=true]:border-white/30 dark:data-[copied=true]:bg-white/[0.15] dark:data-[copied=true]:text-white"
             onClick={() => {
               void handleCopySiteInfo()
             }}
@@ -127,7 +127,7 @@ const FriendLinkApplyModalContent = () => {
               type="submit"
               form="friend-link-apply-form"
               disabled={isSubmitting}
-              className="h-9 cursor-pointer rounded-lg bg-black px-3 text-white shadow-none hover:bg-zinc-800 hover:text-white focus-visible:border-black focus-visible:ring-black/25 disabled:cursor-not-allowed dark:bg-white dark:text-black dark:focus-visible:border-white dark:focus-visible:ring-white/35 dark:hover:bg-zinc-200 dark:hover:text-black"
+              className="h-9 cursor-pointer rounded-lg bg-black px-3 text-white shadow-none hover:bg-zinc-800 hover:text-white focus-visible:border-black focus-visible:ring-black/25 disabled:cursor-not-allowed dark:bg-white dark:text-black dark:hover:bg-zinc-200 dark:hover:text-black dark:focus-visible:border-white dark:focus-visible:ring-white/35"
               onMouseEnter={() => {
                 sendIconRef.current?.startAnimation()
               }}
@@ -162,7 +162,7 @@ const FriendLinkApplyModalContent = () => {
             <div key={field.name} className="grid gap-1.5">
               <Label
                 htmlFor={fieldId}
-                className="font-medium text-sm text-zinc-700 dark:text-zinc-200"
+                className="text-sm font-medium text-zinc-700 dark:text-zinc-200"
               >
                 {fieldTranslations.label}
               </Label>
@@ -173,7 +173,7 @@ const FriendLinkApplyModalContent = () => {
                 type={field.type}
                 required={field.required}
                 placeholder={fieldTranslations.placeholder}
-                className="h-9 rounded-lg border-black/10 bg-black/[0.03] text-sm shadow-none placeholder:text-zinc-400 focus-visible:border-black/30 focus-visible:ring-black/20 dark:border-white/12 dark:bg-white/[0.06] dark:focus-visible:border-white/30 dark:focus-visible:ring-white/35 dark:placeholder:text-zinc-500"
+                className="h-9 rounded-lg border-black/10 bg-black/[0.03] text-sm shadow-none placeholder:text-zinc-400 focus-visible:border-black/30 focus-visible:ring-black/20 dark:border-white/12 dark:bg-white/[0.06] dark:placeholder:text-zinc-500 dark:focus-visible:border-white/30 dark:focus-visible:ring-white/35"
               />
             </div>
           )

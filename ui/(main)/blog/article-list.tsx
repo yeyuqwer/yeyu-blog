@@ -41,7 +41,7 @@ export const ArticleList = ({ items }: { items: BlogListItem[] }) => {
             <div key={year} className="flex flex-col gap-1">
               <ViewportRevealItem
                 as="h3"
-                className="ml-2 select-none font-semibold text-2xl text-muted-foreground/30"
+                className="text-muted-foreground/30 ml-2 text-2xl font-semibold select-none"
               >
                 # {year}
               </ViewportRevealItem>
@@ -50,7 +50,7 @@ export const ArticleList = ({ items }: { items: BlogListItem[] }) => {
                   <ViewportRevealItem as="div" key={v.id}>
                     <motion.div
                       inherit={false}
-                      className="transition-opacity hover:opacity-100! group-hover/list:opacity-50!"
+                      className="transition-opacity group-hover/list:opacity-50! hover:opacity-100!"
                       whileHover={{
                         scale: 1.01,
                         transition: { type: 'spring', stiffness: 200, damping: 25 },

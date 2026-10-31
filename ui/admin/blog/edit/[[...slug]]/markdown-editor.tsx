@@ -116,10 +116,10 @@ export default function MarkdownEditor({
   }, [previewTitle, value])
 
   return (
-    <div className="flex h-[800px] w-full flex-row gap-2 rounded-md border bg-background p-2 shadow-sm">
+    <div className="bg-background flex h-[800px] w-full flex-row gap-2 rounded-md border p-2 shadow-sm">
       <textarea
         ref={textareaRef}
-        className={`h-full w-1/2 resize-none rounded-md border bg-muted/30 p-4 focus:outline-none focus:ring-2 focus:ring-primary ${isImageProcessing ? 'cursor-not-allowed opacity-50' : ''}`}
+        className={`bg-muted/30 focus:ring-primary h-full w-1/2 resize-none rounded-md border p-4 focus:ring-2 focus:outline-none ${isImageProcessing ? 'cursor-not-allowed opacity-50' : ''}`}
         value={value}
         onChange={e => onChange(e.target.value)}
         onPaste={handlePaste}

@@ -60,7 +60,7 @@ function SessionAvatar({
           onLoad={onLoad}
           className={cn(
             'size-full object-cover transition-[filter,opacity,transform] duration-500 ease-out',
-            isAvatarLoaded ? 'scale-100 opacity-100 blur-0' : 'scale-105 opacity-80 blur-sm',
+            isAvatarLoaded ? 'blur-0 scale-100 opacity-100' : 'scale-105 opacity-80 blur-sm',
           )}
         />
         <span
@@ -100,8 +100,8 @@ function SessionSummary({
   if (isPending) {
     return (
       <section className="min-w-0 flex-1 space-y-1">
-        <span className="block h-4 w-24 animate-pulse rounded bg-muted" />
-        <span className="block h-3 w-32 animate-pulse rounded bg-muted" />
+        <span className="bg-muted block h-4 w-24 animate-pulse rounded" />
+        <span className="bg-muted block h-3 w-32 animate-pulse rounded" />
       </section>
     )
   }
@@ -110,11 +110,11 @@ function SessionSummary({
 
   return (
     <section className="min-w-0 flex-1">
-      <h3 className="truncate font-medium font-mono text-sm leading-5">
+      <h3 className="truncate font-mono text-sm leading-5 font-medium">
         {isWallet ? formattedAddress : userName || userEmail}
       </h3>
       {detail != null ? (
-        <small className="block truncate text-muted-foreground text-xs leading-4">{detail}</small>
+        <small className="text-muted-foreground block truncate text-xs leading-4">{detail}</small>
       ) : null}
     </section>
   )

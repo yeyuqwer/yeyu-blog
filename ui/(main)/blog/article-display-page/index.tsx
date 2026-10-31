@@ -51,7 +51,7 @@ export default function ArticleDisplayPage({
           <header className="flex flex-col items-center justify-center gap-3 text-center">
             <h1
               id={titleId || undefined}
-              className="text-balance font-semibold text-3xl text-zinc-950 leading-tight md:text-4xl dark:text-zinc-50"
+              className="text-3xl leading-tight font-semibold text-balance text-zinc-950 md:text-4xl dark:text-zinc-50"
               dangerouslySetInnerHTML={{ __html: sanitizedTitleHtml }}
             />
 
@@ -62,7 +62,7 @@ export default function ArticleDisplayPage({
                 ))}
               </p>
 
-              <time className="border-zinc-400/60 border-b border-dashed font-mono text-[0.78rem] text-zinc-500 tracking-wide md:text-[0.82rem] dark:border-zinc-600/70 dark:text-zinc-400">
+              <time className="border-b border-dashed border-zinc-400/60 font-mono text-[0.78rem] tracking-wide text-zinc-500 md:text-[0.82rem] dark:border-zinc-600/70 dark:text-zinc-400">
                 {toDisplayDate(createdAt)}
               </time>
             </section>
@@ -75,7 +75,7 @@ export default function ArticleDisplayPage({
               ))}
             </p>
 
-            <time className="border-zinc-400/60 border-b border-dashed font-mono text-[0.78rem] text-zinc-500 tracking-wide md:text-[0.82rem] dark:border-zinc-600/70 dark:text-zinc-400">
+            <time className="border-b border-dashed border-zinc-400/60 font-mono text-[0.78rem] tracking-wide text-zinc-500 md:text-[0.82rem] dark:border-zinc-600/70 dark:text-zinc-400">
               {toDisplayDate(createdAt)}
             </time>
           </section>

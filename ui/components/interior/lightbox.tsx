@@ -395,7 +395,7 @@ function LightboxToolbar({
           type="button"
           onClick={onToggleZoom}
           aria-label={zoomed ? 'Zoom out' : 'Zoom in'}
-          className="grid size-8 place-items-center rounded-[9px] border border-stone-200 bg-white text-stone-500 outline-none transition-[border-color,color,box-shadow] duration-150 hover:border-stone-300 hover:text-stone-700 focus-visible:border-[#4568FF] focus-visible:shadow-[0_1px_2px_rgba(28,25,23,0.08),0_10px_20px_-14px_rgba(69,104,255,0.6)] dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:text-stone-400 dark:focus-visible:border-[#93B0FF] dark:focus-visible:shadow-[0_10px_20px_-14px_rgba(147,176,255,0.5)] dark:hover:border-white/20 dark:hover:text-stone-200"
+          className="grid size-8 place-items-center rounded-[9px] border border-stone-200 bg-white text-stone-500 transition-[border-color,color,box-shadow] duration-150 outline-none hover:border-stone-300 hover:text-stone-700 focus-visible:border-[#4568FF] focus-visible:shadow-[0_1px_2px_rgba(28,25,23,0.08),0_10px_20px_-14px_rgba(69,104,255,0.6)] dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:text-stone-400 dark:hover:border-white/20 dark:hover:text-stone-200 dark:focus-visible:border-[#93B0FF] dark:focus-visible:shadow-[0_10px_20px_-14px_rgba(147,176,255,0.5)]"
         >
           <svg
             viewBox="0 0 256 256"
@@ -421,7 +421,7 @@ function LightboxToolbar({
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="grid size-8 place-items-center rounded-[9px] border border-stone-200 bg-white text-stone-500 outline-none transition-[border-color,color,box-shadow] duration-150 hover:border-stone-300 hover:text-stone-700 focus-visible:border-[#4568FF] focus-visible:shadow-[0_1px_2px_rgba(28,25,23,0.08),0_10px_20px_-14px_rgba(69,104,255,0.6)] dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:text-stone-400 dark:focus-visible:border-[#93B0FF] dark:focus-visible:shadow-[0_10px_20px_-14px_rgba(147,176,255,0.5)] dark:hover:border-white/20 dark:hover:text-stone-200"
+          className="grid size-8 place-items-center rounded-[9px] border border-stone-200 bg-white text-stone-500 transition-[border-color,color,box-shadow] duration-150 outline-none hover:border-stone-300 hover:text-stone-700 focus-visible:border-[#4568FF] focus-visible:shadow-[0_1px_2px_rgba(28,25,23,0.08),0_10px_20px_-14px_rgba(69,104,255,0.6)] dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:text-stone-400 dark:hover:border-white/20 dark:hover:text-stone-200 dark:focus-visible:border-[#93B0FF] dark:focus-visible:shadow-[0_10px_20px_-14px_rgba(147,176,255,0.5)]"
         >
           <svg
             viewBox="0 0 256 256"
@@ -608,7 +608,7 @@ function Stage({
         aria-labelledby={titleId}
         aria-describedby={hintId}
         style={{ touchAction: 'none', WebkitTouchCallout: 'none' }}
-        className={`absolute inset-0 select-none overflow-hidden outline-none focus-visible:shadow-[inset_0_0_0_1px_#93B0FF] ${
+        className={`absolute inset-0 overflow-hidden outline-none select-none focus-visible:shadow-[inset_0_0_0_1px_#93B0FF] ${
           zoomed ? 'cursor-grab active:cursor-grabbing' : 'cursor-zoom-in'
         }`}
         {...bind}

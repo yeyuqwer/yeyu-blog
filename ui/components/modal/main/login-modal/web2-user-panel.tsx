@@ -24,8 +24,8 @@ export const Web2UserPanel = () => {
             unoptimized
           />
         ) : null}
-        <div className="space-y-1 text-wrap text-center">
-          <p className="font-medium text-lg">{userName}</p>
+        <div className="space-y-1 text-center text-wrap">
+          <p className="text-lg font-medium">{userName}</p>
           {userEmail != null && userEmail.length > 0 ? (
             <p className="text-muted-foreground text-sm">{userEmail}</p>
           ) : null}

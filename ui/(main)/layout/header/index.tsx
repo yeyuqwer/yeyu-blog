@@ -33,7 +33,7 @@ export default function Header() {
     <motion.header
       aria-hidden={!isHeaderVisible}
       className={cn(
-        'sticky top-5 z-20 mx-auto mt-5 mb-4 h-10 w-[calc(100%-2rem)] max-w-[550px] overflow-hidden rounded-full bg-black font-header text-white shadow-[0_4px_10px_rgba(0,0,0,0.1)] transition-[background-color,box-shadow] duration-300 sm:h-12 dark:bg-white/15 dark:shadow-[0_10px_28px_rgba(0,0,0,0.24)] dark:backdrop-blur-xl',
+        'font-header sticky top-5 z-20 mx-auto mt-5 mb-4 h-10 w-[calc(100%-2rem)] max-w-[550px] overflow-hidden rounded-full bg-black text-white shadow-[0_4px_10px_rgba(0,0,0,0.1)] transition-[background-color,box-shadow] duration-300 sm:h-12 dark:bg-white/15 dark:shadow-[0_10px_28px_rgba(0,0,0,0.24)] dark:backdrop-blur-xl',
         !isHeaderVisible && 'pointer-events-none',
       )}
       initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.98, y: -16 }}
@@ -61,7 +61,7 @@ export default function Header() {
         <WaveLink
           href={languagePathPrefix}
           withWaveUnderline={false}
-          className="flex h-full shrink-0 items-center whitespace-nowrap pl-4 leading-none sm:pl-5"
+          className="flex h-full shrink-0 items-center pl-4 leading-none whitespace-nowrap sm:pl-5"
           aria-label={translations.header.homeLabel}
           onClick={() => setWordmarkAnimationKey(animationKey => animationKey + 1)}
         >
@@ -88,7 +88,7 @@ export default function Header() {
                 }
                 onButtonClick={isLanguageRoute ? toggleLanguage : undefined}
                 className={cn(
-                  'flex h-full items-center justify-center text-xs leading-none transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-[-4px] sm:text-lg',
+                  'flex h-full items-center justify-center text-xs leading-none transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-white sm:text-lg',
                   waveLinkTriggerClassName,
                   route.type === 'button' && 'cursor-pointer',
                   isActive ? 'font-bold text-white' : 'font-normal text-white/90 hover:text-white',
@@ -119,7 +119,7 @@ export default function Header() {
                   )}
                   <span
                     className={cn(
-                      'grid h-[1.25em] overflow-hidden whitespace-nowrap leading-[1.25]',
+                      'grid h-[1.25em] overflow-hidden leading-[1.25] whitespace-nowrap',
                       isLanguageRoute && 'w-5 text-center',
                     )}
                   >

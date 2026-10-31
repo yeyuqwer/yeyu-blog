@@ -39,7 +39,7 @@ export const columns: ColumnDef<typeof dataTableFeatures, BlogListItem>[] = [
         <div className="flex max-w-[min(22rem,32vw)] flex-wrap gap-1 overflow-hidden">
           {tags.map(tag => (
             <span
-              className="inline-block min-w-0 max-w-36 truncate align-bottom"
+              className="inline-block max-w-36 min-w-0 truncate align-bottom"
               title={tag.tagName}
               key={tag.id}
             >

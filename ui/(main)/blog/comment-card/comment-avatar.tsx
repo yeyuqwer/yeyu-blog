@@ -14,7 +14,7 @@ function CommentProviderIcon({ provider }: { provider: 'github' | 'google' }) {
 
   return (
     <span
-      className="absolute -right-0.5 -bottom-0.5 flex size-4 items-center justify-center rounded-full border border-black/15 bg-theme-background text-black shadow-sm dark:border-white/20 dark:text-white"
+      className="bg-theme-background absolute -right-0.5 -bottom-0.5 flex size-4 items-center justify-center rounded-full border border-black/15 text-black shadow-sm dark:border-white/20 dark:text-white"
       title={title}
     >
       <Icon
@@ -51,7 +51,7 @@ function CommentAvatarFrame({
         href={`/api/github-user/${encodeURIComponent(githubAccountId)}`}
         target="_blank"
         rel="noreferrer"
-        className="relative inline-flex size-10 shrink-0 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-black/45 focus-visible:ring-offset-2 focus-visible:ring-offset-theme-background dark:focus-visible:ring-white/45"
+        className="focus-visible:ring-offset-theme-background relative inline-flex size-10 shrink-0 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-black/45 focus-visible:ring-offset-2 dark:focus-visible:ring-white/45"
         aria-label={translations.comments.openGithubProfile(displayName)}
       >
         {avatarContent}
@@ -76,7 +76,7 @@ export function CommentAuthorAvatar({ comment }: { comment: CommentAuthorLike })
       alt={displayName}
       width={40}
       height={40}
-      className="size-10 rounded-full border border-black/15 bg-theme-surface object-cover dark:border-white/15"
+      className="bg-theme-surface size-10 rounded-full border border-black/15 object-cover dark:border-white/15"
     />
   ) : commentAvatar != null ? (
     <Image
@@ -84,12 +84,12 @@ export function CommentAuthorAvatar({ comment }: { comment: CommentAuthorLike })
       alt={displayName}
       width={40}
       height={40}
-      className="size-10 rounded-full border border-black/15 bg-theme-surface object-cover dark:border-white/15"
+      className="bg-theme-surface size-10 rounded-full border border-black/15 object-cover dark:border-white/15"
     />
   ) : (
     <AccountIcon
       account={address}
-      className="size-10 rounded-full border border-black/15 bg-theme-surface dark:border-white/15"
+      className="bg-theme-surface size-10 rounded-full border border-black/15 dark:border-white/15"
     />
   )
 

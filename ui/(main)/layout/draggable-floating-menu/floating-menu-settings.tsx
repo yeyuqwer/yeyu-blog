@@ -39,7 +39,7 @@ export default function FloatingMenuSettings() {
   }
 
   return (
-    <div className="divide-y divide-border/60">
+    <div className="divide-border/60 divide-y">
       <div className="flex min-h-12 items-center justify-between gap-4 px-2 py-2">
         <div className="flex min-w-0 items-center gap-2.5">
           {isPlaying ? (
@@ -64,11 +64,11 @@ export default function FloatingMenuSettings() {
         <div
           role="group"
           aria-label={translations.common.appearance}
-          className="relative grid grid-cols-2 rounded-full bg-foreground/6 p-0.5 dark:bg-white/10"
+          className="bg-foreground/6 relative grid grid-cols-2 rounded-full p-0.5 dark:bg-white/10"
         >
           <motion.span
             aria-hidden
-            className="absolute top-0.5 right-1/2 bottom-0.5 left-0.5 rounded-full bg-background shadow-sm dark:bg-white/18 dark:shadow-[0_1px_4px_rgba(0,0,0,0.35)]"
+            className="bg-background absolute top-0.5 right-1/2 bottom-0.5 left-0.5 rounded-full shadow-sm dark:bg-white/18 dark:shadow-[0_1px_4px_rgba(0,0,0,0.35)]"
             initial={false}
             animate={{ x: resolvedTheme === 'dark' ? '100%' : '0%' }}
             transition={{ type: 'spring', stiffness: 420, damping: 34, mass: 0.7 }}
@@ -78,7 +78,7 @@ export default function FloatingMenuSettings() {
             aria-pressed={resolvedTheme === 'light'}
             aria-label={translations.common.switchToLightTheme}
             className={cn(
-              'relative z-10 flex h-7 cursor-pointer items-center gap-1.5 rounded-full px-2.5 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-theme-ring',
+              'focus-visible:outline-theme-ring relative z-10 flex h-7 cursor-pointer items-center gap-1.5 rounded-full px-2.5 text-xs transition-colors focus-visible:outline-2',
               resolvedTheme === 'light'
                 ? 'text-foreground dark:text-white'
                 : 'text-foreground/50 hover:text-foreground/80 dark:text-zinc-400 dark:hover:text-white',
@@ -93,7 +93,7 @@ export default function FloatingMenuSettings() {
             aria-pressed={resolvedTheme === 'dark'}
             aria-label={translations.common.switchToDarkTheme}
             className={cn(
-              'relative z-10 flex h-7 cursor-pointer items-center gap-1.5 rounded-full px-2.5 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-theme-ring',
+              'focus-visible:outline-theme-ring relative z-10 flex h-7 cursor-pointer items-center gap-1.5 rounded-full px-2.5 text-xs transition-colors focus-visible:outline-2',
               resolvedTheme === 'dark'
                 ? 'text-foreground dark:text-white'
                 : 'text-foreground/50 hover:text-foreground/80 dark:text-zinc-400 dark:hover:text-white',

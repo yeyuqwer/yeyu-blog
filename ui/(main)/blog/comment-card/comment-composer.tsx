@@ -30,7 +30,7 @@ export function CommentComposer({
   return (
     <div className="min-w-0">
       {title != null ? (
-        <div className="mb-2 flex items-center gap-2 font-medium text-black/70 text-sm dark:text-white/70">
+        <div className="mb-2 flex items-center gap-2 text-sm font-medium text-black/70 dark:text-white/70">
           <CornerUpLeft className="size-3.5 text-black/70 dark:text-white/70" />
           <span>{title}</span>
         </div>
@@ -41,14 +41,14 @@ export function CommentComposer({
         onChange={event => {
           onChange(event.target.value)
         }}
-        className="min-h-24 resize-none rounded-lg border-black/20 bg-transparent px-3.5 py-3 text-black text-sm shadow-none placeholder:text-black/45 focus-visible:border-black/45 focus-visible:ring-black/20 dark:border-white/20 dark:bg-transparent dark:text-white dark:focus-visible:border-white/55 dark:focus-visible:ring-white/25 dark:placeholder:text-white/45"
+        className="min-h-24 resize-none rounded-lg border-black/20 bg-transparent px-3.5 py-3 text-sm text-black shadow-none placeholder:text-black/45 focus-visible:border-black/45 focus-visible:ring-black/20 dark:border-white/20 dark:bg-transparent dark:text-white dark:placeholder:text-white/45 dark:focus-visible:border-white/55 dark:focus-visible:ring-white/25"
       />
       <div className="mt-2 flex items-center justify-end gap-3">
         <span
           className={
             inputExceeded
-              ? 'shrink-0 font-mono text-red-500 text-xs dark:text-red-400'
-              : 'shrink-0 font-mono text-black/55 text-xs dark:text-white/55'
+              ? 'shrink-0 font-mono text-xs text-red-500 dark:text-red-400'
+              : 'shrink-0 font-mono text-xs text-black/55 dark:text-white/55'
           }
         >
           {trimmedContent.length}/{maxCommentLength}
@@ -69,7 +69,7 @@ export function CommentComposer({
           ) : null}
           <Button
             type="button"
-            className="h-8 shrink-0 rounded-lg bg-black px-4 text-white shadow-[0_6px_16px_rgba(0,0,0,0.16)] hover:bg-zinc-800 hover:text-white focus-visible:ring-black/25 disabled:cursor-not-allowed disabled:bg-black disabled:text-white disabled:opacity-45 dark:bg-white dark:text-black dark:shadow-[0_6px_16px_rgba(0,0,0,0.28)] dark:disabled:bg-white dark:disabled:text-black dark:focus-visible:ring-white/30 dark:hover:bg-zinc-200 dark:hover:text-black"
+            className="h-8 shrink-0 rounded-lg bg-black px-4 text-white shadow-[0_6px_16px_rgba(0,0,0,0.16)] hover:bg-zinc-800 hover:text-white focus-visible:ring-black/25 disabled:cursor-not-allowed disabled:bg-black disabled:text-white disabled:opacity-45 dark:bg-white dark:text-black dark:shadow-[0_6px_16px_rgba(0,0,0,0.28)] dark:hover:bg-zinc-200 dark:hover:text-black dark:focus-visible:ring-white/30 dark:disabled:bg-white dark:disabled:text-black"
             disabled={trimmedContent.length === 0 || inputExceeded || isSubmitting}
             onClick={onSubmit}
           >

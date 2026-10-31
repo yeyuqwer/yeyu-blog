@@ -26,10 +26,10 @@ export function FriendLinkListItem({
   onUpdateState: (id: number, nextState: FriendLinkState) => void
 }) {
   return (
-    <li className="rounded-sm border bg-background p-3 shadow-xs">
+    <li className="bg-background rounded-sm border p-3 shadow-xs">
       <section className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 gap-3">
-          <span className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-full border bg-card">
+          <span className="bg-card grid size-14 shrink-0 place-items-center overflow-hidden rounded-full border">
             <Image
               src={friendLink.avatarUrl}
               alt={friendLink.name}
@@ -41,18 +41,18 @@ export function FriendLinkListItem({
           </span>
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="font-medium text-sm">{friendLink.name}</h3>
+              <h3 className="text-sm font-medium">{friendLink.name}</h3>
               <Badge variant="outline">#{friendLink.id}</Badge>
               <Badge variant={friendLinkStateBadgeVariantMap[friendLink.state]}>
                 {friendLinkStateLabelMap[friendLink.state]}
               </Badge>
             </div>
-            <p className="mt-2 whitespace-pre-wrap text-sm leading-6">{friendLink.description}</p>
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-muted-foreground text-xs">
+            <p className="mt-2 text-sm leading-6 whitespace-pre-wrap">{friendLink.description}</p>
+            <div className="text-muted-foreground mt-2 flex flex-wrap items-center gap-2 text-xs">
               {friendLink.email != null ? (
                 <a
                   href={`mailto:${friendLink.email}`}
-                  className="inline-flex min-w-0 items-center gap-1 text-foreground underline underline-offset-4"
+                  className="text-foreground inline-flex min-w-0 items-center gap-1 underline underline-offset-4"
                 >
                   <Mail className="size-3 shrink-0" />
                   <span className="truncate">{friendLink.email}</span>
@@ -62,13 +62,13 @@ export function FriendLinkListItem({
                 href={friendLink.siteUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex min-w-0 items-center gap-1 text-foreground underline underline-offset-4"
+                className="text-foreground inline-flex min-w-0 items-center gap-1 underline underline-offset-4"
               >
                 <span className="truncate">{friendLink.siteUrl}</span>
                 <ExternalLink className="size-3 shrink-0" />
               </Link>
             </div>
-            <time className="mt-1 block text-muted-foreground text-xs">
+            <time className="text-muted-foreground mt-1 block text-xs">
               {prettyDateTime(Date.parse(friendLink.createdAt))}
             </time>
           </div>

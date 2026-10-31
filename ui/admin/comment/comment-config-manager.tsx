@@ -38,14 +38,14 @@ function CommentConfigSection({
 
   return (
     <section>
-      <header className="border-b bg-muted/30 px-4 py-2">
-        <h3 className="font-medium text-xs">{title}</h3>
+      <header className="bg-muted/30 border-b px-4 py-2">
+        <h3 className="text-xs font-medium">{title}</h3>
       </header>
       <div className="divide-y">
         <section className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
-            <h4 className="font-medium text-sm">GitHub 登录用户自动通过</h4>
-            <p className="mt-1 text-muted-foreground text-xs">{emailDescription}</p>
+            <h4 className="text-sm font-medium">GitHub 登录用户自动通过</h4>
+            <p className="text-muted-foreground mt-1 text-xs">{emailDescription}</p>
           </div>
           <Switch
             className="shrink-0"
@@ -63,8 +63,8 @@ function CommentConfigSection({
 
         <section className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
-            <h4 className="font-medium text-sm">钱包登录用户自动通过</h4>
-            <p className="mt-1 text-muted-foreground text-xs">{walletDescription}</p>
+            <h4 className="text-sm font-medium">钱包登录用户自动通过</h4>
+            <p className="text-muted-foreground mt-1 text-xs">{walletDescription}</p>
           </div>
           <Switch
             className="shrink-0"
@@ -109,11 +109,11 @@ export const CommentConfigManager: FC<ComponentProps<'main'>> = () => {
   }
 
   return (
-    <main className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden rounded-sm border bg-background">
+    <main className="bg-background flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden rounded-sm border">
       <header className="border-b px-4 py-3">
         <div className="min-w-0">
-          <h2 className="font-medium text-sm">评论配置</h2>
-          <p className="mt-1 text-muted-foreground text-xs">
+          <h2 className="text-sm font-medium">评论配置</h2>
+          <p className="text-muted-foreground mt-1 text-xs">
             控制文章评论在不同登录方式下是否自动通过。
           </p>
         </div>

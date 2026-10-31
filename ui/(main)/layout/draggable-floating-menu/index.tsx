@@ -95,7 +95,7 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({
               isAnimating={isDragging}
               aria-hidden
             />
-            <span className="absolute top-0 left-0 size-full animate-ye-ping-one-dot-one rounded-full ring-2 ring-theme-ring ring-offset-1 ring-offset-background dark:ring-white/65 dark:ring-offset-zinc-950" />
+            <span className="animate-ye-ping-one-dot-one ring-theme-ring ring-offset-background absolute top-0 left-0 size-full rounded-full ring-2 ring-offset-1 dark:ring-white/65 dark:ring-offset-zinc-950" />
           </PopoverTrigger>
         </motion.div>
 
@@ -103,14 +103,14 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({
           side="top"
           sideOffset={12}
           animation="fade"
-          className="max-h-[min(38rem,calc(100dvh-7rem))] w-[min(19rem,calc(100vw-2rem))] overflow-y-auto rounded-lg border-border/60 bg-background p-2 shadow-lg dark:border-white/12 dark:bg-zinc-950 dark:shadow-[0_20px_48px_rgba(0,0,0,0.38)]"
+          className="border-border/60 bg-background max-h-[min(38rem,calc(100dvh-7rem))] w-[min(19rem,calc(100vw-2rem))] overflow-y-auto rounded-lg p-2 shadow-lg dark:border-white/12 dark:bg-zinc-950 dark:shadow-[0_20px_48px_rgba(0,0,0,0.38)]"
         >
           <div className="flex h-9 items-center justify-between px-2">
-            <h2 className="font-medium text-sm">{translations.common.quickSettings}</h2>
+            <h2 className="text-sm font-medium">{translations.common.quickSettings}</h2>
             <button
               type="button"
               aria-label={translations.common.closeQuickMenu}
-              className="flex size-7 cursor-pointer items-center justify-center rounded-full text-foreground/50 transition-colors hover:bg-foreground/8 hover:text-foreground focus-visible:outline-2 focus-visible:outline-theme-ring"
+              className="text-foreground/50 hover:bg-foreground/8 hover:text-foreground focus-visible:outline-theme-ring flex size-7 cursor-pointer items-center justify-center rounded-full transition-colors focus-visible:outline-2"
               onClick={() => handleOpenChange(false)}
             >
               <X aria-hidden className="size-4" />
