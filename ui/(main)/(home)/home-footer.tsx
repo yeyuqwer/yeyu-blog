@@ -27,7 +27,7 @@ export default function HomeFooter() {
 
   return (
     <footer className="mx-auto mt-auto flex w-full max-w-[550px] items-center justify-between gap-4 px-4 pb-1 font-serif text-sm md:px-0">
-      <HomeTextMotion className="shrink-0">
+      <HomeTextMotion className="shrink-0" delay={220}>
         <p className="leading-5">
           © {new Date().getFullYear()} {translations.home.copyrightName}
         </p>
@@ -37,14 +37,17 @@ export default function HomeFooter() {
         {socialLinks.map(({ Icon, name, url }, index) => (
           <a
             aria-label={name}
-            className="motion-safe:animate-entry-icon size-5 text-zinc-700 transition-colors hover:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black dark:text-zinc-300 dark:hover:text-white dark:focus-visible:outline-white"
+            className="group/social-icon motion-safe:animate-entry-icon size-5 text-zinc-700 transition-colors duration-200 hover:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black motion-reduce:transition-none dark:text-zinc-300 dark:hover:text-white dark:focus-visible:outline-white"
             href={url}
             key={url}
             target="_blank"
             rel="noreferrer"
-            style={{ animationDelay: `${index * 70}ms` }}
+            style={{ animationDelay: `${220 + index * 40}ms` }}
           >
-            <Icon aria-hidden="true" className="size-full" />
+            <Icon
+              aria-hidden="true"
+              className="size-full brightness-0 transition-[filter] duration-200 group-hover/social-icon:brightness-100 group-focus-visible/social-icon:brightness-100 motion-reduce:transition-none dark:invert dark:group-hover/social-icon:invert-0 dark:group-focus-visible/social-icon:invert-0"
+            />
           </a>
         ))}
       </nav>

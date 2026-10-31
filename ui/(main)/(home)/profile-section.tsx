@@ -15,7 +15,7 @@ export default function ProfileSection() {
         <Image
           src={avatar}
           alt={translations.home.avatarAlt}
-          className="size-full object-cover"
+          className="size-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover/avatar:scale-[1.025] motion-reduce:transition-none"
           sizes="180px"
           placeholder="blur"
           preload
@@ -25,10 +25,10 @@ export default function ProfileSection() {
       </HomeAvatarMotion>
 
       <div className="flex flex-col items-center text-center md:translate-y-[5px] md:items-start md:text-left">
-        <HomeTextMotion delay={80}>
+        <HomeTextMotion delay={40}>
           <h1 className="text-xl leading-8 font-bold sm:text-2xl">{translations.home.greeting}</h1>
         </HomeTextMotion>
-        <HomeTextMotion delay={160}>
+        <HomeTextMotion delay={80}>
           <p className="mt-[22px] text-[16px] leading-8 font-bold">{translations.home.role}</p>
         </HomeTextMotion>
         <TechStack />

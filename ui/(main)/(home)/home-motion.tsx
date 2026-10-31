@@ -13,22 +13,15 @@ export function HomeTextMotion({
   className?: string
   delay?: number
 }) {
-  const { language } = useLanguage()
+  const { language, isLanguageChanging } = useLanguage()
 
   return (
     <div
+      key={language}
       className={cn('motion-safe:animate-entry-text', className)}
-      style={{ animationDelay: `${delay}ms` }}
+      style={{ animationDelay: `${isLanguageChanging ? 0 : delay}ms` }}
     >
-      <div className="overflow-hidden">
-        <div
-          key={language}
-          className="motion-safe:animate-language-content [--site-language-offset:-12px] data-[language=en]:[--site-language-offset:12px]"
-          data-language={language}
-        >
-          {children}
-        </div>
-      </div>
+      {children}
     </div>
   )
 }
@@ -40,5 +33,9 @@ export function HomeAvatarMotion({
   children: ReactNode
   className?: string
 }) {
-  return <figure className={cn('motion-safe:animate-entry-avatar', className)}>{children}</figure>
+  return (
+    <figure className={cn('group/avatar motion-safe:animate-entry-avatar', className)}>
+      {children}
+    </figure>
+  )
 }

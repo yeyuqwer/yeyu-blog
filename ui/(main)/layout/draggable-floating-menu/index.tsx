@@ -1,17 +1,23 @@
 'use client'
 
-import { X } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { type HTMLMotionProps, motion } from 'motion/react'
-import dynamic from 'next/dynamic'
-import { type FC, useRef, useState, useSyncExternalStore } from 'react'
+import {
+  type KeyboardEvent as ReactKeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from 'react'
 import { createPortal } from 'react-dom'
 import { cn } from '@/lib/utils/common/shadcn'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
 import FluidOrb from '@/ui/shadcn/fluid-orb'
-import { Popover, PopoverContent, PopoverTrigger } from '@/ui/shadcn/popover'
 import { FloatingMenuActionButton } from './floating-menu-action-button'
-
-const FloatingMenuSettings = dynamic(() => import('./floating-menu-settings'))
+import RadialMenuActions, { radialOffsets } from './radial-menu-actions'
 
 const subscribePortal = (onStoreChange: () => void) => {
   const frame = requestAnimationFrame(onStoreChange)
@@ -21,26 +27,167 @@ const subscribePortal = (onStoreChange: () => void) => {
 const getPortalSnapshot = () => document.body
 const getServerPortalSnapshot = () => null
 
-// TODO: 固定底部时吸附效果
-// TODO: 类似 ipad cursor ?
-export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({
+export function DraggableFloatingMenu({
   className,
   onDragEnd,
   onDragStart,
   ...props
-}) => {
+}: HTMLMotionProps<'div'>) {
   const translations = useTranslations()
   const [isOpen, setIsOpen] = useState(false)
   const [hasOpened, setHasOpened] = useState(false)
+  const [isSkyOpen, setIsSkyOpen] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
+  const [aim, setAim] = useState<number | null>(null)
   const [orbAnimationPulse, setOrbAnimationPulse] = useState(0)
   const constraintsRef = useRef<HTMLDivElement>(null)
+  const rootRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+  const aimRef = useRef<number | null>(null)
+  const draggedRef = useRef(false)
+  const ignoreClickRef = useRef(false)
+  const focusOnOpenRef = useRef(false)
+  const gestureRef = useRef<{ pointerId: number; x: number; y: number; moved: boolean } | null>(
+    null,
+  )
+  const menuId = useId()
   const portal = useSyncExternalStore(subscribePortal, getPortalSnapshot, getServerPortalSnapshot)
 
-  const handleOpenChange = (nextIsOpen: boolean) => {
+  const handleAimChange = useCallback((nextAim: number | null) => {
+    aimRef.current = nextAim
+    setAim(nextAim)
+  }, [])
+
+  const handleOpenChange = useCallback((nextIsOpen: boolean) => {
     setIsOpen(nextIsOpen)
     if (nextIsOpen) setHasOpened(true)
+    if (!nextIsOpen) {
+      setIsSkyOpen(false)
+      setAim(null)
+      aimRef.current = null
+      gestureRef.current = null
+    }
     setOrbAnimationPulse(value => value + 1)
+  }, [])
+
+  const handleSelect = () => {
+    handleOpenChange(false)
+    triggerRef.current?.focus({ preventScroll: true })
+  }
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    if (focusOnOpenRef.current) {
+      focusOnOpenRef.current = false
+      rootRef.current?.querySelector<HTMLButtonElement>('[data-radial-option]')?.focus()
+    }
+
+    const handleOutsidePress = (event: PointerEvent) => {
+      if (!(event.target instanceof Node)) return
+      if (rootRef.current?.contains(event.target) || panelRef.current?.contains(event.target)) {
+        return
+      }
+      handleOpenChange(false)
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape' || isSkyOpen) return
+      event.preventDefault()
+      handleOpenChange(false)
+      triggerRef.current?.focus({ preventScroll: true })
+    }
+
+    document.addEventListener('pointerdown', handleOutsidePress)
+    document.addEventListener('keydown', handleEscape)
+    return () => {
+      document.removeEventListener('pointerdown', handleOutsidePress)
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [handleOpenChange, isOpen, isSkyOpen])
+
+  const handleKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (
+      isSkyOpen ||
+      !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key)
+    ) {
+      return
+    }
+    event.preventDefault()
+
+    if (!isOpen) {
+      focusOnOpenRef.current = true
+      handleOpenChange(true)
+      return
+    }
+
+    const options = rootRef.current?.querySelectorAll<HTMLButtonElement>('[data-radial-option]')
+    if (!options?.length) return
+    const currentIndex = Array.from(options).findIndex(option => option === document.activeElement)
+    let nextIndex = 0
+    if (event.key === 'End') {
+      nextIndex = options.length - 1
+    } else if (event.key !== 'Home') {
+      const direction = event.key === 'ArrowLeft' || event.key === 'ArrowUp' ? -1 : 1
+      nextIndex = (currentIndex + direction + options.length) % options.length
+    }
+    options[nextIndex]?.focus()
+  }
+
+  const handlePointerDown = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (event.button !== 0) return
+    draggedRef.current = false
+    ignoreClickRef.current = false
+    if (!isOpen || isSkyOpen) return
+
+    gestureRef.current = {
+      pointerId: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+      moved: false,
+    }
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+
+  const handlePointerMove = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const gesture = gestureRef.current
+    if (!gesture || gesture.pointerId !== event.pointerId) return
+    const dx = event.clientX - gesture.x
+    const dy = event.clientY - gesture.y
+    if (Math.hypot(dx, dy) < 14) {
+      handleAimChange(null)
+      return
+    }
+    gesture.moved = true
+    if (dy > 24) {
+      handleAimChange(null)
+      return
+    }
+
+    const distances = radialOffsets.map(offset => Math.hypot(dx - offset.x, dy - offset.y))
+    handleAimChange(distances.indexOf(Math.min(...distances)))
+  }
+
+  const handlePointerUp = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const gesture = gestureRef.current
+    if (!gesture || gesture.pointerId !== event.pointerId) return
+    gestureRef.current = null
+    if (!gesture.moved) return
+
+    ignoreClickRef.current = true
+    if (aimRef.current !== null) {
+      const options = rootRef.current?.querySelectorAll<HTMLButtonElement>('[data-radial-option]')
+      options?.[aimRef.current]?.click()
+    }
+    handleAimChange(null)
+  }
+
+  const cancelGesture = () => {
+    if (!gestureRef.current) return
+    gestureRef.current = null
+    ignoreClickRef.current = true
+    handleAimChange(null)
   }
 
   if (portal == null) return null
@@ -49,77 +196,94 @@ export const DraggableFloatingMenu: FC<HTMLMotionProps<'div'>> = ({
     <>
       <div
         ref={constraintsRef}
-        className="pointer-events-none fixed top-20 right-4 bottom-4 left-4 sm:right-5 sm:left-5"
+        className="pointer-events-none fixed top-40 right-[108px] bottom-14 left-[108px]"
       />
-      <Popover open={isOpen} onOpenChange={handleOpenChange}>
-        <motion.div
-          drag={!isOpen}
-          dragConstraints={constraintsRef}
-          dragElastic={0.08}
-          dragMomentum={false}
-          dragTransition={{ bounceStiffness: 500, bounceDamping: 30 }}
-          whileDrag={{ scale: 1.04 }}
-          initial={{ scale: 0.2, y: 100, opacity: 0 }}
-          animate={{ scale: 1, y: 0, opacity: 1 }}
-          transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-          onDragStart={(event, info) => {
-            setIsDragging(true)
-            onDragStart?.(event, info)
-          }}
-          onDragEnd={(event, info) => {
-            setIsDragging(false)
-            setOrbAnimationPulse(value => value + 1)
-            onDragEnd?.(event, info)
+      <motion.div
+        ref={rootRef}
+        drag={!isOpen}
+        dragConstraints={constraintsRef}
+        dragElastic={0}
+        dragMomentum={false}
+        whileDrag={{ scale: 1.02 }}
+        onDragStart={(event, info) => {
+          draggedRef.current = true
+          setIsDragging(true)
+          onDragStart?.(event, info)
+        }}
+        onDragEnd={(event, info) => {
+          setIsDragging(false)
+          setOrbAnimationPulse(value => value + 1)
+          onDragEnd?.(event, info)
+        }}
+        onKeyDown={handleKeyDown}
+        className={cn(
+          'fixed bottom-[100px] left-1/2 z-100 -ml-6 size-12 touch-none select-none',
+          className,
+        )}
+        {...props}
+      >
+        {hasOpened && (
+          <RadialMenuActions
+            id={menuId}
+            isOpen={isOpen}
+            aim={aim}
+            isSkyOpen={isSkyOpen}
+            panelRef={panelRef}
+            onAimChange={handleAimChange}
+            onSkyOpenChange={setIsSkyOpen}
+            onSelect={handleSelect}
+          />
+        )}
+        <FloatingMenuActionButton
+          ref={triggerRef}
+          aria-expanded={isOpen}
+          aria-controls={hasOpened ? menuId : undefined}
+          aria-label={
+            isOpen ? translations.common.closeQuickMenu : translations.common.openQuickMenu
+          }
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={cancelGesture}
+          onLostPointerCapture={cancelGesture}
+          onClick={event => {
+            if (ignoreClickRef.current || (draggedRef.current && event.detail !== 0)) {
+              ignoreClickRef.current = false
+              return
+            }
+            focusOnOpenRef.current = event.detail === 0 && !isOpen
+            handleOpenChange(!isOpen)
           }}
           className={cn(
-            'fixed bottom-[100px] left-1/2 z-100 -ml-6 size-12 touch-none select-none',
-            !isOpen && 'cursor-grab active:cursor-grabbing',
-            className,
+            'motion-safe:animate-entry-icon relative z-10 size-12 overflow-hidden border-white/70 p-0 shadow-[0_8px_20px_color-mix(in_srgb,var(--theme-accent)_25%,transparent)] dark:border-white/30',
+            isOpen ? 'cursor-pointer' : 'cursor-grab active:cursor-grabbing',
           )}
-          {...props}
         >
-          <PopoverTrigger
-            render={
-              <FloatingMenuActionButton
-                aria-label={
-                  isOpen ? translations.common.closeQuickMenu : translations.common.openQuickMenu
-                }
-                className="size-12 cursor-pointer overflow-hidden border-white/70 p-0 shadow-[0_8px_20px_color-mix(in_srgb,var(--theme-accent)_35%,transparent)] dark:border-white/30 dark:shadow-[0_0_16px_rgba(255,255,255,0.14),0_10px_24px_rgba(0,0,0,0.42)]"
-              />
-            }
+          <FluidOrb
+            size={48}
+            color="var(--theme-accent)"
+            maxDpr={1.5}
+            animationDuration={800}
+            animationPulse={orbAnimationPulse}
+            isAnimating={isDragging}
+            aria-hidden
+          />
+          <span
+            aria-hidden
+            className={cn(
+              'bg-theme-accent pointer-events-none absolute inset-0 grid place-items-center rounded-full text-white transition-opacity duration-200 motion-reduce:transition-none',
+              isOpen ? 'opacity-100' : 'opacity-0',
+            )}
           >
-            <FluidOrb
-              size={48}
-              color="var(--theme-accent)"
-              animationPulse={orbAnimationPulse}
-              isAnimating={isDragging}
-              aria-hidden
+            <Plus
+              className={cn(
+                'size-6 transition-transform duration-420 ease-[cubic-bezier(0.24,1.34,0.38,1)] motion-reduce:transition-none',
+                isOpen && 'rotate-135',
+              )}
             />
-            <span className="animate-ye-ping-one-dot-one ring-theme-ring ring-offset-background absolute top-0 left-0 size-full rounded-full ring-2 ring-offset-1 dark:ring-white/65 dark:ring-offset-zinc-950" />
-          </PopoverTrigger>
-        </motion.div>
-
-        <PopoverContent
-          side="top"
-          sideOffset={12}
-          animation="fade"
-          className="border-border/60 bg-background max-h-[min(38rem,calc(100dvh-7rem))] w-[min(19rem,calc(100vw-2rem))] overflow-y-auto rounded-lg p-2 shadow-lg dark:border-white/12 dark:bg-zinc-950 dark:shadow-[0_20px_48px_rgba(0,0,0,0.38)]"
-        >
-          <div className="flex h-9 items-center justify-between px-2">
-            <h2 className="text-sm font-medium">{translations.common.quickSettings}</h2>
-            <button
-              type="button"
-              aria-label={translations.common.closeQuickMenu}
-              className="text-foreground/50 hover:bg-foreground/8 hover:text-foreground focus-visible:outline-theme-ring flex size-7 cursor-pointer items-center justify-center rounded-full transition-colors focus-visible:outline-2"
-              onClick={() => handleOpenChange(false)}
-            >
-              <X aria-hidden className="size-4" />
-            </button>
-          </div>
-
-          {hasOpened && <FloatingMenuSettings />}
-        </PopoverContent>
-      </Popover>
+          </span>
+        </FloatingMenuActionButton>
+      </motion.div>
     </>,
     portal,
   )

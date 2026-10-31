@@ -29,7 +29,7 @@ export function XIcon(props: ComponentProps<'svg'>) {
       height={24}
       viewBox="0 0 24 24"
       fill="none"
-      stroke="currentColor"
+      stroke="#1da1f2"
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -50,7 +50,7 @@ export function GmailIcon(props: ComponentProps<'svg'>) {
       height={24}
       viewBox="0 0 24 24"
       fill="none"
-      stroke="currentColor"
+      stroke="#ea4335"
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"

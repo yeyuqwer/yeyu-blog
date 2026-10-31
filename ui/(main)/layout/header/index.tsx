@@ -3,7 +3,9 @@
 import { Languages } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
+import { languages } from '@/lib/i18n/config'
 import { getRoutePathname } from '@/lib/i18n/get-route-pathname'
+import { messages } from '@/lib/i18n/messages'
 import { cn } from '@/lib/utils/common/shadcn'
 import { HandwritingWordmark } from '@/ui/(main)/layout/header/handwriting-wordmark'
 import { useLanguage, useTranslations } from '@/ui/components/provider/main/language-provider'
@@ -29,7 +31,7 @@ export default function Header() {
     <header
       aria-hidden={!isHeaderVisible}
       className={cn(
-        'font-header sticky top-5 z-20 mx-auto mt-5 mb-4 h-10 w-[calc(100%-2rem)] max-w-[550px] overflow-hidden rounded-full bg-black text-white shadow-[0_4px_10px_rgba(0,0,0,0.1)] transition-[opacity,translate,background-color,box-shadow] duration-300 data-[hidden]:-translate-y-[140%] data-[hidden]:opacity-0 motion-reduce:transition-none sm:h-12 dark:bg-white/15 dark:shadow-[0_10px_28px_rgba(0,0,0,0.24)] dark:backdrop-blur-xl',
+        'font-header sticky top-5 z-20 mx-auto mt-5 mb-4 h-10 w-[calc(100%-2rem)] max-w-[550px] overflow-hidden rounded-full bg-black text-white shadow-[0_4px_10px_rgba(0,0,0,0.1)] transition-[opacity,translate,background-color,box-shadow] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] data-[hidden]:-translate-y-[140%] data-[hidden]:opacity-0 motion-reduce:transition-none sm:h-12 dark:bg-white/15 dark:shadow-[0_10px_28px_rgba(0,0,0,0.24)] dark:backdrop-blur-xl',
         !isHeaderVisible && 'pointer-events-none',
       )}
       data-hidden={!isHeaderVisible ? '' : undefined}
@@ -50,7 +52,7 @@ export default function Header() {
           aria-label={translations.header.navigationLabel}
           className="grid h-full grid-cols-4 items-center"
         >
-          {navigationConfig.map((route, routeIndex) => {
+          {navigationConfig.map(route => {
             const isActive = route.type !== 'button' && route.pattern.test(currentPathname)
             const isLanguageRoute = route.path === '/language'
 
@@ -66,7 +68,7 @@ export default function Header() {
                 }
                 onButtonClick={isLanguageRoute ? toggleLanguage : undefined}
                 className={cn(
-                  'flex h-full items-center justify-center text-xs leading-none transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-white sm:text-lg',
+                  'flex h-full min-w-0 items-center justify-center text-xs leading-none transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-white sm:text-lg',
                   waveLinkTriggerClassName,
                   route.type === 'button' && 'cursor-pointer',
                   isActive ? 'font-bold text-white' : 'font-normal text-white/90 hover:text-white',
@@ -76,29 +78,33 @@ export default function Header() {
                   className={cn(
                     waveLinkUnderlineClassName,
                     'after:-bottom-1 after:bg-[color-mix(in_srgb,var(--theme-accent)_50%,white)]',
-                    'motion-safe:animate-header-item inline-flex items-center',
+                    'inline-flex items-center',
                     isLanguageRoute && 'gap-1',
                     isActive && 'after:[clip-path:inset(0)]',
                   )}
-                  style={{ animationDelay: `${routeIndex * 70}ms` }}
                 >
                   {isLanguageRoute && (
                     <Languages aria-hidden="true" className="size-3.5 shrink-0 sm:size-4" />
                   )}
                   <span
-                    className={cn(
-                      'grid h-[1.25em] overflow-hidden leading-[1.25] whitespace-nowrap',
-                      isLanguageRoute && 'w-5 text-center',
-                    )}
+                    aria-hidden="true"
+                    className="grid h-[1.25em] overflow-hidden leading-[1.25] whitespace-nowrap"
                   >
-                    <span
-                      key={language}
-                      aria-hidden="true"
-                      className="motion-safe:animate-header-label col-start-1 row-start-1 flex items-center justify-center [--site-language-offset:-100%] data-[language=en]:[--site-language-offset:100%]"
-                      data-language={language}
-                    >
-                      {translations.header.routes[route.pathName]}
-                    </span>
+                    {languages.map(labelLanguage => (
+                      <span
+                        key={labelLanguage}
+                        className={cn(
+                          'col-start-1 row-start-1 flex items-center justify-center transition-[translate,opacity] duration-300 ease-[cubic-bezier(0.34,1.28,0.64,1)] motion-reduce:transition-none',
+                          labelLanguage === language
+                            ? 'translate-y-0 opacity-100'
+                            : labelLanguage === 'zh'
+                              ? '-translate-y-full opacity-0'
+                              : 'translate-y-full opacity-0',
+                        )}
+                      >
+                        {messages[labelLanguage].header.routes[route.pathName]}
+                      </span>
+                    ))}
                   </span>
                 </span>
               </NavItem>

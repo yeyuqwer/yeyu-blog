@@ -31,10 +31,14 @@ export default function TechStack() {
         <li
           key={name}
           title={name}
-          className="motion-safe:animate-entry-icon size-6"
-          style={{ animationDelay: `${160 + index * 70}ms` }}
+          className="group/tech-icon motion-safe:animate-entry-icon size-6"
+          style={{ animationDelay: `${100 + index * 28}ms` }}
         >
-          <Icon role="img" aria-label={name} className="size-full" />
+          <Icon
+            role="img"
+            aria-label={name}
+            className="size-full brightness-0 transition-[filter] duration-200 group-hover/tech-icon:brightness-100 motion-reduce:transition-none dark:invert dark:group-hover/tech-icon:invert-0"
+          />
         </li>
       ))}
     </ul>

@@ -1,10 +1,9 @@
 'use client'
 
-import { Clock3, Cloud, Eye, RotateCcw } from 'lucide-react'
+import { RotateCcw } from 'lucide-react'
 import { useId } from 'react'
 import {
   useCloudSpeed,
-  useIsBackgroundOnly,
   useIsCloudAnimationRunning,
   useIsUsingRealTime,
   useSkyBackgroundActions,
@@ -24,125 +23,101 @@ const previewMinutesStep = 15
 export function SkyBackgroundControls() {
   const translations = useTranslations()
   const cloudSpeed = useCloudSpeed()
-  const isBackgroundOnly = useIsBackgroundOnly()
   const isCloudAnimationRunning = useIsCloudAnimationRunning()
   const isUsingRealTime = useIsUsingRealTime()
   const { minutesOfDay, timeState } = useSkyBackgroundTimeState()
   const {
     resetSkyBackground,
-    setBackgroundOnly,
     setCloudAnimationRunning,
     setCloudSpeed,
     setMinutesOfDay,
     setUsingRealTime,
   } = useSkyBackgroundActions()
+  const realTimeInputId = useId()
+  const cloudMotionInputId = useId()
   const timeInputId = useId()
   const cloudSpeedInputId = useId()
 
   return (
-    <>
-      <div className="flex min-h-12 items-center justify-between gap-4 px-2 py-2">
-        <div className="flex min-w-0 items-center gap-2.5">
-          <Eye aria-hidden className="size-4.5 shrink-0" />
-          <span className="truncate text-sm">{translations.common.backgroundOnly}</span>
-        </div>
-        <Switch
-          checked={isBackgroundOnly}
-          className="cursor-pointer"
-          aria-label={
-            isBackgroundOnly
-              ? translations.common.showFullInterface
-              : translations.common.showBackgroundOnly
-          }
-          onCheckedChange={setBackgroundOnly}
-        />
-      </div>
-
-      <div className="space-y-3 px-2 py-3">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-2.5">
-            <Clock3 aria-hidden className="size-4.5 shrink-0" />
-            <label className="truncate text-sm" htmlFor={timeInputId}>
-              {translations.common.skyTime}
-            </label>
-          </div>
-          <output className="text-foreground/70 shrink-0 text-xs font-medium tabular-nums">
+    <div className="space-y-4">
+      <div className="space-y-3">
+        <div className="text-foreground/55 flex items-center justify-between gap-3 text-xs">
+          <span>{translations.common.skyTime}</span>
+          <output htmlFor={timeInputId} className="text-foreground/80 tabular-nums">
             {timeState.label}
           </output>
         </div>
-        <Slider
-          aria-label={translations.common.skyTime}
-          className="cursor-pointer"
-          id={timeInputId}
-          max={maxPreviewMinutesOfDay}
-          min={minPreviewMinutesOfDay}
-          step={previewMinutesStep}
-          value={minutesOfDay}
-          onValueChange={setMinutesOfDay}
-        />
-        <div className="flex items-center justify-between gap-4">
-          <span className="text-foreground/65 text-xs">{translations.common.useRealTime}</span>
+        <div className="flex min-h-7 items-center justify-between gap-3">
+          <label className="cursor-pointer text-xs" htmlFor={realTimeInputId}>
+            {translations.common.useRealTime}
+          </label>
           <Switch
+            id={realTimeInputId}
             checked={isUsingRealTime}
-            className="cursor-pointer"
-            aria-label={translations.common.useRealTime}
+            className="cursor-pointer motion-reduce:transition-none [&_[data-slot=switch-thumb]]:motion-reduce:transition-none"
             onCheckedChange={nextIsUsingRealTime =>
               setUsingRealTime(nextIsUsingRealTime, minutesOfDay)
             }
           />
         </div>
+        {!isUsingRealTime && (
+          <div className="motion-safe:animate-entry-icon space-y-2 pb-1">
+            <Slider
+              aria-label={translations.common.skyTime}
+              className="cursor-pointer"
+              id={timeInputId}
+              max={maxPreviewMinutesOfDay}
+              min={minPreviewMinutesOfDay}
+              step={previewMinutesStep}
+              value={minutesOfDay}
+              onValueChange={setMinutesOfDay}
+            />
+          </div>
+        )}
       </div>
 
-      <div className="space-y-3 px-2 py-3">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-2.5">
-            <Cloud aria-hidden className="size-4.5 shrink-0" />
-            <label className="truncate text-sm" htmlFor={cloudSpeedInputId}>
-              {translations.common.cloudSpeed}
-            </label>
-          </div>
-          <output className="text-foreground/70 shrink-0 text-xs font-medium tabular-nums">
-            {cloudSpeed.toFixed(2)}x
-          </output>
-        </div>
-        <Slider
-          aria-label={translations.common.cloudSpeed}
-          className="cursor-pointer"
-          id={cloudSpeedInputId}
-          max={maxCloudSpeed}
-          min={minCloudSpeed}
-          step={cloudSpeedStep}
-          value={cloudSpeed}
-          onValueChange={setCloudSpeed}
-        />
-        <div className="flex items-center justify-between gap-4">
-          <span className="text-foreground/65 text-xs">{translations.common.cloudMotion}</span>
+      <div className="border-border/60 space-y-3 border-t pt-3">
+        <div className="flex min-h-7 items-center justify-between gap-3">
+          <label className="cursor-pointer text-xs" htmlFor={cloudMotionInputId}>
+            {translations.common.cloudMotion}
+          </label>
           <Switch
+            id={cloudMotionInputId}
             checked={isCloudAnimationRunning}
-            className="cursor-pointer"
-            aria-label={
-              isCloudAnimationRunning
-                ? translations.common.pauseCloudMotion
-                : translations.common.playCloudMotion
-            }
+            className="cursor-pointer motion-reduce:transition-none [&_[data-slot=switch-thumb]]:motion-reduce:transition-none"
             onCheckedChange={setCloudAnimationRunning}
           />
         </div>
-        <div className="border-border/60 text-foreground/55 flex min-h-7 items-center gap-3 border-t pt-2 text-[11px]">
-          <span>
-            {translations.common.phase}: {translations.common.skyPhases[timeState.phase]}
-          </span>
-          <button
-            type="button"
-            aria-label={translations.common.resetSkyBackground}
-            className="hover:bg-foreground/8 hover:text-foreground focus-visible:outline-theme-ring ml-auto flex size-7 cursor-pointer items-center justify-center rounded-full transition-colors focus-visible:outline-2"
-            title={translations.common.resetSkyBackground}
-            onClick={resetSkyBackground}
-          >
-            <RotateCcw aria-hidden className="size-3.5" />
-          </button>
-        </div>
+        {isCloudAnimationRunning && (
+          <div className="motion-safe:animate-entry-icon space-y-2 pb-1">
+            <div className="text-foreground/55 flex items-center justify-between gap-3 text-xs">
+              <label htmlFor={cloudSpeedInputId}>{translations.common.cloudSpeed}</label>
+              <output htmlFor={cloudSpeedInputId} className="text-foreground/80 tabular-nums">
+                {cloudSpeed}×
+              </output>
+            </div>
+            <Slider
+              aria-label={translations.common.cloudSpeed}
+              className="cursor-pointer"
+              id={cloudSpeedInputId}
+              max={maxCloudSpeed}
+              min={minCloudSpeed}
+              step={cloudSpeedStep}
+              value={cloudSpeed}
+              onValueChange={setCloudSpeed}
+            />
+          </div>
+        )}
       </div>
-    </>
+
+      <button
+        type="button"
+        className="text-foreground/45 hover:text-foreground focus-visible:outline-theme-ring flex min-h-8 cursor-pointer items-center gap-1.5 rounded-md text-[11px] transition-colors focus-visible:outline-2 motion-reduce:transition-none"
+        onClick={resetSkyBackground}
+      >
+        <RotateCcw aria-hidden className="size-3" />
+        {translations.common.resetSkyBackground}
+      </button>
+    </div>
   )
 }
