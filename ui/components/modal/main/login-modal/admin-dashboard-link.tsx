@@ -3,6 +3,7 @@ import { useRef } from 'react'
 import { cn } from '@/lib/utils/common/shadcn'
 import { useModalActions } from '@/store/use-modal-store'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import { buttonVariants } from '@/ui/shadcn/button'
 import { LayoutGridIcon, type LayoutGridIconHandle } from '@/ui/shadcn/layout-grid'
 
@@ -27,7 +28,7 @@ export function AdminDashboardLink() {
       }}
     >
       <LayoutGridIcon ref={iconRef} className="size-4" size={16} />
-      {translations.loginModal.adminDashboard}
+      <LanguageText>{translations.loginModal.adminDashboard}</LanguageText>
     </Link>
   )
 }

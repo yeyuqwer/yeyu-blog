@@ -5,6 +5,7 @@ import { isEmailLoggedIn, isWalletLoggedIn } from '@/lib/core/auth/utils'
 import { useModalActions, useModalType } from '@/store/use-modal-store'
 import { Modal } from '@/ui/components/interior/modal'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import { LoginModalContent } from './content'
 
 export const LoginModal = () => {
@@ -21,7 +22,9 @@ export const LoginModal = () => {
       open={isModalOpen}
       onClose={closeModal}
       title={
-        isLoggedIn ? translations.loginModal.userInfoTitle : translations.loginModal.loginTitle
+        <LanguageText>
+          {isLoggedIn ? translations.loginModal.userInfoTitle : translations.loginModal.loginTitle}
+        </LanguageText>
       }
       closeLabel={translations.loginModal.closeLabel}
       maxWidth={440}

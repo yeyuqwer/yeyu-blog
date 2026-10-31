@@ -1,5 +1,6 @@
 import { LogIn } from 'lucide-react'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import { Button } from '@/ui/shadcn/button'
 
 export function CommentLoginPrompt({ onLoginClick }: { onLoginClick: () => void }) {
@@ -8,7 +9,7 @@ export function CommentLoginPrompt({ onLoginClick }: { onLoginClick: () => void 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <p className="text-sm text-black/65 dark:text-white/65">
-        {translations.comments.loginPrompt}
+        <LanguageText>{translations.comments.loginPrompt}</LanguageText>
       </p>
       <Button
         type="button"
@@ -16,7 +17,7 @@ export function CommentLoginPrompt({ onLoginClick }: { onLoginClick: () => void 
         onClick={onLoginClick}
       >
         <LogIn className="size-4" />
-        {translations.comments.loginToComment}
+        <LanguageText>{translations.comments.loginToComment}</LanguageText>
       </Button>
     </div>
   )

@@ -13,11 +13,10 @@ export function HomeTextMotion({
   className?: string
   delay?: number
 }) {
-  const { language, isLanguageChanging } = useLanguage()
+  const { isLanguageChanging } = useLanguage()
 
   return (
     <div
-      key={language}
       className={cn('motion-safe:animate-entry-text', className)}
       style={{ animationDelay: `${isLanguageChanging ? 0 : delay}ms` }}
     >

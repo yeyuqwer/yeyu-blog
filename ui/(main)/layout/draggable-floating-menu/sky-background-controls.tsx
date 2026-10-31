@@ -10,6 +10,7 @@ import {
   useSkyBackgroundTimeState,
 } from '@/store/use-sky-background-store'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import { Slider } from '@/ui/shadcn/slider'
 import { Switch } from '@/ui/shadcn/switch'
 
@@ -42,14 +43,14 @@ export function SkyBackgroundControls() {
     <div className="space-y-4">
       <div className="space-y-3">
         <div className="text-foreground/55 flex items-center justify-between gap-3 text-xs">
-          <span>{translations.common.skyTime}</span>
+          <LanguageText>{translations.common.skyTime}</LanguageText>
           <output htmlFor={timeInputId} className="text-foreground/80 tabular-nums">
             {timeState.label}
           </output>
         </div>
         <div className="flex min-h-7 items-center justify-between gap-3">
           <label className="cursor-pointer text-xs" htmlFor={realTimeInputId}>
-            {translations.common.useRealTime}
+            <LanguageText>{translations.common.useRealTime}</LanguageText>
           </label>
           <Switch
             id={realTimeInputId}
@@ -79,7 +80,7 @@ export function SkyBackgroundControls() {
       <div className="border-border/60 space-y-3 border-t pt-3">
         <div className="flex min-h-7 items-center justify-between gap-3">
           <label className="cursor-pointer text-xs" htmlFor={cloudMotionInputId}>
-            {translations.common.cloudMotion}
+            <LanguageText>{translations.common.cloudMotion}</LanguageText>
           </label>
           <Switch
             id={cloudMotionInputId}
@@ -91,7 +92,9 @@ export function SkyBackgroundControls() {
         {isCloudAnimationRunning && (
           <div className="motion-safe:animate-entry-icon space-y-2 pb-1">
             <div className="text-foreground/55 flex items-center justify-between gap-3 text-xs">
-              <label htmlFor={cloudSpeedInputId}>{translations.common.cloudSpeed}</label>
+              <label htmlFor={cloudSpeedInputId}>
+                <LanguageText>{translations.common.cloudSpeed}</LanguageText>
+              </label>
               <output htmlFor={cloudSpeedInputId} className="text-foreground/80 tabular-nums">
                 {cloudSpeed}×
               </output>
@@ -116,7 +119,7 @@ export function SkyBackgroundControls() {
         onClick={resetSkyBackground}
       >
         <RotateCcw aria-hidden className="size-3" />
-        {translations.common.resetSkyBackground}
+        <LanguageText>{translations.common.resetSkyBackground}</LanguageText>
       </button>
     </div>
   )

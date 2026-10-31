@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import { GitHubIcon, GmailIcon, XIcon } from './assets/social-icons'
 import { HomeTextMotion } from './home-motion'
 
@@ -29,7 +30,8 @@ export default function HomeFooter() {
     <footer className="mx-auto mt-auto flex w-full max-w-[550px] items-center justify-between gap-4 px-4 pb-1 font-serif text-sm md:px-0">
       <HomeTextMotion className="shrink-0" delay={220}>
         <p className="leading-5">
-          © {new Date().getFullYear()} {translations.home.copyrightName}
+          © {new Date().getFullYear()}{' '}
+          <LanguageText>{translations.home.copyrightName}</LanguageText>
         </p>
       </HomeTextMotion>
 

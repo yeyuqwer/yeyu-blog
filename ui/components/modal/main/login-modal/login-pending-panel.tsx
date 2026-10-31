@@ -1,5 +1,6 @@
 import { LoaderCircle } from 'lucide-react'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
+import { LanguageText } from '@/ui/components/shared/language-text'
 
 export const LoginPendingPanel = () => {
   const translations = useTranslations()
@@ -13,7 +14,9 @@ export const LoginPendingPanel = () => {
         aria-hidden
         className="size-6 text-zinc-500 motion-safe:animate-spin dark:text-zinc-400"
       />
-      <p className="text-muted-foreground text-sm">{translations.loginModal.signingIn}</p>
+      <p className="text-muted-foreground text-sm">
+        <LanguageText>{translations.loginModal.signingIn}</LanguageText>
+      </p>
     </div>
   )
 }

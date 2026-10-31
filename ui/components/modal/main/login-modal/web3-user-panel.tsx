@@ -3,6 +3,7 @@ import { useSession } from '@/lib/core/auth/client'
 import { isAdminLoggedIn } from '@/lib/core/auth/utils'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
 import { AccountIcon } from '@/ui/components/shared/account-icon'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import { AdminDashboardLink } from './admin-dashboard-link'
 import { LogoutButton } from './logout-button'
 
@@ -18,7 +19,9 @@ export const Web3UserPanel = () => {
       <div className="flex flex-col items-center gap-2">
         <AccountIcon account={walletAddress} className="size-16 rounded-full shadow-sm" />
         <div className="space-y-1 text-center">
-          <p className="text-muted-foreground text-xs">{translations.loginModal.walletAddress}</p>
+          <p className="text-muted-foreground text-xs">
+            <LanguageText>{translations.loginModal.walletAddress}</LanguageText>
+          </p>
           <p className="text-sm font-medium break-all">{walletAddress}</p>
         </div>
       </div>

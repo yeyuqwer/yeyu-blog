@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { signOut, useSession } from '@/lib/core/auth/client'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import { LogoutIcon, type LogoutIconHandle } from '@/ui/shadcn/logout'
 import { ModalActionButton } from '../modal-action-button'
 
@@ -28,7 +29,7 @@ export function LogoutButton() {
       }}
     >
       <LogoutIcon ref={iconRef} className="size-4" size={16} />
-      {translations.loginModal.logout}
+      <LanguageText>{translations.loginModal.logout}</LanguageText>
     </ModalActionButton>
   )
 }

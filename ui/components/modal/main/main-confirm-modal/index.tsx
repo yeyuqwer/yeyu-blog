@@ -4,6 +4,7 @@ import type { ComponentProps, ReactNode } from 'react'
 import { cn } from '@/lib/utils/common/shadcn'
 import { Modal } from '@/ui/components/interior/modal'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import { Button } from '@/ui/shadcn/button'
 
 export function MainConfirmModal({
@@ -59,7 +60,7 @@ export function MainConfirmModal({
               cancelButtonClassName,
             )}
           >
-            {translations.common.cancel}
+            <LanguageText>{translations.common.cancel}</LanguageText>
           </Button>
           <Button
             type="button"
@@ -73,7 +74,9 @@ export function MainConfirmModal({
               confirmButtonClassName,
             )}
           >
-            {isPending ? translations.common.pending : translations.common.confirm}
+            <LanguageText>
+              {isPending ? translations.common.pending : translations.common.confirm}
+            </LanguageText>
           </Button>
         </>
       }

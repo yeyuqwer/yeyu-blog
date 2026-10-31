@@ -5,6 +5,7 @@ import type { friendLinkApplyFields } from './constant'
 import { CircleAlert } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import { Input } from '@/ui/shadcn/input'
 
 export function FriendLinkFormField({
@@ -93,7 +94,7 @@ export function FriendLinkFormField({
           htmlFor={fieldId}
           className="peer-focus:text-theme-primary absolute top-1/2 left-2.5 max-w-[calc(100%-1.5rem)] origin-left -translate-y-1/2 cursor-text truncate bg-white px-1 text-sm leading-5 text-zinc-500 transition-[top,scale,color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[invalid]/field:text-red-500 peer-focus:top-0 peer-focus:scale-[0.8] group-data-[invalid]/field:peer-focus:text-red-500 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:scale-[0.8] motion-reduce:transition-none dark:bg-zinc-950 dark:text-zinc-400 dark:group-data-[invalid]/field:text-red-400 dark:group-data-[invalid]/field:peer-focus:text-red-400"
         >
-          {fieldTranslations.label}
+          <LanguageText className="truncate align-top">{fieldTranslations.label}</LanguageText>
         </label>
       </div>
 

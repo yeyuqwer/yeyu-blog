@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils/common/shadcn'
 import { prettyDateTime, toRelativeDate } from '@/lib/utils/common/time'
 import { useCommentCardActions, useCommentCardStore } from '@/store/use-comment-card-store'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import { Button } from '@/ui/shadcn/button'
 import { CommentAuthorAvatar } from './comment-avatar'
 import { CommentComposer } from './comment-composer'
@@ -46,12 +47,12 @@ function CommentHeader({
           </span>
           {comment.isAdmin ? (
             <span className="rounded-md bg-black/8 px-1.5 py-0.5 text-[11px] font-medium text-black dark:bg-white/10 dark:text-white">
-              {translations.comments.admin}
+              <LanguageText>{translations.comments.admin}</LanguageText>
             </span>
           ) : null}
           {isCurrentUserComment ? (
             <span className="rounded-md bg-black/6 px-1.5 py-0.5 text-[11px] font-medium text-black/75 dark:bg-white/8 dark:text-white/75">
-              {translations.comments.you}
+              <LanguageText>{translations.comments.you}</LanguageText>
             </span>
           ) : null}
           <time
@@ -72,7 +73,7 @@ function CommentHeader({
           ) : null}
           {comment.isDeleted ? (
             <span className="text-[11px] text-black/42 dark:text-white/42">
-              {translations.comments.deletedStatus}
+              <LanguageText>{translations.comments.deletedStatus}</LanguageText>
             </span>
           ) : null}
         </div>
@@ -80,7 +81,7 @@ function CommentHeader({
         {parentDisplayName != null ? (
           <div className="mt-2 flex items-center gap-1.5 text-xs text-black/55 dark:text-white/55">
             <CornerUpLeft className="size-3.5" />
-            <span>{translations.comments.replyTo(parentDisplayName)}</span>
+            <LanguageText>{translations.comments.replyTo(parentDisplayName)}</LanguageText>
           </div>
         ) : null}
       </div>
@@ -134,7 +135,9 @@ function CommentContent({ comment }: { comment: CommentTreeNode }) {
     <div className="mt-3 text-black dark:text-white">
       {comment.isDeleted ? (
         <p className="text-sm text-black/55 dark:text-white/55">
-          <del>{translations.comments.deleted}</del>
+          <del>
+            <LanguageText>{translations.comments.deleted}</LanguageText>
+          </del>
         </p>
       ) : (
         <CommentMarkdownContent sanitizedHtmlContent={comment.sanitizedHtmlContent} />

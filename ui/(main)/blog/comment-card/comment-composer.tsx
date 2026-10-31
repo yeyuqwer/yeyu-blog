@@ -1,5 +1,6 @@
 import { CornerUpLeft, X } from 'lucide-react'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import { Button } from '@/ui/shadcn/button'
 import { Textarea } from '@/ui/shadcn/textarea'
 import { maxCommentLength } from './constant'
@@ -32,7 +33,7 @@ export function CommentComposer({
       {title != null ? (
         <div className="mb-2 flex items-center gap-2 text-sm font-medium text-black/70 dark:text-white/70">
           <CornerUpLeft className="size-3.5 text-black/70 dark:text-white/70" />
-          <span>{title}</span>
+          <LanguageText>{title}</LanguageText>
         </div>
       ) : null}
       <Textarea
@@ -64,7 +65,7 @@ export function CommentComposer({
               className="h-8 rounded-lg px-3 text-black/65 hover:bg-black/5 hover:text-black dark:text-white/65 dark:hover:bg-white/10 dark:hover:text-white"
             >
               <X className="size-4" />
-              {translations.common.cancel}
+              <LanguageText>{translations.common.cancel}</LanguageText>
             </Button>
           ) : null}
           <Button
@@ -73,7 +74,7 @@ export function CommentComposer({
             disabled={trimmedContent.length === 0 || inputExceeded || isSubmitting}
             onClick={onSubmit}
           >
-            {isSubmitting ? translations.common.pending : submitLabel}
+            <LanguageText>{isSubmitting ? translations.common.pending : submitLabel}</LanguageText>
           </Button>
         </div>
       </div>

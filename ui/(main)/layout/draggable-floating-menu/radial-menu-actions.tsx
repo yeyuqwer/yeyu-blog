@@ -14,6 +14,7 @@ import {
   useSkyBackgroundActions,
 } from '@/store/use-sky-background-store'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import { SkyBackgroundControls } from './sky-background-controls'
 
 // Bencho's half-circle fan: 48px options, 28ms stagger, and a spring-shaped CSS easing.
@@ -165,7 +166,7 @@ export default function RadialMenuActions({
             isOpen && aim !== null && !isSkyOpen ? 'opacity-100' : 'opacity-0',
           )}
         >
-          {aim !== null && actions[aim].label}
+          {aim !== null && <LanguageText>{actions[aim].label}</LanguageText>}
         </span>
       </div>
 
@@ -178,7 +179,7 @@ export default function RadialMenuActions({
           >
             <div className="mb-3 flex items-center justify-between gap-3">
               <h2 id={titleId} className="text-sm font-medium">
-                {translations.common.skySettings}
+                <LanguageText>{translations.common.skySettings}</LanguageText>
               </h2>
               <button
                 type="button"

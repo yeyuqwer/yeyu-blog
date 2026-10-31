@@ -3,12 +3,11 @@
 import { Languages } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { languages } from '@/lib/i18n/config'
 import { getRoutePathname } from '@/lib/i18n/get-route-pathname'
-import { messages } from '@/lib/i18n/messages'
 import { cn } from '@/lib/utils/common/shadcn'
 import { HandwritingWordmark } from '@/ui/(main)/layout/header/handwriting-wordmark'
 import { useLanguage, useTranslations } from '@/ui/components/provider/main/language-provider'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import {
   WaveLink,
   waveLinkTriggerClassName,
@@ -86,25 +85,8 @@ export default function Header() {
                   {isLanguageRoute && (
                     <Languages aria-hidden="true" className="size-3.5 shrink-0 sm:size-4" />
                   )}
-                  <span
-                    aria-hidden="true"
-                    className="grid h-[1.25em] overflow-hidden leading-[1.25] whitespace-nowrap"
-                  >
-                    {languages.map(labelLanguage => (
-                      <span
-                        key={labelLanguage}
-                        className={cn(
-                          'col-start-1 row-start-1 flex items-center justify-center transition-[translate,opacity] duration-300 ease-[cubic-bezier(0.34,1.28,0.64,1)] motion-reduce:transition-none',
-                          labelLanguage === language
-                            ? 'translate-y-0 opacity-100'
-                            : labelLanguage === 'zh'
-                              ? '-translate-y-full opacity-0'
-                              : 'translate-y-full opacity-0',
-                        )}
-                      >
-                        {messages[labelLanguage].header.routes[route.pathName]}
-                      </span>
-                    ))}
+                  <span aria-hidden="true" className="leading-[1.25] whitespace-nowrap">
+                    <LanguageText>{translations.header.routes[route.pathName]}</LanguageText>
                   </span>
                 </span>
               </NavItem>

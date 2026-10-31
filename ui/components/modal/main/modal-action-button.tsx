@@ -1,5 +1,6 @@
 import type { ComponentProps } from 'react'
 import { cn } from '@/lib/utils/common/shadcn'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import { Button } from '@/ui/shadcn/button'
 
 export function ModalActionButton({ className, ...props }: ComponentProps<typeof Button>) {
@@ -29,13 +30,13 @@ export function ModalActionLabel({
         aria-hidden={active}
         className="col-start-1 row-start-1 transition-[opacity,translate] duration-200 group-data-[active]/action-label:-translate-y-1 group-data-[active]/action-label:opacity-0 motion-reduce:transition-none"
       >
-        {label}
+        <LanguageText>{label}</LanguageText>
       </span>
       <span
         aria-hidden={!active}
         className="col-start-1 row-start-1 translate-y-1 opacity-0 transition-[opacity,translate] duration-200 group-data-[active]/action-label:translate-y-0 group-data-[active]/action-label:opacity-100 motion-reduce:transition-none"
       >
-        {activeLabel}
+        <LanguageText>{activeLabel}</LanguageText>
       </span>
     </span>
   )

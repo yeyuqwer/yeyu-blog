@@ -9,6 +9,7 @@ import { useModalActions, useModalType } from '@/store/use-modal-store'
 import { Modal } from '@/ui/components/interior/modal'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
 import ReactQueryProvider from '@/ui/components/provider/react-query-provider'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import { copyToClipboard } from '@/ui/shadcn/copy-button'
 import { ModalActionButton, ModalActionLabel } from '../modal-action-button'
 import { friendLinkApplyFields } from './constant'
@@ -78,12 +79,12 @@ const FriendLinkApplyModalContent = () => {
     <Modal
       open={isModalOpen}
       onClose={closeModal}
-      title={translations.friendLinkApplyModal.title}
+      title={<LanguageText>{translations.friendLinkApplyModal.title}</LanguageText>}
       description={
         <>
-          {translations.friendLinkApplyModal.description.map(description => (
-            <span key={description} className="block">
-              {description}
+          {translations.friendLinkApplyModal.description.map((description, index) => (
+            <span key={index} className="block">
+              <LanguageText delay={index * 30}>{description}</LanguageText>
             </span>
           ))}
         </>
@@ -137,7 +138,7 @@ const FriendLinkApplyModalContent = () => {
               className="h-9 cursor-pointer rounded-lg border-black/10 bg-black/[0.03] px-3 text-zinc-700 shadow-none hover:border-black/20 hover:bg-black/[0.06] hover:text-black dark:border-white/12 dark:bg-white/[0.06] dark:text-zinc-300 dark:hover:border-white/25 dark:hover:bg-white/[0.12] dark:hover:text-white"
               onClick={closeModal}
             >
-              {translations.friendLinkApplyModal.cancel}
+              <LanguageText>{translations.friendLinkApplyModal.cancel}</LanguageText>
             </ModalActionButton>
             <ModalActionButton
               type="submit"

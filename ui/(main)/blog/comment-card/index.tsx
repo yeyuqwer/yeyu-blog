@@ -6,6 +6,7 @@ import { ArrowDownNarrowWide, ArrowUpNarrowWide } from 'lucide-react'
 import { cn } from '@/lib/utils/common/shadcn'
 import { MainConfirmModal } from '@/ui/components/modal/main/main-confirm-modal'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import { CommentComposer } from './comment-composer'
 import { CommentList } from './comment-list'
 import { CommentLoginPrompt } from './comment-login-prompt'
@@ -80,7 +81,7 @@ export default function CommentCard({
                 }}
               >
                 <SortIcon className="size-3.5" />
-                <span>{translations.comments.sortOrder[sortOrder]}</span>
+                <LanguageText>{translations.comments.sortOrder[sortOrder]}</LanguageText>
               </button>
             </div>
           ) : null}
@@ -99,8 +100,8 @@ export default function CommentCard({
           setDeletingCommentId(null)
         }}
         onConfirm={confirmDeleteComment}
-        title={translations.comments.deleteTitle}
-        description={translations.comments.deleteDescription}
+        title={<LanguageText>{translations.comments.deleteTitle}</LanguageText>}
+        description={<LanguageText>{translations.comments.deleteDescription}</LanguageText>}
         isPending={isDeletingComment}
       >
         {deletingComment != null ? (

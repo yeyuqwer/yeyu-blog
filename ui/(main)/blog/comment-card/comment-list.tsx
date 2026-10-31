@@ -1,5 +1,6 @@
 import type { CommentCardView, CommentTreeNode } from './type'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import Loading from '@/ui/components/shared/loading'
 import { CommentThreadItem } from './comment-thread-item'
 
@@ -25,7 +26,7 @@ export function CommentList({
   if (commentTree.length === 0) {
     return (
       <div className="bg-theme-surface/30 rounded-lg border border-dashed border-black/15 px-4 py-10 text-center text-sm text-black/55 dark:border-white/15 dark:text-white/55">
-        {translations.comments.empty}
+        <LanguageText>{translations.comments.empty}</LanguageText>
       </div>
     )
   }

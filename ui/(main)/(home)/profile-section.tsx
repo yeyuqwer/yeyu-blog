@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import avatar from '@/config/img/avatar.webp'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
+import { LanguageText } from '@/ui/components/shared/language-text'
 import { HomeAvatarMotion, HomeTextMotion } from './home-motion'
 import TechStack from './tech-stack'
 
@@ -26,10 +27,14 @@ export default function ProfileSection() {
 
       <div className="flex flex-col items-center text-center md:translate-y-[5px] md:items-start md:text-left">
         <HomeTextMotion delay={40}>
-          <h1 className="text-xl leading-8 font-bold sm:text-2xl">{translations.home.greeting}</h1>
+          <h1 className="text-xl leading-8 font-bold sm:text-2xl">
+            <LanguageText>{translations.home.greeting}</LanguageText>
+          </h1>
         </HomeTextMotion>
         <HomeTextMotion delay={80}>
-          <p className="mt-[22px] text-[16px] leading-8 font-bold">{translations.home.role}</p>
+          <p className="mt-[22px] text-[16px] leading-8 font-bold">
+            <LanguageText delay={30}>{translations.home.role}</LanguageText>
+          </p>
         </HomeTextMotion>
         <TechStack />
       </div>
