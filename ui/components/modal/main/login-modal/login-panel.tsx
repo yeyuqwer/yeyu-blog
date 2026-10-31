@@ -1,6 +1,6 @@
 import { signIn } from '@/lib/core/auth/client'
 import { cn } from '@/lib/utils/common/shadcn'
-import { Button } from '@/ui/shadcn/button'
+import { ModalActionButton } from '../modal-action-button'
 import { GitHubIcon } from './assets/github-icon'
 import { GoogleIcon } from './assets/google-icon'
 
@@ -13,7 +13,7 @@ export const LoginPanel = ({
 }) => {
   return (
     <>
-      <Button
+      <ModalActionButton
         type="button"
         onClick={() => signIn.social({ provider: 'github', callbackURL: '/admin' })}
         className={cn(
@@ -24,9 +24,9 @@ export const LoginPanel = ({
       >
         <GitHubIcon className="size-5 shrink-0" />
         <span className="truncate">GitHub</span>
-      </Button>
+      </ModalActionButton>
 
-      <Button
+      <ModalActionButton
         type="button"
         onClick={() => signIn.social({ provider: 'google', callbackURL: '/admin' })}
         className={cn(
@@ -37,7 +37,7 @@ export const LoginPanel = ({
       >
         <GoogleIcon className="size-5 shrink-0" />
         <span className="truncate">Google</span>
-      </Button>
+      </ModalActionButton>
     </>
   )
 }

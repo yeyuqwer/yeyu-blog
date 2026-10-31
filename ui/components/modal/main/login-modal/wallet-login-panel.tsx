@@ -7,7 +7,7 @@ import { getAddress } from 'viem'
 import { createSiweMessage } from 'viem/siwe'
 import { authClient, useSession } from '@/lib/core/auth/client'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
-import { Button } from '@/ui/shadcn/button'
+import { ModalActionButton } from '../modal-action-button'
 
 export const WalletLoginPanel = ({
   injectedWallet,
@@ -91,7 +91,7 @@ export const WalletLoginPanel = ({
   return (
     <>
       {injectedWallet.wallets.map(wallet => (
-        <Button
+        <ModalActionButton
           key={wallet.id}
           type="button"
           className="h-10 min-w-0 cursor-pointer justify-start rounded-xl border-black/10 bg-black/[0.03] px-3 text-sm text-zinc-800 hover:border-black/20 hover:bg-black/[0.06] hover:text-black focus-visible:ring-black/20 disabled:cursor-not-allowed dark:border-white/12 dark:bg-white/[0.06] dark:text-zinc-100 dark:hover:border-white/25 dark:hover:bg-white/[0.12] dark:hover:text-white dark:focus-visible:ring-white/35"
@@ -111,7 +111,7 @@ export const WalletLoginPanel = ({
             <Wallet2 className="size-5 shrink-0" />
           )}
           <span className="truncate">{wallet.name}</span>
-        </Button>
+        </ModalActionButton>
       ))}
     </>
   )

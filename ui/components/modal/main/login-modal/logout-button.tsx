@@ -1,8 +1,8 @@
 import { useRef } from 'react'
 import { signOut, useSession } from '@/lib/core/auth/client'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
-import { Button } from '@/ui/shadcn/button'
 import { LogoutIcon, type LogoutIconHandle } from '@/ui/shadcn/logout'
+import { ModalActionButton } from '../modal-action-button'
 
 export function LogoutButton() {
   const iconRef = useRef<LogoutIconHandle>(null)
@@ -15,7 +15,7 @@ export function LogoutButton() {
   }
 
   return (
-    <Button
+    <ModalActionButton
       type="button"
       variant="outline"
       onClick={handleSignOut}
@@ -29,6 +29,6 @@ export function LogoutButton() {
     >
       <LogoutIcon ref={iconRef} className="size-4" size={16} />
       {translations.loginModal.logout}
-    </Button>
+    </ModalActionButton>
   )
 }
