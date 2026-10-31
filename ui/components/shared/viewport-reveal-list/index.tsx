@@ -66,6 +66,7 @@ export function ViewportRevealList({
 
         visibleItems.forEach((item, index) => {
           item.content.style.animationDelay = `${index * interval}ms`
+          item.content.style.setProperty('--viewport-reveal-delay', `${index * interval}ms`)
           delete item.content.dataset.revealPending
           item.content.dataset.revealed = ''
           observer.unobserve(item.element)
@@ -100,7 +101,7 @@ export function ViewportRevealItem({
   as: 'div' | 'h3' | 'li'
   children: ReactNode
   className?: string
-  animation?: 'bounce' | 'blur'
+  animation?: 'bounce' | 'blur' | 'blueprint'
 }) {
   const Component = as
   const Content = as === 'h3' ? 'span' : 'div'
@@ -109,10 +110,12 @@ export function ViewportRevealItem({
     <Component data-viewport-reveal-item className={className}>
       <Content
         className={cn(
-          'block w-full motion-safe:data-[reveal-pending]:pointer-events-none motion-safe:data-[reveal-pending]:opacity-0',
-          animation === 'blur'
-            ? 'motion-safe:data-[revealed]:animate-entry-blur motion-safe:data-[reveal-pending]:translate-y-3 motion-safe:data-[reveal-pending]:blur-[8px]'
-            : 'motion-safe:data-[revealed]:animate-entry-bounce [--site-entry-overshoot:-8px] motion-safe:data-[reveal-pending]:translate-y-10',
+          'block w-full [--viewport-reveal-delay:0ms] motion-safe:data-[reveal-pending]:pointer-events-none motion-safe:data-[reveal-pending]:opacity-0',
+          animation === 'blueprint'
+            ? 'group/viewport-reveal motion-safe:data-[revealed]:animate-blueprint-rise relative motion-safe:data-[reveal-pending]:translate-y-5'
+            : animation === 'blur'
+              ? 'motion-safe:data-[revealed]:animate-entry-blur motion-safe:data-[reveal-pending]:translate-y-3 motion-safe:data-[reveal-pending]:blur-[8px]'
+              : 'motion-safe:data-[revealed]:animate-entry-bounce [--site-entry-overshoot:-8px] motion-safe:data-[reveal-pending]:translate-y-10',
         )}
       >
         {children}

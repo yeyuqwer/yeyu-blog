@@ -6,6 +6,67 @@
   --animate-handwriting: site-handwriting 900ms cubic-bezier(0.4, 0, 0.2, 1) backwards;
   --animate-entry-bounce: site-entry-bounce 800ms ease-in-out backwards;
   --animate-entry-blur: site-entry-blur 450ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  --animate-blueprint-plan: site-blueprint-plan 950ms ease-out both;
+  --animate-blueprint-card: site-blueprint-card 950ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  --animate-blueprint-rule: site-blueprint-rule 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-blueprint-rise: site-blueprint-rise 950ms ease-out backwards;
+
+  @keyframes site-blueprint-rise {
+    from {
+      translate: 0 20px;
+    }
+    to {
+      translate: 0 0;
+    }
+  }
+
+  @keyframes site-blueprint-plan {
+    0% {
+      opacity: 0;
+      filter: blur(0);
+    }
+    12%,
+    48% {
+      opacity: 1;
+      filter: blur(0);
+    }
+    90% {
+      opacity: 0;
+      filter: blur(2px);
+    }
+    100% {
+      opacity: 0;
+      visibility: hidden;
+      filter: blur(0);
+    }
+  }
+
+  @keyframes site-blueprint-card {
+    0%,
+    36% {
+      opacity: 0;
+      mask-image: linear-gradient(to bottom, black 40%, transparent 65%);
+      mask-position: 0 100%;
+      mask-repeat: no-repeat;
+      mask-size: 100% 300%;
+    }
+    100% {
+      opacity: 1;
+      mask-image: linear-gradient(to bottom, black 40%, transparent 65%);
+      mask-position: 0 0;
+      mask-repeat: no-repeat;
+      mask-size: 100% 300%;
+    }
+  }
+
+  @keyframes site-blueprint-rule {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0);
+    }
+  }
 
   @keyframes site-entry-blur {
     from {
