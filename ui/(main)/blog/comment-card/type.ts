@@ -17,6 +17,7 @@ export type CommentCardView = {
   isCreatingComment: boolean
   isDeletingComment: boolean
   onReplySubmit: (commentId: number) => void
-  onDeleteClick: (commentId: number) => void
+  onDeleteClick: (commentId: number | null) => void
+  onDeleteConfirm: () => void
   onLoginClick: () => void
 }

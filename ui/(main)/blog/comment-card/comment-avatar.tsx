@@ -51,7 +51,7 @@ function CommentAvatarFrame({
         href={`/api/github-user/${encodeURIComponent(githubAccountId)}`}
         target="_blank"
         rel="noreferrer"
-        className="focus-visible:ring-offset-theme-background relative inline-flex size-10 shrink-0 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-black/45 focus-visible:ring-offset-2 dark:focus-visible:ring-white/45"
+        className="focus-visible:ring-offset-theme-background relative inline-flex size-9 shrink-0 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-black/45 focus-visible:ring-offset-2 dark:focus-visible:ring-white/45"
         aria-label={translations.comments.openGithubProfile(displayName)}
       >
         {avatarContent}
@@ -59,7 +59,7 @@ function CommentAvatarFrame({
     )
   }
 
-  return <span className="relative inline-flex size-10 shrink-0 rounded-full">{avatarContent}</span>
+  return <span className="relative inline-flex size-9 shrink-0 rounded-full">{avatarContent}</span>
 }
 
 export function CommentAuthorAvatar({ comment }: { comment: CommentAuthorLike }) {
@@ -74,22 +74,22 @@ export function CommentAuthorAvatar({ comment }: { comment: CommentAuthorLike })
     <Image
       src={avatar}
       alt={displayName}
-      width={40}
-      height={40}
-      className="bg-theme-surface size-10 rounded-full border border-black/15 object-cover dark:border-white/15"
+      width={36}
+      height={36}
+      className="bg-theme-surface size-9 rounded-full border border-black/15 object-cover dark:border-white/15"
     />
   ) : commentAvatar != null ? (
     <Image
       src={commentAvatar}
       alt={displayName}
-      width={40}
-      height={40}
-      className="bg-theme-surface size-10 rounded-full border border-black/15 object-cover dark:border-white/15"
+      width={36}
+      height={36}
+      className="bg-theme-surface size-9 rounded-full border border-black/15 object-cover dark:border-white/15"
     />
   ) : (
     <AccountIcon
       account={address}
-      className="bg-theme-surface size-10 rounded-full border border-black/15 dark:border-white/15"
+      className="bg-theme-surface size-9 rounded-full border border-black/15 dark:border-white/15"
     />
   )
 

@@ -13,7 +13,6 @@ export function useCommentCard({ articleId }: { articleId: number }) {
   const [commentContent, setCommentContent] = useState('')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
   const previousArticleId = useRef(articleId)
-  const deletingCommentId = useCommentCardStore(state => state.deletingCommentId)
   const { clearReply, setDeletingCommentId } = useCommentCardActions()
   const { setModalOpen } = useModalActions()
 
@@ -31,7 +30,6 @@ export function useCommentCard({ articleId }: { articleId: number }) {
     take: 50,
   })
   const commentTree = buildCommentTree(data?.list ?? [], sortOrder)
-  const deletingComment = data?.list.find(comment => comment.id === deletingCommentId)
 
   const { mutate: createComment, isPending: creatingComment } = useCommentMutation({
     targetId: articleId,
@@ -90,9 +88,9 @@ export function useCommentCard({ articleId }: { articleId: number }) {
   }
 
   const confirmDeleteComment = () => {
-    const { activeReplyCommentId, deletingCommentId } = useCommentCardStore.getState()
+    const { deletingCommentId } = useCommentCardStore.getState()
 
-    if (deletingCommentId == null) {
+    if (deletingCommentId == null || deletingCommentPending || !isLoggedIn) {
       return
     }
 
@@ -102,7 +100,7 @@ export function useCommentCard({ articleId }: { articleId: number }) {
       },
       {
         onSuccess: () => {
-          if (activeReplyCommentId === deletingCommentId) {
+          if (useCommentCardStore.getState().activeReplyCommentId === deletingCommentId) {
             clearReply()
           }
 
@@ -137,8 +135,6 @@ export function useCommentCard({ articleId }: { articleId: number }) {
     isCommentPending,
     isCreatingComment: creatingComment,
     isDeletingComment: deletingCommentPending,
-    deletingComment,
-    deletingCommentId,
     setDeletingCommentId,
     openLoginModal,
     submitRootComment,

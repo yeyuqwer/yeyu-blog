@@ -1,6 +1,5 @@
 import type { CommentCardView, CommentTreeNode } from './type'
-import { CornerUpLeft, Trash2 } from 'lucide-react'
-import { cn } from '@/lib/utils/common/shadcn'
+import { CornerUpLeft } from 'lucide-react'
 import { prettyDateTime, toRelativeDate } from '@/lib/utils/common/time'
 import { useCommentCardActions, useCommentCardStore } from '@/store/use-comment-card-store'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
@@ -8,6 +7,7 @@ import { LanguageText } from '@/ui/components/shared/language-text'
 import { Button } from '@/ui/shadcn/button'
 import { CommentAuthorAvatar } from './comment-avatar'
 import { CommentComposer } from './comment-composer'
+import { CommentDeleteAction } from './comment-delete-action'
 import { CommentMarkdownContent } from './comment-markdown-content'
 import { maxCommentLevels } from './constant'
 import { formatCommentDisplayName, getCommentDisplayName } from './helper'
@@ -30,7 +30,7 @@ function CommentHeader({
   view: CommentCardView
 }) {
   const translations = useTranslations()
-  const { sessionUserId, isDeletingComment, isLoggedIn, onDeleteClick, onLoginClick } = view
+  const { sessionUserId, isLoggedIn, onLoginClick } = view
   const { toggleReply } = useCommentCardActions()
   const isCurrentUserComment = sessionUserId != null && comment.userId === sessionUserId
   const canDeleteComment = !comment.isDeleted && isCurrentUserComment
@@ -39,76 +39,54 @@ function CommentHeader({
   const createdAtIso = commentCreatedAt.toISOString()
 
   return (
-    <header className="flex items-start justify-between gap-4">
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-xs">
-          <span className="max-w-40 truncate font-semibold text-black dark:text-white">
+    <header className="flex flex-wrap items-start justify-between gap-2">
+      <div className="min-w-0 flex-1 basis-28">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs leading-5">
+          <span className="max-w-40 truncate text-[13px] font-medium text-black/90 dark:text-white/90">
             {formattedDisplayName}
           </span>
           {comment.isAdmin ? (
-            <span className="rounded-md bg-black/8 px-1.5 py-0.5 text-[11px] font-medium text-black dark:bg-white/10 dark:text-white">
+            <span className="text-[10px] text-black/55 dark:text-white/55">
               <LanguageText>{translations.comments.admin}</LanguageText>
             </span>
           ) : null}
           {isCurrentUserComment ? (
-            <span className="rounded-md bg-black/6 px-1.5 py-0.5 text-[11px] font-medium text-black/75 dark:bg-white/8 dark:text-white/75">
+            <span className="text-[10px] text-black/50 dark:text-white/50">
               <LanguageText>{translations.comments.you}</LanguageText>
             </span>
           ) : null}
           <time
-            className="text-[11px] text-black/50 dark:text-white/50"
+            className="text-[11px] text-black/50 tabular-nums dark:text-white/50"
             dateTime={createdAtIso}
             title={absoluteTime}
           >
-            {absoluteTime}
+            {shouldShowRelativeTime ? toRelativeDate(commentCreatedAt) : absoluteTime}
           </time>
-          {shouldShowRelativeTime ? (
-            <time
-              className="text-[11px] text-black/38 dark:text-white/38"
-              dateTime={createdAtIso}
-              title={absoluteTime}
-            >
-              {toRelativeDate(commentCreatedAt)}
-            </time>
-          ) : null}
-          {comment.isDeleted ? (
-            <span className="text-[11px] text-black/42 dark:text-white/42">
-              <LanguageText>{translations.comments.deletedStatus}</LanguageText>
-            </span>
-          ) : null}
         </div>
 
         {parentDisplayName != null ? (
-          <div className="mt-2 flex items-center gap-1.5 text-xs text-black/55 dark:text-white/55">
-            <CornerUpLeft className="size-3.5" />
+          <div className="mt-1 flex items-center gap-1 text-[11px] text-black/50 dark:text-white/50">
+            <CornerUpLeft aria-hidden className="size-3 shrink-0" />
             <LanguageText>{translations.comments.replyTo(parentDisplayName)}</LanguageText>
           </div>
         ) : null}
       </div>
 
       {!comment.isDeleted && (canDeleteComment || canReply) ? (
-        <div className="flex shrink-0 items-center gap-1 opacity-100 transition-opacity sm:opacity-0 sm:group-focus-within:opacity-100 sm:group-hover:opacity-100">
+        <div className="ml-auto flex shrink-0 items-center gap-0.5">
           {canDeleteComment ? (
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-xs"
-              className="hover:bg-destructive/10 hover:text-destructive rounded-md text-black/55 dark:text-white/55"
-              aria-label={translations.comments.deleteLabel(formattedDisplayName)}
-              disabled={isDeletingComment}
-              onClick={() => {
-                onDeleteClick(comment.id)
-              }}
-            >
-              <Trash2 className="size-3.5" />
-            </Button>
+            <CommentDeleteAction
+              commentId={comment.id}
+              displayName={formattedDisplayName}
+              view={view}
+            />
           ) : null}
           {canReply ? (
             <Button
               type="button"
               variant="ghost"
               size="icon-xs"
-              className="rounded-md text-black/55 hover:bg-black/5 hover:text-black dark:text-white/55 dark:hover:bg-white/10 dark:hover:text-white"
+              className="size-7 rounded-lg text-black/45 hover:bg-black/5 hover:text-black motion-reduce:transition-none dark:text-white/45 dark:hover:bg-white/5 dark:hover:text-white"
               aria-label={translations.comments.replyLabel(formattedDisplayName)}
               onClick={() => {
                 if (!isLoggedIn) {
@@ -119,7 +97,7 @@ function CommentHeader({
                 toggleReply(comment.id)
               }}
             >
-              <CornerUpLeft className="size-3.5" />
+              <CornerUpLeft aria-hidden className="size-3.5" />
             </Button>
           ) : null}
         </div>
@@ -132,7 +110,7 @@ function CommentContent({ comment }: { comment: CommentTreeNode }) {
   const translations = useTranslations()
 
   return (
-    <div className="mt-3 text-black dark:text-white">
+    <div className="mt-1.5 text-black/85 dark:text-white/85">
       {comment.isDeleted ? (
         <p className="text-sm text-black/55 dark:text-white/55">
           <del>
@@ -164,7 +142,7 @@ function CommentReplyEditor({
   if (comment.isDeleted || activeReplyCommentId !== comment.id) return null
 
   return (
-    <div className="mt-4 pt-1">
+    <div className="mt-3">
       <CommentComposer
         value={replyContent}
         isSubmitting={isCreatingComment}
@@ -199,13 +177,7 @@ export function CommentThreadItem({
   const canReply = depth + 1 < maxCommentLevels
 
   return (
-    <li
-      className={cn(
-        'group',
-        depth === 0 && 'pb-6',
-        depth > 0 && 'ml-4 border-l border-black/20 pl-4 sm:ml-7 dark:border-white/20',
-      )}
-    >
+    <li className={depth === 0 ? 'py-4 first:pt-0 last:pb-0' : undefined}>
       <div className="flex items-start gap-3">
         <CommentAuthorAvatar comment={comment} />
 
@@ -231,7 +203,7 @@ export function CommentThreadItem({
           />
 
           {canReply && comment.children.length > 0 ? (
-            <ul className="mt-5 space-y-5">
+            <ul className="mt-4 space-y-4 border-l border-black/10 pl-3 sm:pl-4 dark:border-white/10">
               {comment.children.map(childComment => (
                 <CommentThreadItem
                   key={childComment.id}

@@ -13,7 +13,8 @@ export function CommentLoginPrompt({ onLoginClick }: { onLoginClick: () => void 
       </p>
       <Button
         type="button"
-        className="h-8 rounded-lg bg-black px-4 text-white shadow-[0_6px_16px_rgba(0,0,0,0.16)] hover:bg-zinc-800 hover:text-white focus-visible:ring-black/25 dark:bg-white dark:text-black dark:shadow-[0_6px_16px_rgba(0,0,0,0.28)] dark:hover:bg-zinc-200 dark:hover:text-black dark:focus-visible:ring-white/30"
+        variant="ghost"
+        className="h-8 rounded-xl border border-black/8 bg-black/6 px-4 text-xs text-black/85 shadow-none transition-[background-color,color,scale] duration-200 hover:bg-black/10 hover:text-black focus-visible:ring-black/15 motion-safe:active:scale-[0.96] motion-reduce:transition-none dark:border-white/8 dark:bg-white/8 dark:text-white/85 dark:hover:bg-white/12 dark:hover:text-white dark:focus-visible:ring-white/20"
         onClick={onLoginClick}
       >
         <LogIn className="size-4" />

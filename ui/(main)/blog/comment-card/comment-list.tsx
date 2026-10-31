@@ -1,7 +1,7 @@
 import type { CommentCardView, CommentTreeNode } from './type'
+import { LoaderCircle } from 'lucide-react'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
 import { LanguageText } from '@/ui/components/shared/language-text'
-import Loading from '@/ui/components/shared/loading'
 import { CommentThreadItem } from './comment-thread-item'
 
 export function CommentList({
@@ -17,22 +17,26 @@ export function CommentList({
 
   if (isPending) {
     return (
-      <div className="flex min-h-28 items-center justify-center">
-        <Loading />
+      <div
+        role="status"
+        aria-label={translations.common.pending}
+        className="flex min-h-24 items-center justify-center text-black/40 dark:text-white/40"
+      >
+        <LoaderCircle aria-hidden className="size-4 motion-safe:animate-spin" />
       </div>
     )
   }
 
   if (commentTree.length === 0) {
     return (
-      <div className="bg-theme-surface/30 rounded-lg border border-dashed border-black/15 px-4 py-10 text-center text-sm text-black/55 dark:border-white/15 dark:text-white/55">
-        <LanguageText>{translations.comments.empty}</LanguageText>
-      </div>
+      <p className="py-4 text-sm text-black/50 dark:text-white/50">
+        <LanguageText>{translations.comments.noComments}</LanguageText>
+      </p>
     )
   }
 
   return (
-    <ul className="space-y-6">
+    <ul className="divide-y divide-black/8 dark:divide-white/8">
       {commentTree.map(comment => (
         <CommentThreadItem key={comment.id} comment={comment} depth={0} view={view} />
       ))}
