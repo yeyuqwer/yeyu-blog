@@ -1,5 +1,7 @@
+import type { ReactNode } from 'react'
 import type { CommentCardView, CommentTreeNode } from './type'
 import { CornerUpLeft } from 'lucide-react'
+import { useLayoutEffect, useRef } from 'react'
 import { prettyDateTime, toRelativeDate } from '@/lib/utils/common/time'
 import { useCommentCardActions, useCommentCardStore } from '@/store/use-comment-card-store'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
@@ -9,8 +11,35 @@ import { CommentAuthorAvatar } from './comment-avatar'
 import { CommentComposer } from './comment-composer'
 import { CommentDeleteAction } from './comment-delete-action'
 import { CommentMarkdownContent } from './comment-markdown-content'
-import { maxCommentLevels } from './constant'
 import { formatCommentDisplayName, getCommentDisplayName } from './helper'
+
+const replyLineColors = [
+  '#f87171',
+  '#fb923c',
+  '#facc15',
+  '#4ade80',
+  '#38bdf8',
+  '#818cf8',
+  '#c084fc',
+]
+
+function CommentReplies({ children }: { children: ReactNode }) {
+  const listRef = useRef<HTMLUListElement>(null)
+
+  useLayoutEffect(() => {
+    const color = replyLineColors[Math.floor(Math.random() * replyLineColors.length)]
+    listRef.current?.style.setProperty('--reply-line-color', color)
+  }, [])
+
+  return (
+    <ul
+      ref={listRef}
+      className="relative mt-4 space-y-4 pl-3 before:absolute before:inset-y-0 before:left-0 before:w-[3px] before:rounded-full before:bg-[color:var(--reply-line-color)] sm:pl-4"
+    >
+      {children}
+    </ul>
+  )
+}
 
 function CommentHeader({
   comment,
@@ -18,7 +47,6 @@ function CommentHeader({
   absoluteTime,
   shouldShowRelativeTime,
   formattedDisplayName,
-  canReply,
   view,
 }: {
   comment: CommentTreeNode
@@ -26,7 +54,6 @@ function CommentHeader({
   absoluteTime: string
   shouldShowRelativeTime: boolean
   formattedDisplayName: string
-  canReply: boolean
   view: CommentCardView
 }) {
   const translations = useTranslations()
@@ -72,7 +99,7 @@ function CommentHeader({
         ) : null}
       </div>
 
-      {!comment.isDeleted && (canDeleteComment || canReply) ? (
+      {!comment.isDeleted ? (
         <div className="ml-auto flex shrink-0 items-center gap-0.5">
           {canDeleteComment ? (
             <CommentDeleteAction
@@ -81,25 +108,23 @@ function CommentHeader({
               view={view}
             />
           ) : null}
-          {canReply ? (
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-xs"
-              className="size-7 rounded-lg text-black/45 hover:bg-black/5 hover:text-black motion-reduce:transition-none dark:text-white/45 dark:hover:bg-white/5 dark:hover:text-white"
-              aria-label={translations.comments.replyLabel(formattedDisplayName)}
-              onClick={() => {
-                if (!isLoggedIn) {
-                  onLoginClick()
-                  return
-                }
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-xs"
+            className="size-7 rounded-lg text-black/45 hover:bg-black/5 hover:text-black motion-reduce:transition-none dark:text-white/45 dark:hover:bg-white/5 dark:hover:text-white"
+            aria-label={translations.comments.replyLabel(formattedDisplayName)}
+            onClick={() => {
+              if (!isLoggedIn) {
+                onLoginClick()
+                return
+              }
 
-                toggleReply(comment.id)
-              }}
-            >
-              <CornerUpLeft aria-hidden className="size-3.5" />
-            </Button>
-          ) : null}
+              toggleReply(comment.id)
+            }}
+          >
+            <CornerUpLeft aria-hidden className="size-3.5" />
+          </Button>
         </div>
       ) : null}
     </header>
@@ -174,7 +199,6 @@ export function CommentThreadItem({
   const shouldShowRelativeTime =
     Math.abs(commentReferenceTime - commentCreatedAt.getTime()) <= 7 * 24 * 60 * 60 * 1000
   const formattedDisplayName = formatCommentDisplayName(getCommentDisplayName(comment))
-  const canReply = depth + 1 < maxCommentLevels
 
   return (
     <li className={depth === 0 ? 'py-4 first:pt-0 last:pb-0' : undefined}>
@@ -189,7 +213,6 @@ export function CommentThreadItem({
               absoluteTime={absoluteTime}
               shouldShowRelativeTime={shouldShowRelativeTime}
               formattedDisplayName={formattedDisplayName}
-              canReply={canReply}
               view={view}
             />
 
@@ -202,8 +225,8 @@ export function CommentThreadItem({
             view={view}
           />
 
-          {canReply && comment.children.length > 0 ? (
-            <ul className="mt-4 space-y-4 border-l border-black/10 pl-3 sm:pl-4 dark:border-white/10">
+          {comment.children.length > 0 ? (
+            <CommentReplies>
               {comment.children.map(childComment => (
                 <CommentThreadItem
                   key={childComment.id}
@@ -212,7 +235,7 @@ export function CommentThreadItem({
                   view={view}
                 />
               ))}
-            </ul>
+            </CommentReplies>
           ) : null}
         </div>
       </div>

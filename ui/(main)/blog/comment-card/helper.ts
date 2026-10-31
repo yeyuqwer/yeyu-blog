@@ -54,6 +54,19 @@ export function buildCommentTree(comments: PublicCommentRecord[], sortOrder: 'as
     parentNode.children.push(node)
   }
 
+  for (const root of roots) {
+    const replies = [...root.children]
+
+    // Keep the reply target intact while displaying every reply at the second level.
+    for (let index = 0; index < replies.length; index++) {
+      const reply = replies[index]
+      replies.push(...reply.children)
+      reply.children = []
+    }
+
+    root.children = replies
+  }
+
   sortCommentTree(roots, sortOrder)
 
   return roots
