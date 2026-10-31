@@ -11,7 +11,7 @@ export function FriendAvatarImage({ avatarUrl, name }: { avatarUrl: string; name
   const [isAvatarLoaded, setIsAvatarLoaded] = useState(false)
 
   return (
-    <span className="relative size-10 shrink-0 overflow-hidden rounded-full bg-zinc-100 ring-1 ring-zinc-200 md:size-12 dark:bg-zinc-800 dark:ring-zinc-700">
+    <span className="relative size-10 shrink-0 overflow-hidden rounded-full bg-zinc-100 ring-1 ring-zinc-200 md:size-12 dark:bg-slate-900 dark:ring-white/12">
       <Image
         src={avatarUrl}
         alt={name}
@@ -32,7 +32,7 @@ export function FriendAvatarImage({ avatarUrl, name }: { avatarUrl: string; name
       <span
         aria-hidden="true"
         className={cn(
-          'pointer-events-none absolute inset-0 z-10 bg-zinc-100 transition-opacity duration-500 dark:bg-zinc-800',
+          'pointer-events-none absolute inset-0 z-10 bg-zinc-100 transition-opacity duration-500 dark:bg-slate-900',
           isAvatarLoaded ? 'opacity-0' : 'animate-pulse opacity-100',
         )}
       />
