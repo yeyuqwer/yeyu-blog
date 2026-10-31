@@ -2,12 +2,19 @@
 
 import type { ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
+import { cn } from '@/lib/utils/common/shadcn'
 import { useLanguage } from '@/ui/components/provider/main/language-provider'
 
 const revealInterval = 100
 const revealAmount = 0.2
 
-export function ViewportRevealList({ children }: { children: ReactNode }) {
+export function ViewportRevealList({
+  children,
+  interval = revealInterval,
+}: {
+  children: ReactNode
+  interval?: number
+}) {
   const scope = useRef<HTMLDivElement>(null)
   const { isLanguageChanging } = useLanguage()
 
@@ -58,7 +65,7 @@ export function ViewportRevealList({ children }: { children: ReactNode }) {
           .sort((first, second) => first.index - second.index)
 
         visibleItems.forEach((item, index) => {
-          item.content.style.animationDelay = `${index * revealInterval}ms`
+          item.content.style.animationDelay = `${index * interval}ms`
           delete item.content.dataset.revealPending
           item.content.dataset.revealed = ''
           observer.unobserve(item.element)
@@ -75,7 +82,7 @@ export function ViewportRevealList({ children }: { children: ReactNode }) {
       observer.disconnect()
       for (const item of items) delete item.content.dataset.revealPending
     }
-  }, [isLanguageChanging])
+  }, [interval, isLanguageChanging])
 
   return (
     <div ref={scope} className="contents">
@@ -88,17 +95,26 @@ export function ViewportRevealItem({
   as,
   children,
   className,
+  animation = 'bounce',
 }: {
   as: 'div' | 'h3' | 'li'
   children: ReactNode
   className?: string
+  animation?: 'bounce' | 'blur'
 }) {
   const Component = as
   const Content = as === 'h3' ? 'span' : 'div'
 
   return (
     <Component data-viewport-reveal-item className={className}>
-      <Content className="motion-safe:data-[revealed]:animate-entry-bounce block w-full [--site-entry-overshoot:-8px] motion-safe:data-[reveal-pending]:pointer-events-none motion-safe:data-[reveal-pending]:translate-y-10 motion-safe:data-[reveal-pending]:opacity-0">
+      <Content
+        className={cn(
+          'block w-full motion-safe:data-[reveal-pending]:pointer-events-none motion-safe:data-[reveal-pending]:opacity-0',
+          animation === 'blur'
+            ? 'motion-safe:data-[revealed]:animate-entry-blur motion-safe:data-[reveal-pending]:translate-y-3 motion-safe:data-[reveal-pending]:blur-[8px]'
+            : 'motion-safe:data-[revealed]:animate-entry-bounce [--site-entry-overshoot:-8px] motion-safe:data-[reveal-pending]:translate-y-10',
+        )}
+      >
         {children}
       </Content>
     </Component>

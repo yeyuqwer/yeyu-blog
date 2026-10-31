@@ -34,19 +34,20 @@ export const ArticleList = ({ items }: { items: BlogListItem[] }) => {
 
   return (
     <>
-      <ViewportRevealList>
+      <ViewportRevealList interval={120}>
         <div className="flex flex-col gap-10">
           {sortedYears.map(year => (
             <div key={year} className="flex flex-col gap-1">
               <ViewportRevealItem
                 as="h3"
+                animation="blur"
                 className="text-muted-foreground/30 ml-2 text-2xl font-semibold select-none"
               >
                 # {year}
               </ViewportRevealItem>
               <div className="flex flex-col">
                 {groupedItems[year].map(v => (
-                  <ViewportRevealItem as="div" key={v.id}>
+                  <ViewportRevealItem as="div" key={v.id} animation="blur">
                     <ArticleLink slug={v.slug} title={v.title} createdAt={v.createdAt} />
                   </ViewportRevealItem>
                 ))}
