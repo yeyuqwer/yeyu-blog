@@ -4,8 +4,6 @@ import { Popover } from '@base-ui/react/popover'
 import { Eye, EyeOff, Moon, SlidersHorizontal, Sun, Volume2, VolumeX, Wind, X } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { type RefObject, useId } from 'react'
-import { useSound } from '@/hooks/common/use-sound'
-import { uChatScrollButtonSound } from '@/lib/core/sound/u-chat-scroll-button'
 import { cn } from '@/lib/utils/common/shadcn'
 import { useBackgroundMusicActions, useIsPlaying } from '@/store/use-background-music-store'
 import {
@@ -49,7 +47,6 @@ export default function RadialMenuActions({
   const isCloudAnimationRunning = useIsCloudAnimationRunning()
   const { play, pause } = useBackgroundMusicActions()
   const { setBackgroundOnly, setCloudAnimationRunning } = useSkyBackgroundActions()
-  const [playClickSoft] = useSound(uChatScrollButtonSound)
   const titleId = useId()
 
   const actions = [
@@ -139,7 +136,6 @@ export default function RadialMenuActions({
               onClick={() => {
                 if (action.id === 'sky') return
                 action.onSelect?.()
-                playClickSoft()
                 onSelect()
               }}
             >

@@ -13,6 +13,7 @@ import {
   useSyncExternalStore,
 } from 'react'
 import { createPortal } from 'react-dom'
+import { playTap } from '@/lib/core/sound/bencho-sounds'
 import { cn } from '@/lib/utils/common/shadcn'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
 import FluidOrb from '@/ui/shadcn/fluid-orb'
@@ -118,6 +119,7 @@ export function DraggableFloatingMenu({
 
     if (!isOpen) {
       focusOnOpenRef.current = true
+      playTap()
       handleOpenChange(true)
       return
     }
@@ -236,6 +238,7 @@ export function DraggableFloatingMenu({
         )}
         <FloatingMenuActionButton
           ref={triggerRef}
+          data-click-sound="manual"
           aria-expanded={isOpen}
           aria-controls={hasOpened ? menuId : undefined}
           aria-label={
@@ -252,6 +255,7 @@ export function DraggableFloatingMenu({
               return
             }
             focusOnOpenRef.current = event.detail === 0 && !isOpen
+            playTap()
             handleOpenChange(!isOpen)
           }}
           className={cn(
