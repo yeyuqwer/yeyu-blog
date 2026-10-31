@@ -22,29 +22,53 @@ export function ArticleImageLoadEnhancer({ rootSelector }: { rootSelector: strin
     const root = document.querySelector<HTMLElement>(rootSelector)
     if (root == null) return
 
+    const visibilityObserver = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        const frame = entry.target
+        if (!(frame instanceof HTMLElement)) continue
+        frame.dataset.articleImageVisible = String(entry.isIntersecting)
+      }
+    })
+
+    const setImageState = (image: HTMLImageElement, state: 'loading' | 'loaded' | 'error') => {
+      const frame = image.parentElement
+      if (frame == null) return
+
+      frame.dataset.articleImageState = state
+      frame.setAttribute('aria-busy', String(state === 'loading'))
+      image.tabIndex = state === 'loaded' ? 0 : -1
+
+      if (state === 'loading') {
+        visibilityObserver.observe(frame)
+      } else {
+        visibilityObserver.unobserve(frame)
+        delete frame.dataset.articleImageVisible
+      }
+    }
+
     const markImage = (image: HTMLImageElement) => {
-      image.tabIndex = 0
       image.setAttribute('role', 'button')
       image.setAttribute('aria-haspopup', 'dialog')
       image.dataset.articleImageLightbox = 'true'
 
       if (image.complete) {
-        delete image.dataset.articleImageLoading
+        setImageState(image, image.naturalWidth > 0 ? 'loaded' : 'error')
         return
       }
 
-      image.dataset.articleImageLoading = 'true'
+      setImageState(image, 'loading')
     }
 
     const markImages = () => {
       root.querySelectorAll<HTMLImageElement>('.md-image-frame > img').forEach(markImage)
     }
 
-    const handleImageLoad = (event: Event) => {
+    const handleImageSettled = (event: Event) => {
       const target = event.target
       if (!(target instanceof HTMLImageElement)) return
+      if (!target.matches('.md-image-frame > img')) return
 
-      delete target.dataset.articleImageLoading
+      setImageState(target, target.naturalWidth > 0 ? 'loaded' : 'error')
     }
 
     const openImage = (image: HTMLImageElement) => {
@@ -62,6 +86,7 @@ export function ArticleImageLoadEnhancer({ rootSelector }: { rootSelector: strin
       const target = event.target
       if (!(target instanceof HTMLImageElement)) return
       if (!target.matches('.md-image-frame > img')) return
+      if (!target.complete || target.naturalWidth === 0) return
 
       event.preventDefault()
       openImage(target)
@@ -72,6 +97,7 @@ export function ArticleImageLoadEnhancer({ rootSelector }: { rootSelector: strin
       if (!(target instanceof HTMLImageElement)) return
       if (!target.matches('.md-image-frame > img')) return
       if (event.key !== 'Enter' && event.key !== ' ') return
+      if (!target.complete || target.naturalWidth === 0) return
 
       event.preventDefault()
       openImage(target)
@@ -88,13 +114,16 @@ export function ArticleImageLoadEnhancer({ rootSelector }: { rootSelector: strin
       subtree: true,
     })
 
-    root.addEventListener('load', handleImageLoad, true)
+    root.addEventListener('load', handleImageSettled, true)
+    root.addEventListener('error', handleImageSettled, true)
     root.addEventListener('click', handleImageClick)
     root.addEventListener('keydown', handleImageKeyDown)
 
     return () => {
       observer.disconnect()
-      root.removeEventListener('load', handleImageLoad, true)
+      visibilityObserver.disconnect()
+      root.removeEventListener('load', handleImageSettled, true)
+      root.removeEventListener('error', handleImageSettled, true)
       root.removeEventListener('click', handleImageClick)
       root.removeEventListener('keydown', handleImageKeyDown)
     }

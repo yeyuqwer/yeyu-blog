@@ -10,6 +10,44 @@
   --animate-blueprint-card: site-blueprint-card 950ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
   --animate-blueprint-rule: site-blueprint-rule 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-blueprint-rise: site-blueprint-rise 950ms ease-out backwards;
+  --animate-article-blueprint-reveal: site-article-blueprint-reveal 850ms
+    cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  --animate-image-shimmer: site-image-shimmer 2.4s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite
+    var(--image-shimmer-play-state);
+  --animate-image-shimmer-drift: site-image-shimmer-drift 9s ease-in-out infinite alternate
+    var(--image-shimmer-play-state);
+
+  @keyframes site-image-shimmer {
+    from {
+      background-position:
+        120% 0,
+        135% 0;
+    }
+    to {
+      background-position:
+        -20% 0,
+        -35% 0;
+    }
+  }
+
+  @keyframes site-image-shimmer-drift {
+    from {
+      transform: translate(-6%, -4%) rotate(0deg);
+    }
+    to {
+      transform: translate(6%, 5%) rotate(20deg);
+    }
+  }
+
+  @keyframes site-article-blueprint-reveal {
+    0%,
+    32% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
 
   @keyframes site-blueprint-rise {
     from {
