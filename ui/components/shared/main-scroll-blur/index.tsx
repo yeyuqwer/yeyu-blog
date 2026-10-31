@@ -9,7 +9,7 @@ const subscribePortal = (onStoreChange: () => void) => {
   return () => cancelAnimationFrame(frame)
 }
 
-const getPortalSnapshot = () => document.body
+const getPortalSnapshot = () => document.querySelector<HTMLElement>('[data-main-scroll-overlay]')
 const getServerPortalSnapshot = () => null
 
 export function MainScrollBlur() {
@@ -55,13 +55,15 @@ export function MainScrollBlur() {
 
   return createPortal(
     <>
+      {isScrollProgressOpen && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-40 bg-transparent backdrop-blur-[1px] select-none"
+        />
+      )}
       <div
         aria-hidden
-        className={`pointer-events-none fixed inset-0 z-40 bg-transparent backdrop-blur-[1px] transition-opacity duration-300 select-none motion-reduce:transition-none ${isScrollProgressOpen ? 'opacity-100' : 'opacity-0'}`}
-      />
-      <div
-        aria-hidden
-        className={`pointer-events-none fixed inset-x-3 bottom-3 z-20 h-16 rounded-b-lg bg-[linear-gradient(transparent,rgba(255,255,255,0.9))] [mask-image:linear-gradient(to_top,black_40%,transparent)] backdrop-blur-[10px] transition-opacity duration-300 select-none [-webkit-mask-image:linear-gradient(to_top,black_40%,transparent)] motion-reduce:transition-none sm:inset-x-5 sm:bottom-5 dark:bg-[linear-gradient(transparent,rgba(0,0,0,0.85))] ${hasContentBelow ? 'opacity-100' : 'opacity-0'}`}
+        className={`pointer-events-none absolute inset-x-0 bottom-0 z-20 h-16 bg-[linear-gradient(transparent,rgba(255,255,255,0.9))] [mask-image:linear-gradient(to_top,black_40%,transparent)] backdrop-blur-[10px] transition-opacity duration-300 select-none [-webkit-mask-image:linear-gradient(to_top,black_40%,transparent)] motion-reduce:transition-none dark:bg-[linear-gradient(transparent,rgba(0,0,0,0.85))] ${hasContentBelow ? 'opacity-100' : 'opacity-0'}`}
       />
     </>,
     portal,

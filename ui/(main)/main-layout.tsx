@@ -7,7 +7,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   return (
     <MainProvider>
       <MainStage>
-        <div className="site-whiteboard flex h-[calc(100dvh-1.5rem)] min-h-0 w-full flex-1 flex-col overflow-hidden rounded-2xl sm:h-[calc(100dvh-2.5rem)]">
+        <div className="site-whiteboard relative flex h-[calc(100dvh-1.5rem)] min-h-0 w-full flex-1 flex-col overflow-hidden rounded-2xl sm:h-[calc(100dvh-2.5rem)]">
           <Header />
 
           <div
@@ -18,6 +18,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
               <main className="flex flex-1 flex-col">{children}</main>
             </MaxWidthWrapper>
           </div>
+          <div
+            data-main-scroll-overlay
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-30 overflow-hidden rounded-[calc(1rem-clamp(4px,0.55vw,8px))]"
+          />
         </div>
       </MainStage>
     </MainProvider>

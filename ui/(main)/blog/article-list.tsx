@@ -34,7 +34,7 @@ export const ArticleList = ({ items }: { items: BlogListItem[] }) => {
 
   return (
     <>
-      <ViewportRevealList interval={120}>
+      <ViewportRevealList interval={70}>
         <div className="flex flex-col gap-10">
           {sortedYears.map(year => (
             <div key={year} className="flex flex-col gap-1">
