@@ -1,6 +1,6 @@
 'use client'
 
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
 import { cn } from '@/lib/utils/common/shadcn'
 import { useLanguage } from '@/ui/components/provider/main/language-provider'
@@ -40,18 +40,26 @@ export function ViewportRevealList({
       items.map(item => [item.element, item]),
     )
 
-    // Keep server-rendered content visible; only hide items outside the first viewport.
+    // Blueprint starts in CSS on the first paint; observing it again would replay the entrance.
+    // Keep other server-rendered content visible and defer only items outside the first viewport.
     for (const item of items) {
       if (item.content.dataset.revealed !== undefined) continue
 
       if (isLanguageChanging) {
-        delete item.content.dataset.revealPending
+        if (item.element.dataset.viewportRevealAnimation !== 'blueprint') {
+          delete item.content.dataset.revealPending
+        }
         continue
       }
 
       const bounds = item.element.getBoundingClientRect()
       if (bounds.bottom <= viewport.top || bounds.top >= viewport.bottom) {
         item.content.dataset.revealPending = ''
+      } else if (
+        item.element.dataset.viewportRevealAnimation === 'blueprint' &&
+        item.content.dataset.revealPending === undefined
+      ) {
+        item.content.dataset.revealed = ''
       }
     }
     if (isLanguageChanging) return
@@ -81,7 +89,11 @@ export function ViewportRevealList({
 
     return () => {
       observer.disconnect()
-      for (const item of items) delete item.content.dataset.revealPending
+      for (const item of items) {
+        if (item.element.dataset.viewportRevealAnimation !== 'blueprint') {
+          delete item.content.dataset.revealPending
+        }
+      }
     }
   }, [interval, isLanguageChanging])
 
@@ -97,22 +109,36 @@ export function ViewportRevealItem({
   children,
   className,
   animation = 'bounce',
+  delay = 0,
 }: {
   as: 'div' | 'h3' | 'li'
   children: ReactNode
   className?: string
   animation?: 'bounce' | 'blur' | 'blueprint'
+  delay?: number
 }) {
   const Component = as
   const Content = as === 'h3' ? 'span' : 'div'
 
   return (
-    <Component data-viewport-reveal-item className={className}>
+    <Component
+      data-viewport-reveal-item
+      data-viewport-reveal-animation={animation}
+      className={className}
+    >
       <Content
+        style={
+          animation === 'blueprint'
+            ? ({
+                animationDelay: `${delay}ms`,
+                '--viewport-reveal-delay': `${delay}ms`,
+              } as CSSProperties)
+            : undefined
+        }
         className={cn(
           'block w-full [--viewport-reveal-delay:0ms] motion-safe:data-[reveal-pending]:pointer-events-none motion-safe:data-[reveal-pending]:opacity-0',
           animation === 'blueprint'
-            ? 'group/viewport-reveal motion-safe:data-[revealed]:animate-blueprint-rise relative motion-safe:data-[reveal-pending]:translate-y-5'
+            ? 'group/viewport-reveal motion-safe:animate-blueprint-rise relative motion-safe:data-[reveal-pending]:translate-y-5 motion-safe:data-[reveal-pending]:animate-none'
             : animation === 'blur'
               ? 'motion-safe:data-[revealed]:animate-entry-blur motion-safe:data-[reveal-pending]:translate-y-3 motion-safe:data-[reveal-pending]:blur-[8px]'
               : 'motion-safe:data-[revealed]:animate-entry-bounce [--site-entry-overshoot:-8px] motion-safe:data-[reveal-pending]:translate-y-10',

@@ -14,6 +14,7 @@ export function FriendCard({ friend, index }: { friend: Friend; index: number })
     <ViewportRevealItem
       as="li"
       animation="blueprint"
+      delay={Math.min(index * 70, 280)}
       className={cn('flex w-[80%] md:w-[60%]', isRightAligned && 'self-end')}
     >
       <Link
@@ -22,7 +23,7 @@ export function FriendCard({ friend, index }: { friend: Friend; index: number })
         rel="noreferrer"
         aria-label={translations.friends.visitSite(friend.name)}
         className={cn(
-          'bg-theme-background/80 hover:border-theme-accent focus-visible:outline-theme-ring motion-safe:group-data-[revealed]/viewport-reveal:animate-blueprint-card flex h-[72px] w-full items-center gap-2 rounded-xl border border-[#00000011] px-3 py-1.5 text-left text-zinc-900 transition-colors [animation-delay:var(--viewport-reveal-delay)] focus-visible:outline-2 md:h-20 md:gap-3 md:px-4 md:py-2 dark:border-white/10 dark:bg-white/[0.04] dark:text-white/90 dark:hover:border-white/25 dark:hover:bg-white/[0.07]',
+          'bg-theme-background/80 hover:border-theme-accent focus-visible:outline-theme-ring motion-safe:animate-blueprint-card flex h-[72px] w-full items-center gap-2 rounded-xl border border-[#00000011] px-3 py-1.5 text-left text-zinc-900 transition-colors [animation-delay:var(--viewport-reveal-delay)] focus-visible:outline-2 motion-safe:group-data-[reveal-pending]/viewport-reveal:animate-none md:h-20 md:gap-3 md:px-4 md:py-2 dark:border-white/10 dark:bg-white/[0.04] dark:text-white/90 dark:hover:border-white/25 dark:hover:bg-white/[0.07]',
           isRightAligned && 'flex-row-reverse text-right',
         )}
       >
