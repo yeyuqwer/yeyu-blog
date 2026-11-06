@@ -53,11 +53,11 @@
       var(--site-sky-sky-bottom) 100%
     );
   opacity: 0;
-  transition: opacity 600ms ease-out;
 }
 
 .site-background[data-initialized] {
   opacity: 1;
+  animation: site-background-reveal 300ms ease-out;
 }
 
 .site-background::before {
@@ -154,6 +154,16 @@
   height: 100%;
 }
 
+@keyframes site-background-reveal {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 @keyframes site-sky-star-twinkle {
   0% {
     opacity: 0.42;
@@ -165,8 +175,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .site-background {
-    transition: none;
+  .site-background[data-initialized] {
+    animation: none;
   }
 
   .site-sky-field {
