@@ -1,6 +1,13 @@
 'use client'
 
-import { AnimatePresence, animate, motion, useMotionValue, useReducedMotion } from 'motion/react'
+import {
+  AnimatePresence,
+  animate,
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useReducedMotion,
+} from 'motion/react'
 import { useEffect, useEffectEvent, useId, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useIsHydrated } from '@/hooks/common/use-is-hydrated'
@@ -477,6 +484,7 @@ function Stage({
   const fs = useMotionValue(1)
   const fo = useMotionValue(0)
   const fr = useMotionValue(14)
+  const clipPath = useMotionTemplate`inset(0 round ${fr}px)`
 
   const { frameRef, contentRef, bind, scale, x, y, zoomed, settledZoom, reset, zoomAt } =
     useLightbox({ maxScale, onDismiss: onClose })
@@ -630,7 +638,7 @@ function Stage({
             width={width}
             height={height}
             draggable={false}
-            style={{ x, y, scale, borderRadius: fr }}
+            style={{ x, y, scale, clipPath }}
             variants={{ away: unwind }}
             exit="away"
             className="h-auto max-h-full w-auto max-w-full object-contain"

@@ -3,10 +3,13 @@
 import type { Ref, SyntheticEvent } from 'react'
 import type { friendLinkApplyFields } from './constant'
 import { CircleAlert } from 'lucide-react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from '@/ui/components/provider/main/language-provider'
 import { LanguageText } from '@/ui/components/shared/language-text'
 import { Input } from '@/ui/shadcn/input'
+
+const validationTransition = { duration: 0.2, ease: [0.4, 0, 0.2, 1] } as const
 
 export function FriendLinkFormField({
   field,
@@ -23,16 +26,16 @@ export function FriendLinkFormField({
   const controlRef = useRef<HTMLDivElement>(null)
   const shake = useRef<Animation | null>(null)
   const [validation, setValidation] = useState({ invalid: false, message: '' })
+  const reducedMotion = useReducedMotion()
 
   useEffect(() => () => shake.current?.cancel(), [])
 
   const updateValidation = (input: HTMLInputElement) => {
-    if (input.validity.valid) {
-      setValidation(current => ({ ...current, invalid: false }))
-      return
-    }
-
-    setValidation({ invalid: true, message: input.validationMessage })
+    const invalid = !input.validity.valid
+    const message = input.validationMessage
+    setValidation(current =>
+      current.invalid === invalid && current.message === message ? current : { invalid, message },
+    )
   }
 
   const handleInvalid = (event: SyntheticEvent<HTMLInputElement>) => {
@@ -63,12 +66,17 @@ export function FriendLinkFormField({
   }
 
   return (
-    <div
-      className="group/field motion-safe:animate-entry-text [animation-duration:300ms]"
+    <motion.div
+      className="group/field"
       data-invalid={validation.invalid || undefined}
-      style={{ animationDelay: `${index * 35}ms` }}
+      layout={reducedMotion ? false : 'position'}
+      transition={{ layout: validationTransition }}
     >
-      <div ref={controlRef} className="relative rounded-lg bg-white dark:bg-zinc-950">
+      <div
+        ref={controlRef}
+        className="motion-safe:animate-entry-text relative rounded-lg bg-white [animation-duration:300ms] dark:bg-zinc-950"
+        style={{ animationDelay: `${index * 35}ms` }}
+      >
         <Input
           ref={inputRef}
           id={fieldId}
@@ -92,27 +100,30 @@ export function FriendLinkFormField({
         />
         <label
           htmlFor={fieldId}
-          className="peer-focus:text-theme-primary absolute top-1/2 left-2.5 max-w-[calc(100%-1.5rem)] origin-left -translate-y-1/2 cursor-text truncate bg-white px-1 text-sm leading-5 text-zinc-500 transition-[top,scale,color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[invalid]/field:text-red-500 peer-focus:top-0 peer-focus:scale-[0.8] group-data-[invalid]/field:peer-focus:text-red-500 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:scale-[0.8] motion-reduce:transition-none dark:bg-zinc-950 dark:text-zinc-400 dark:group-data-[invalid]/field:text-red-400 dark:group-data-[invalid]/field:peer-focus:text-red-400"
+          className="peer-focus:text-theme-primary absolute top-1/2 left-2.5 max-w-[calc(100%-1.5rem)] origin-left -translate-y-1/2 cursor-text truncate bg-white px-1 text-sm leading-5 text-zinc-500 transition-[translate,scale,color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[invalid]/field:text-red-500 peer-focus:translate-y-[calc(-50%_-_var(--spacing)*5.5)] peer-focus:scale-[0.8] group-data-[invalid]/field:peer-focus:text-red-500 peer-[:not(:placeholder-shown)]:translate-y-[calc(-50%_-_var(--spacing)*5.5)] peer-[:not(:placeholder-shown)]:scale-[0.8] motion-reduce:transition-none dark:bg-zinc-950 dark:text-zinc-400 dark:group-data-[invalid]/field:text-red-400 dark:group-data-[invalid]/field:peer-focus:text-red-400"
         >
           <LanguageText className="truncate align-top">{fieldTranslations.label}</LanguageText>
         </label>
       </div>
 
-      <div
-        className="grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity] duration-200 group-data-[invalid]/field:grid-rows-[1fr] group-data-[invalid]/field:opacity-100 motion-reduce:transition-none"
-        aria-live="polite"
-      >
-        <div className="min-h-0 overflow-hidden">
-          <p
-            id={`${fieldId}-error`}
-            aria-hidden={!validation.invalid}
-            className="flex items-start gap-1.5 px-1 pt-1.5 text-xs leading-4 text-red-500 dark:text-red-400"
-          >
-            <CircleAlert aria-hidden className="mt-0.5 size-3 shrink-0" />
-            {validation.message}
-          </p>
-        </div>
+      <div aria-live="polite" className="relative">
+        <AnimatePresence initial={false} mode="popLayout">
+          {validation.invalid && (
+            <motion.p
+              key="validation-error"
+              id={`${fieldId}-error`}
+              className="flex items-start gap-1.5 px-1 pt-1.5 text-xs leading-4 text-red-500 dark:text-red-400"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={reducedMotion ? { duration: 0 } : validationTransition}
+            >
+              <CircleAlert aria-hidden className="mt-0.5 size-3 shrink-0" />
+              {validation.message}
+            </motion.p>
+          )}
+        </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   )
 }

@@ -151,7 +151,7 @@ export const Combobox = React.forwardRef(
               )}
               <ChevronDown
                 className={cn(
-                  'ml-2 size-4 shrink-0 rotate-0 opacity-50 transition-transform',
+                  'ml-2 size-4 shrink-0 rotate-0 opacity-50 transition-transform motion-reduce:transition-none',
                   open && 'rotate-180',
                 )}
               />

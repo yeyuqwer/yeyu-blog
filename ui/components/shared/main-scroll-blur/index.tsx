@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useSyncExternalStore } from 'react'
 import { createPortal } from 'react-dom'
-import { subscribeScrollContainer } from '@/lib/utils/common/scroll-container-store'
 
 const subscribePortal = (onStoreChange: () => void) => {
   const frame = requestAnimationFrame(onStoreChange)
@@ -19,17 +18,19 @@ export function MainScrollBlur() {
 
   useEffect(() => {
     const scrollContainer = document.querySelector<HTMLElement>('[data-main-scroll-container]')
+    const scrollEnd = scrollContainer?.querySelector('[data-main-scroll-end]')
 
-    if (scrollContainer == null) return
+    if (scrollContainer == null || scrollEnd == null) return
 
-    return subscribeScrollContainer(
-      scrollContainer,
-      ({ clientHeight, scrollHeight, scrollTop }) => {
-        const remainingScroll = scrollHeight - scrollTop - clientHeight
-
-        setHasContentBelow(remainingScroll > 1)
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry != null) setHasContentBelow(!entry.isIntersecting)
       },
+      { root: scrollContainer },
     )
+    observer.observe(scrollEnd)
+
+    return () => observer.disconnect()
   }, [])
 
   useEffect(() => {

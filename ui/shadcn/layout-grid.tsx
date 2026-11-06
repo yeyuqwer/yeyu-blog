@@ -15,53 +15,61 @@ interface LayoutGridIconProps extends HTMLAttributes<HTMLDivElement> {
   size?: number;
 }
 
-const RECT_1_VARIANTS: Variants = {
-  normal: { translateX: 0, translateY: 0 },
-  animate: {
-    translateX: [0, 11, 11, 0],
-    translateY: [0, 0, 0, 0],
-    transition: { duration: 0.8, ease: "easeInOut", times: [0, 0.4, 0.6, 1] },
-  },
+const rectTransition = {
+  duration: 0.8,
+  ease: "easeInOut" as const,
+  times: [0, 0.4, 0.6, 1],
 };
 
-const RECT_2_VARIANTS: Variants = {
-  normal: { translateX: 0, translateY: 0 },
-  animate: {
-    translateX: [0, 0, 0, 0],
-    translateY: [0, 11, 11, 0],
-    transition: { duration: 0.8, ease: "easeInOut", times: [0, 0.4, 0.6, 1] },
-  },
-};
+const rectResetTransition = {
+  type: "spring",
+  stiffness: 500,
+  damping: 25,
+  restSpeed: 10,
+} as const;
 
-const RECT_3_VARIANTS: Variants = {
-  normal: { translateX: 0, translateY: 0 },
-  animate: {
-    translateX: [0, -11, -11, 0],
-    translateY: [0, 0, 0, 0],
-    transition: { duration: 0.8, ease: "easeInOut", times: [0, 0.4, 0.6, 1] },
-  },
-};
+function createRectVariants(axis: "X" | "Y", distance: number): Variants {
+  const rest = `translate${axis}(0px)`;
+  const moved = `translate${axis}(${distance}px)`;
 
-const RECT_4_VARIANTS: Variants = {
-  normal: { translateX: 0, translateY: 0 },
-  animate: {
-    translateX: [0, 0, 0, 0],
-    translateY: [0, -11, -11, 0],
-    transition: { duration: 0.8, ease: "easeInOut", times: [0, 0.4, 0.6, 1] },
-  },
-};
+  return {
+    normal: { transform: rest, transition: rectResetTransition },
+    animate: {
+      transform: [rest, moved, moved, rest],
+      transition: rectTransition,
+    },
+  };
+}
+
+const topLeftVariants = createRectVariants("X", 11);
+const topRightVariants = createRectVariants("Y", 11);
+const bottomRightVariants = createRectVariants("X", -11);
+const bottomLeftVariants = createRectVariants("Y", -11);
+const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
 
 const LayoutGridIcon = forwardRef<LayoutGridIconHandle, LayoutGridIconProps>(
   ({ onMouseEnter, onMouseLeave, className, size = 28, ...props }, ref) => {
     const controls = useAnimation();
     const isControlledRef = useRef(false);
+    const startAnimation = useCallback(() => {
+      if (window.matchMedia(reducedMotionQuery).matches) return;
+      void controls.start("animate");
+    }, [controls]);
+    const stopAnimation = useCallback(() => {
+      if (window.matchMedia(reducedMotionQuery).matches) {
+        controls.stop();
+        controls.set("normal");
+        return;
+      }
+      void controls.start("normal");
+    }, [controls]);
 
     useImperativeHandle(ref, () => {
       isControlledRef.current = true;
 
       return {
-        startAnimation: () => controls.start("animate"),
-        stopAnimation: () => controls.start("normal"),
+        startAnimation,
+        stopAnimation,
       };
     });
 
@@ -70,10 +78,10 @@ const LayoutGridIcon = forwardRef<LayoutGridIconHandle, LayoutGridIconProps>(
         if (isControlledRef.current) {
           onMouseEnter?.(e);
         } else {
-          controls.start("animate");
+          startAnimation();
         }
       },
-      [controls, onMouseEnter]
+      [onMouseEnter, startAnimation]
     );
 
     const handleMouseLeave = useCallback(
@@ -81,10 +89,10 @@ const LayoutGridIcon = forwardRef<LayoutGridIconHandle, LayoutGridIconProps>(
         if (isControlledRef.current) {
           onMouseLeave?.(e);
         } else {
-          controls.start("normal");
+          stopAnimation();
         }
       },
-      [controls, onMouseLeave]
+      [onMouseLeave, stopAnimation]
     );
 
     return (
@@ -110,7 +118,7 @@ const LayoutGridIcon = forwardRef<LayoutGridIconHandle, LayoutGridIconProps>(
             height="7"
             initial="normal"
             rx="1"
-            variants={RECT_1_VARIANTS}
+            variants={topLeftVariants}
             width="7"
             x="3"
             y="3"
@@ -120,7 +128,7 @@ const LayoutGridIcon = forwardRef<LayoutGridIconHandle, LayoutGridIconProps>(
             height="7"
             initial="normal"
             rx="1"
-            variants={RECT_2_VARIANTS}
+            variants={topRightVariants}
             width="7"
             x="14"
             y="3"
@@ -130,7 +138,7 @@ const LayoutGridIcon = forwardRef<LayoutGridIconHandle, LayoutGridIconProps>(
             height="7"
             initial="normal"
             rx="1"
-            variants={RECT_3_VARIANTS}
+            variants={bottomRightVariants}
             width="7"
             x="14"
             y="14"
@@ -140,7 +148,7 @@ const LayoutGridIcon = forwardRef<LayoutGridIconHandle, LayoutGridIconProps>(
             height="7"
             initial="normal"
             rx="1"
-            variants={RECT_4_VARIANTS}
+            variants={bottomLeftVariants}
             width="7"
             x="3"
             y="14"

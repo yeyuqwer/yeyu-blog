@@ -17,64 +17,62 @@ const loadingConfig = {
   roseScale: 3.25,
 }
 
-const particleIndexes = Array.from({ length: loadingConfig.particleCount }, (_, index) => index)
-const particleKeys = particleIndexes.map(index => `loading-particle-${index}`)
+const center = 50
 
-function normalizeProgress(progress: number) {
-  return ((progress % 1) + 1) % 1
-}
-
-function getDetailScale(time: number) {
+function getRoseRadius(time: number) {
   const pulseProgress = (time % loadingConfig.pulseDurationMs) / loadingConfig.pulseDurationMs
   const pulseAngle = pulseProgress * Math.PI * 2
+  const detailScale = 0.52 + ((Math.sin(pulseAngle + 0.55) + 1) / 2) * 0.48
 
-  return 0.52 + ((Math.sin(pulseAngle + 0.55) + 1) / 2) * 0.48
+  return (
+    (loadingConfig.roseA + detailScale * loadingConfig.roseABoost) *
+    (loadingConfig.roseBreathBase + detailScale * loadingConfig.roseBreathBoost) *
+    loadingConfig.roseScale
+  )
 }
 
 function getRotation(time: number) {
   return -((time % loadingConfig.rotationDurationMs) / loadingConfig.rotationDurationMs) * 360
 }
 
-function getPoint(progress: number, detailScale: number) {
-  const t = progress * Math.PI * 2
-  const a = loadingConfig.roseA + detailScale * loadingConfig.roseABoost
-  const r =
-    a *
-    (loadingConfig.roseBreathBase + detailScale * loadingConfig.roseBreathBoost) *
-    Math.cos(4 * t)
+function setRosePoint(progress: number, radius: number, point: { x: number; y: number }) {
+  const angle = progress * Math.PI * 2
+  const distance = radius * Math.cos(4 * angle)
 
-  return {
-    x: 50 + Math.cos(t) * r * loadingConfig.roseScale,
-    y: 50 + Math.sin(t) * r * loadingConfig.roseScale,
-  }
+  point.x = center + Math.cos(angle) * distance
+  point.y = center + Math.sin(angle) * distance
 }
 
-function buildPath(detailScale: number, steps = 480) {
+function buildPath(radius: number, steps = 480) {
   const commands: string[] = []
+  const point = { x: 0, y: 0 }
 
   for (let index = 0; index <= steps; index++) {
-    const point = getPoint(index / steps, detailScale)
+    setRosePoint(index / steps, radius, point)
     commands.push(`${index === 0 ? 'M' : 'L'} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`)
   }
 
   return commands.join(' ')
 }
 
-function getParticle(index: number, progress: number, detailScale: number) {
+const initialRadius = getRoseRadius(0)
+const rosePath = buildPath(initialRadius)
+const particles = Array.from({ length: loadingConfig.particleCount }, (_, index) => {
   const tailOffset = index / (loadingConfig.particleCount - 1)
-  const point = getPoint(
-    normalizeProgress(progress - tailOffset * loadingConfig.trailSpan),
-    detailScale,
-  )
+  const offset = tailOffset * loadingConfig.trailSpan
   const fade = (1 - tailOffset) ** 0.56
+  const point = { x: 0, y: 0 }
+  setRosePoint(-offset, initialRadius, point)
 
   return {
-    x: point.x,
-    y: point.y,
-    radius: 0.9 + fade * 2.7,
-    opacity: 0.04 + fade * 0.96,
+    index,
+    offset,
+    cx: point.x.toFixed(2),
+    cy: point.y.toFixed(2),
+    radius: (0.9 + fade * 2.7).toFixed(2),
+    opacity: (0.04 + fade * 0.96).toFixed(3),
   }
-}
+})
 
 export default function Loading() {
   const groupRef = useRef<SVGGElement>(null)
@@ -84,42 +82,75 @@ export default function Loading() {
   useEffect(() => {
     const group = groupRef.current
     const path = pathRef.current
+    const svg = group?.ownerSVGElement
 
-    if (!group || !path) {
-      return
-    }
+    if (!group || !path || !svg) return
 
-    let frameId = 0
-    const startedAt = performance.now()
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const point = { x: 0, y: 0 }
+    let isInView = false
+    let frameId: number | null = null
+    let lastFrameAt: number | null = null
+    let elapsed = 0
 
-    function render(now: number) {
-      const time = now - startedAt
-      const progress = (time % loadingConfig.durationMs) / loadingConfig.durationMs
-      const detailScale = getDetailScale(time)
+    const render = (now: number) => {
+      if (lastFrameAt != null) elapsed += now - lastFrameAt
+      lastFrameAt = now
 
-      group?.setAttribute('transform', `rotate(${getRotation(time)} 50 50)`)
-      path?.setAttribute('d', buildPath(detailScale))
+      const progress = (elapsed % loadingConfig.durationMs) / loadingConfig.durationMs
+      const radius = getRoseRadius(elapsed)
+      const scale = radius / initialRadius
 
-      circleRefs.current.forEach((node, index) => {
-        if (!node) {
-          return
-        }
+      group.setAttribute('transform', `rotate(${getRotation(elapsed)} ${center} ${center})`)
+      path.setAttribute(
+        'transform',
+        `translate(${center} ${center}) scale(${scale}) translate(${-center} ${-center})`,
+      )
+      path.setAttribute('stroke-width', String(loadingConfig.strokeWidth / scale))
 
-        const particle = getParticle(index, progress, detailScale)
+      for (const { index, offset } of particles) {
+        const circle = circleRefs.current[index]
+        if (!circle) continue
 
-        node.setAttribute('cx', particle.x.toFixed(2))
-        node.setAttribute('cy', particle.y.toFixed(2))
-        node.setAttribute('r', particle.radius.toFixed(2))
-        node.setAttribute('opacity', particle.opacity.toFixed(3))
-      })
+        setRosePoint(progress - offset, radius, point)
+        circle.setAttribute('cx', point.x.toFixed(2))
+        circle.setAttribute('cy', point.y.toFixed(2))
+      }
 
       frameId = requestAnimationFrame(render)
     }
 
-    render(startedAt)
+    const stopAnimation = () => {
+      if (frameId != null) cancelAnimationFrame(frameId)
+      frameId = null
+      lastFrameAt = null
+    }
+
+    const syncAnimation = () => {
+      if (!isInView || document.visibilityState !== 'visible' || reducedMotion.matches) {
+        stopAnimation()
+        return
+      }
+
+      frameId ??= requestAnimationFrame(render)
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry) return
+
+      isInView = entry.isIntersecting
+      syncAnimation()
+    })
+    observer.observe(svg)
+    document.addEventListener('visibilitychange', syncAnimation)
+    reducedMotion.addEventListener('change', syncAnimation)
 
     return () => {
-      cancelAnimationFrame(frameId)
+      observer.disconnect()
+      observer.takeRecords()
+      document.removeEventListener('visibilitychange', syncAnimation)
+      reducedMotion.removeEventListener('change', syncAnimation)
+      stopAnimation()
     }
   }, [])
 
@@ -134,18 +165,23 @@ export default function Loading() {
         <g ref={groupRef}>
           <path
             ref={pathRef}
+            d={rosePath}
             stroke="currentColor"
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={loadingConfig.strokeWidth}
             opacity="0.1"
           />
-          {particleIndexes.map(index => (
+          {particles.map(({ index, cx, cy, radius, opacity }) => (
             <circle
-              key={particleKeys[index]}
+              key={`loading-particle-${index}`}
               ref={node => {
                 circleRefs.current[index] = node
               }}
+              cx={cx}
+              cy={cy}
+              r={radius}
+              opacity={opacity}
               fill="currentColor"
             />
           ))}

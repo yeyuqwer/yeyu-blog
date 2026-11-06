@@ -31,6 +31,7 @@ type CarouselContextProps = {
 } & CarouselProps
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null)
+const reducedMotionQuery = "(prefers-reduced-motion: reduce)"
 
 function useCarousel() {
   const context = React.useContext(CarouselContext)
@@ -68,11 +69,11 @@ function Carousel({
   }, [])
 
   const scrollPrev = React.useCallback(() => {
-    api?.scrollPrev()
+    api?.scrollPrev(window.matchMedia(reducedMotionQuery).matches)
   }, [api])
 
   const scrollNext = React.useCallback(() => {
-    api?.scrollNext()
+    api?.scrollNext(window.matchMedia(reducedMotionQuery).matches)
   }, [api])
 
   const handleKeyDown = React.useCallback(

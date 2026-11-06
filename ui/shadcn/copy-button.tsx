@@ -6,6 +6,17 @@ import { Check, Copy } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { cn } from '@/lib/utils/common/shadcn';
 
+const reducedMotionQuery = '(prefers-reduced-motion: reduce)';
+
+const subscribeReducedMotion = (onChange: () => void) => {
+  const query = window.matchMedia(reducedMotionQuery);
+  query.addEventListener('change', onChange);
+  return () => query.removeEventListener('change', onChange);
+};
+
+const getReducedMotionSnapshot = () => window.matchMedia(reducedMotionQuery).matches;
+const getServerReducedMotionSnapshot = () => false;
+
 const copyButtonVariants = cva(
   'inline-flex shrink-0 items-center justify-center rounded-md transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50',
   {
@@ -59,11 +70,19 @@ function CopyButton({
   onCopyChange,
   ...props
 }: CopyButtonProps) {
+  const prefersReducedMotion = React.useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotionSnapshot,
+    getServerReducedMotionSnapshot,
+  );
   const [internalCopied, setInternalCopied] = React.useState(false);
   const resetTimerRef = React.useRef<number | null>(null);
 
   const isControlled = isCopiedProp !== undefined;
   const copied = isControlled ? isCopiedProp : internalCopied;
+  const fadedCheck = { scale: prefersReducedMotion ? 1 : 0.9, opacity: 0 };
+  const fadedCopy = { scale: prefersReducedMotion ? 1 : 0.92, opacity: 0 };
+  const copyOffset = prefersReducedMotion ? 0 : 2;
 
   React.useEffect(() => {
     return () => {
@@ -111,9 +130,9 @@ function CopyButton({
         {copied ? (
           <motion.span
             key="check"
-            initial={{ scale: 0.9, opacity: 0 }}
+            initial={fadedCheck}
             animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
+            exit={fadedCheck}
             transition={{ duration: 0.16, ease: 'easeOut' }}
             className="inline-flex items-center justify-center"
           >
@@ -122,9 +141,9 @@ function CopyButton({
         ) : (
           <motion.span
             key="copy"
-            initial={{ y: 2, scale: 0.92, opacity: 0 }}
+            initial={{ ...fadedCopy, y: copyOffset }}
             animate={{ y: 0, scale: 1, opacity: 1 }}
-            exit={{ y: -2, scale: 0.92, opacity: 0 }}
+            exit={{ ...fadedCopy, y: -copyOffset }}
             transition={{ duration: 0.16, ease: 'easeOut' }}
             className="inline-flex items-center justify-center"
           >

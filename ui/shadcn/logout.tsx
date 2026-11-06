@@ -15,13 +15,19 @@ interface LogoutIconProps extends HTMLAttributes<HTMLDivElement> {
   size?: number;
 }
 
-const PATH_VARIANTS: Variants = {
+const arrowTransition = { duration: 0.4 };
+
+const arrowTravelVariants: Variants = {
   animate: {
-    x: 2,
-    translateX: [0, -3, 0],
-    transition: {
-      duration: 0.4,
-    },
+    transform: "translateX(2px)",
+    transition: arrowTransition,
+  },
+};
+
+const arrowNudgeVariants: Variants = {
+  animate: {
+    transform: ["translateX(0px)", "translateX(-3px)", "translateX(0px)"],
+    transition: arrowTransition,
   },
 };
 
@@ -29,12 +35,16 @@ const LogoutIcon = forwardRef<LogoutIconHandle, LogoutIconProps>(
   ({ onMouseEnter, onMouseLeave, className, size = 28, ...props }, ref) => {
     const controls = useAnimation();
     const isControlledRef = useRef(false);
+    const startAnimation = useCallback(() => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      void controls.start("animate");
+    }, [controls]);
 
     useImperativeHandle(ref, () => {
       isControlledRef.current = true;
 
       return {
-        startAnimation: () => controls.start("animate"),
+        startAnimation,
         stopAnimation: () => controls.start("normal"),
       };
     });
@@ -44,10 +54,10 @@ const LogoutIcon = forwardRef<LogoutIconHandle, LogoutIconProps>(
         if (isControlledRef.current) {
           onMouseEnter?.(e);
         } else {
-          controls.start("animate");
+          startAnimation();
         }
       },
-      [controls, onMouseEnter]
+      [onMouseEnter, startAnimation]
     );
 
     const handleMouseLeave = useCallback(
@@ -80,19 +90,12 @@ const LogoutIcon = forwardRef<LogoutIconHandle, LogoutIconProps>(
           xmlns="http://www.w3.org/2000/svg"
         >
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-          <motion.polyline
-            animate={controls}
-            points="16 17 21 12 16 7"
-            variants={PATH_VARIANTS}
-          />
-          <motion.line
-            animate={controls}
-            variants={PATH_VARIANTS}
-            x1="21"
-            x2="9"
-            y1="12"
-            y2="12"
-          />
+          <motion.g animate={controls} variants={arrowTravelVariants}>
+            <motion.g animate={controls} variants={arrowNudgeVariants}>
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" x2="9" y1="12" y2="12" />
+            </motion.g>
+          </motion.g>
         </svg>
       </div>
     );

@@ -253,8 +253,8 @@ const ScrollProgress = ({
       data-slot="scroll-progress"
       data-open={open}
       className={cn(
-        "fixed left-1/2 z-50 -translate-x-1/2 transition-[bottom] duration-300 motion-reduce:transition-none",
-        open ? "bottom-10" : "bottom-5",
+        "fixed bottom-10 left-1/2 z-50 -translate-x-1/2 transition-[translate] duration-300 motion-reduce:transition-none",
+        open ? "translate-y-0" : "translate-y-5",
         className
       )}
       {...props}

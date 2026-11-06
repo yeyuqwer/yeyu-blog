@@ -3,6 +3,7 @@
 import type { SyntheticEvent } from 'react'
 import type { CreateFriendLinkParams } from '@/lib/api/friend-link/create-friend-link'
 import { LoaderCircle, Send } from 'lucide-react'
+import { LayoutGroup } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { useFriendLinkMutation } from '@/hooks/api/friend-link/use-friend-link-mutation'
 import { useModalActions, useModalType } from '@/store/use-modal-store'
@@ -162,6 +163,7 @@ const FriendLinkApplyModalContent = () => {
         </div>
       }
       closeLabel={translations.friendLinkApplyModal.closeLabel}
+      layoutChildren
       initialFocusRef={firstFieldRef}
       maxWidth={500}
       maxHeight="88vh"
@@ -178,14 +180,16 @@ const FriendLinkApplyModalContent = () => {
         className="grid gap-4 pt-2"
         onSubmit={handleSubmit}
       >
-        {friendLinkApplyFields.map((field, index) => (
-          <FriendLinkFormField
-            key={field.name}
-            field={field}
-            index={index}
-            inputRef={index === 0 ? firstFieldRef : undefined}
-          />
-        ))}
+        <LayoutGroup>
+          {friendLinkApplyFields.map((field, index) => (
+            <FriendLinkFormField
+              key={field.name}
+              field={field}
+              index={index}
+              inputRef={index === 0 ? firstFieldRef : undefined}
+            />
+          ))}
+        </LayoutGroup>
       </form>
     </Modal>
   )

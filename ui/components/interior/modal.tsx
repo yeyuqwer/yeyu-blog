@@ -276,6 +276,7 @@ export type ModalProps = {
   closeOnEscape?: boolean
   closeOnBackdrop?: boolean
   lockScroll?: boolean
+  layoutChildren?: boolean
   initialFocusRef?: React.RefObject<HTMLElement | null>
   container?: HTMLElement | null
   maxWidth?: number
@@ -300,6 +301,7 @@ export function Modal({
   closeOnEscape = true,
   closeOnBackdrop = true,
   lockScroll = true,
+  layoutChildren,
   initialFocusRef,
   container,
   maxWidth = 440,
@@ -371,6 +373,7 @@ export function Modal({
         <motion.div
           key="modal"
           {...overlayProps}
+          layoutRoot={layoutChildren}
           initial="closed"
           animate="open"
           exit="gone"
@@ -430,14 +433,15 @@ export function Modal({
             </div>
 
             {children ? (
-              <div
+              <motion.div
+                layoutScroll={layoutChildren}
                 className={cn(
                   'min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4 text-[13px] leading-relaxed',
                   bodyClassName,
                 )}
               >
                 {children}
-              </div>
+              </motion.div>
             ) : null}
 
             {footer ? (

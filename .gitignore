@@ -56,3 +56,7 @@ scripts/
 
 # what fuck?
 .pnpm-store
+
+# AI
+.agents
+.codex

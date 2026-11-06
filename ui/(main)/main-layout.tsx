@@ -16,6 +16,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           >
             <MaxWidthWrapper className="flex min-h-full flex-col overflow-x-clip">
               <main className="flex flex-1 flex-col">{children}</main>
+              <div
+                data-main-scroll-end
+                aria-hidden
+                className="pointer-events-none -mt-px h-px shrink-0"
+              />
             </MaxWidthWrapper>
           </div>
           <div

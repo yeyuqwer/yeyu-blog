@@ -28,6 +28,17 @@ const subscribePortal = (onStoreChange: () => void) => {
 const getPortalSnapshot = () => document.body
 const getServerPortalSnapshot = () => null
 
+const reducedMotionQuery = '(prefers-reduced-motion: reduce)'
+
+const subscribeReducedMotion = (onStoreChange: () => void) => {
+  const query = window.matchMedia(reducedMotionQuery)
+  query.addEventListener('change', onStoreChange)
+  return () => query.removeEventListener('change', onStoreChange)
+}
+
+const getReducedMotionSnapshot = () => window.matchMedia(reducedMotionQuery).matches
+const getServerReducedMotionSnapshot = () => false
+
 export function DraggableFloatingMenu({
   className,
   onDragEnd,
@@ -54,6 +65,11 @@ export function DraggableFloatingMenu({
   )
   const menuId = useId()
   const portal = useSyncExternalStore(subscribePortal, getPortalSnapshot, getServerPortalSnapshot)
+  const prefersReducedMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotionSnapshot,
+    getServerReducedMotionSnapshot,
+  )
 
   const handleAimChange = useCallback((nextAim: number | null) => {
     aimRef.current = nextAim
@@ -206,7 +222,7 @@ export function DraggableFloatingMenu({
         dragConstraints={constraintsRef}
         dragElastic={0}
         dragMomentum={false}
-        whileDrag={{ scale: 1.02 }}
+        whileDrag={prefersReducedMotion ? undefined : { scale: 1.02 }}
         onDragStart={(event, info) => {
           draggedRef.current = true
           setIsDragging(true)
@@ -259,7 +275,7 @@ export function DraggableFloatingMenu({
             handleOpenChange(!isOpen)
           }}
           className={cn(
-            'motion-safe:animate-entry-icon relative z-10 size-12 overflow-hidden border-white/70 p-0 shadow-[0_8px_20px_color-mix(in_srgb,var(--theme-accent)_25%,transparent)] dark:border-white/30',
+            'motion-safe:animate-entry-icon relative z-10 size-12 overflow-hidden p-0',
             isOpen ? 'cursor-pointer' : 'cursor-grab active:cursor-grabbing',
           )}
         >
@@ -275,7 +291,7 @@ export function DraggableFloatingMenu({
           <span
             aria-hidden
             className={cn(
-              'bg-theme-accent pointer-events-none absolute inset-0 grid place-items-center rounded-full text-white transition-opacity duration-200 motion-reduce:transition-none',
+              'pointer-events-none absolute inset-0 grid place-items-center rounded-full bg-white/40 text-zinc-800 backdrop-blur-xl transition-opacity duration-200 motion-reduce:transition-none dark:bg-zinc-900/35 dark:text-white/90',
               isOpen ? 'opacity-100' : 'opacity-0',
             )}
           >

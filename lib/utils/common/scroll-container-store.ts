@@ -20,22 +20,13 @@ const scrollContainerStores = new WeakMap<HTMLElement, ScrollContainerStore>()
 function updateStore(store: ScrollContainerStore, hasLayoutChange: boolean) {
   const { container, snapshot } = store
   const scrollTop = Math.max(container.scrollTop, 0)
-  const scrollHeight = container.scrollHeight
-  const clientHeight = container.clientHeight
 
-  if (
-    !hasLayoutChange &&
-    snapshot.scrollTop === scrollTop &&
-    snapshot.scrollHeight === scrollHeight &&
-    snapshot.clientHeight === clientHeight
-  ) {
-    return
-  }
+  if (!hasLayoutChange && snapshot.scrollTop === scrollTop) return
 
   store.snapshot = {
-    clientHeight,
+    clientHeight: hasLayoutChange ? container.clientHeight : snapshot.clientHeight,
     layoutVersion: snapshot.layoutVersion + (hasLayoutChange ? 1 : 0),
-    scrollHeight,
+    scrollHeight: hasLayoutChange ? container.scrollHeight : snapshot.scrollHeight,
     scrollTop,
   }
 
@@ -94,7 +85,9 @@ export function subscribeScrollContainer(
     store.resizeObserver = resizeObserver
     container.addEventListener('scroll', handleScroll, { passive: true })
     resizeObserver.observe(container)
-    if (scrollContent instanceof HTMLElement) resizeObserver.observe(scrollContent)
+    if (scrollContent instanceof HTMLElement) {
+      resizeObserver.observe(scrollContent, { box: 'border-box' })
+    }
     updateStore(store, true)
   } else {
     listener(store.snapshot)

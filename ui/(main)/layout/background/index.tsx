@@ -39,7 +39,6 @@ export function Background() {
     '--site-sky-sky-middle': timeState.skyMiddle,
     '--site-sky-sky-top': timeState.skyTop,
     '--site-sky-sky-upper': timeState.skyUpper,
-    '--site-sky-star-opacity': timeState.starOpacity,
     '--site-sky-star-play-state': timeState.starOpacity > 0 && isPageVisible ? 'running' : 'paused',
     '--site-sky-upper-glow-opacity': timeState.upperGlowOpacity,
     '--site-sky-upper-glow-rgb': timeState.upperGlowRgb,
@@ -69,7 +68,7 @@ export function Background() {
       style={backgroundStyle}
     >
       <SkyBackgroundSync />
-      <div className="site-sky-stars" />
+      <div className="site-sky-stars" style={{ opacity: timeState.starOpacity }} />
       {isInitialized && (
         <SkyBackgroundCanvas
           colors={colors}

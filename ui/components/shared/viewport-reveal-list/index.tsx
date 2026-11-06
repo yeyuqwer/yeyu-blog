@@ -35,34 +35,44 @@ export function ViewportRevealList({
     const scrollContainer = container.closest('[data-main-scroll-container]')
     if (!scrollContainer) return
 
+    if (isLanguageChanging) {
+      for (const { element, content } of items) {
+        if (
+          content.dataset.revealed === undefined &&
+          element.dataset.viewportRevealAnimation !== 'blueprint'
+        ) {
+          delete content.dataset.revealPending
+        }
+      }
+      return
+    }
+
     const viewport = scrollContainer.getBoundingClientRect()
-    const itemsByElement = new Map<Element, (typeof items)[number]>(
-      items.map(item => [item.element, item]),
-    )
+    const pendingContents: HTMLElement[] = []
+    const revealedContents: HTMLElement[] = []
 
     // Blueprint starts in CSS on the first paint; observing it again would replay the entrance.
     // Keep other server-rendered content visible and defer only items outside the first viewport.
     for (const item of items) {
       if (item.content.dataset.revealed !== undefined) continue
 
-      if (isLanguageChanging) {
-        if (item.element.dataset.viewportRevealAnimation !== 'blueprint') {
-          delete item.content.dataset.revealPending
-        }
-        continue
-      }
-
       const bounds = item.element.getBoundingClientRect()
       if (bounds.bottom <= viewport.top || bounds.top >= viewport.bottom) {
-        item.content.dataset.revealPending = ''
+        pendingContents.push(item.content)
       } else if (
         item.element.dataset.viewportRevealAnimation === 'blueprint' &&
         item.content.dataset.revealPending === undefined
       ) {
-        item.content.dataset.revealed = ''
+        revealedContents.push(item.content)
       }
     }
-    if (isLanguageChanging) return
+
+    for (const content of pendingContents) content.dataset.revealPending = ''
+    for (const content of revealedContents) content.dataset.revealed = ''
+
+    const itemsByElement = new Map<Element, (typeof items)[number]>(
+      items.map(item => [item.element, item]),
+    )
 
     const observer = new IntersectionObserver(
       entries => {

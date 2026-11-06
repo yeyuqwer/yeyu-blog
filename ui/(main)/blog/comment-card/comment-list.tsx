@@ -36,7 +36,7 @@ export function CommentList({
   }
 
   return (
-    <ul className="divide-y divide-black/8 dark:divide-white/8">
+    <ul>
       {commentTree.map(comment => (
         <CommentThreadItem key={comment.id} comment={comment} depth={0} view={view} />
       ))}

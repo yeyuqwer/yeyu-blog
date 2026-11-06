@@ -22,7 +22,6 @@
   --site-sky-sky-middle: #5ac9f3;
   --site-sky-sky-top: #6fd9fe;
   --site-sky-sky-upper: #65d0f8;
-  --site-sky-star-opacity: 0;
   --site-sky-star-play-state: paused;
   --site-sky-upper-glow-opacity: 0.36;
   --site-sky-upper-glow-rgb: 132 228 254;
@@ -110,7 +109,6 @@
   position: absolute;
   inset: 0;
   z-index: 10;
-  opacity: var(--site-sky-star-opacity);
   background-image:
     radial-gradient(circle at 8% 17%, rgb(255 255 255 / 0.92) 0 1px, transparent 1.6px),
     radial-gradient(circle at 18% 36%, rgb(255 255 255 / 0.7) 0 0.8px, transparent 1.4px),

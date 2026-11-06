@@ -119,8 +119,9 @@ export default function RadialMenuActions({
               }
               tabIndex={isOpen ? 0 : -1}
               className={cn(
-                'bg-background/90 text-foreground border-border/60 focus-visible:outline-theme-ring hover:bg-background data-aim:ring-theme-accent absolute top-0 left-0 grid size-12 cursor-pointer place-items-center rounded-full border opacity-0 shadow-[0_4px_16px_rgba(0,0,0,0.08)] backdrop-blur-sm transition-[transform,opacity,background-color,box-shadow] duration-[420ms,220ms,160ms,160ms] ease-[cubic-bezier(0.24,1.34,0.38,1)] focus-visible:outline-2 data-aim:ring-2 data-open:pointer-events-auto data-open:opacity-100 motion-reduce:transition-none dark:border-white/15 dark:shadow-[0_6px_20px_rgba(0,0,0,0.25)]',
-                action.isActive && 'text-theme-primary bg-theme-surface/95',
+                'focus-visible:outline-theme-ring absolute top-0.5 left-0.5 grid size-11 cursor-pointer place-items-center rounded-full border border-white/55 bg-white/25 text-zinc-800/80 opacity-0 shadow-[0_4px_16px_-6px_rgba(24,24,27,0.18),inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-lg backdrop-saturate-150 transition-[transform,opacity,background-color,box-shadow] duration-[420ms,220ms,160ms,160ms] ease-[cubic-bezier(0.24,1.34,0.38,1)] hover:bg-white/50 hover:text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 data-aim:bg-white/50 data-aim:text-zinc-900 data-open:pointer-events-auto data-open:opacity-100 motion-reduce:transition-none dark:border-white/20 dark:bg-zinc-900/25 dark:text-white/80 dark:shadow-[0_4px_16px_-6px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.12)] dark:hover:bg-white/15 dark:hover:text-white dark:data-aim:bg-white/15 dark:data-aim:text-white',
+                action.isActive &&
+                  'text-theme-primary hover:text-theme-primary data-aim:text-theme-primary dark:text-theme-primary dark:hover:text-theme-primary dark:data-aim:text-theme-primary border-white/80 bg-white/55 dark:border-white/40 dark:bg-white/20',
               )}
               style={{
                 transform: isOpen
@@ -139,13 +140,7 @@ export default function RadialMenuActions({
                 onSelect()
               }}
             >
-              <action.Icon aria-hidden className="size-5" strokeWidth={1.8} />
-              {action.isActive && (
-                <span
-                  aria-hidden
-                  className="bg-theme-accent absolute right-2 bottom-2 size-1 rounded-full"
-                />
-              )}
+              <action.Icon aria-hidden className="size-[18px]" strokeWidth={1.7} />
             </button>
           )
 
@@ -158,7 +153,7 @@ export default function RadialMenuActions({
         <span
           aria-hidden
           className={cn(
-            'bg-background/95 text-foreground/75 absolute top-16 left-1/2 w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-lg px-2.5 py-1.5 text-center text-[11px] shadow-sm transition-opacity duration-160 motion-reduce:transition-none',
+            'absolute top-16 left-1/2 w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-full border border-white/45 bg-white/40 px-3 py-1.5 text-center text-[11px] leading-4 text-zinc-800 backdrop-blur-lg backdrop-saturate-150 transition-opacity duration-160 motion-reduce:transition-none dark:border-white/15 dark:bg-zinc-900/35 dark:text-white/85',
             isOpen && aim !== null && !isSkyOpen ? 'opacity-100' : 'opacity-0',
           )}
         >
@@ -171,19 +166,19 @@ export default function RadialMenuActions({
           <Popover.Popup
             ref={panelRef}
             aria-labelledby={titleId}
-            className="border-border/60 bg-background text-foreground max-h-[min(24rem,var(--available-height))] w-[min(17rem,calc(100vw-2rem))] origin-(--transform-origin) overflow-y-auto overscroll-contain rounded-2xl border p-4 shadow-xl transition-[opacity,scale] duration-180 outline-none data-ending-style:opacity-0 data-starting-style:opacity-0 motion-safe:data-ending-style:scale-[0.98] motion-safe:data-starting-style:scale-[0.98] motion-reduce:transition-none dark:border-white/12 dark:bg-zinc-950"
+            className="max-h-[min(24rem,var(--available-height))] w-[min(17rem,calc(100vw-2rem))] origin-(--transform-origin) overflow-y-auto overscroll-contain rounded-[14px] border border-white/60 bg-white/55 p-4 text-zinc-800 shadow-[0_16px_40px_-16px_rgba(24,24,27,0.2),inset_0_1px_0_rgba(255,255,255,0.5)] backdrop-blur-2xl backdrop-saturate-150 transition-[opacity,scale] duration-180 outline-none data-ending-style:opacity-0 data-starting-style:opacity-0 motion-safe:data-ending-style:scale-[0.98] motion-safe:data-starting-style:scale-[0.98] motion-reduce:transition-none dark:border-white/20 dark:bg-zinc-900/50 dark:text-white/90 dark:shadow-[0_16px_40px_-16px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.12)]"
           >
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <h2 id={titleId} className="text-sm font-medium">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h2 id={titleId} className="text-[13px] font-medium">
                 <LanguageText>{translations.common.skySettings}</LanguageText>
               </h2>
               <button
                 type="button"
                 aria-label={translations.common.closeSkySettings}
-                className="text-foreground/45 hover:bg-foreground/5 hover:text-foreground focus-visible:outline-theme-ring grid size-7 cursor-pointer place-items-center rounded-lg transition-colors focus-visible:outline-2 motion-reduce:transition-none"
+                className="focus-visible:outline-theme-ring -mr-1 grid size-6 cursor-pointer place-items-center rounded-full text-zinc-600 transition-colors hover:bg-white/40 hover:text-zinc-900 focus-visible:outline-2 motion-reduce:transition-none dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white"
                 onClick={() => onSkyOpenChange(false)}
               >
-                <X aria-hidden className="size-4" />
+                <X aria-hidden className="size-3.5" />
               </button>
             </div>
             <SkyBackgroundControls />
