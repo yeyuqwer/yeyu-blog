@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "Mutter"
-ADD COLUMN "likeCount" INTEGER NOT NULL DEFAULT 0;

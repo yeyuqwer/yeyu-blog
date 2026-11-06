@@ -1,3 +1,0 @@
-ALTER TABLE "MutterComment" ADD COLUMN "isDeleted" BOOLEAN NOT NULL DEFAULT false;
-
-ALTER TABLE "SiteComment" ADD COLUMN "isDeleted" BOOLEAN NOT NULL DEFAULT false;

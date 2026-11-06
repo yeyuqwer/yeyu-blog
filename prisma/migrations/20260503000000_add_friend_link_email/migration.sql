@@ -1,1 +1,0 @@
-ALTER TABLE "FriendLink" ADD COLUMN "email" VARCHAR(254);
