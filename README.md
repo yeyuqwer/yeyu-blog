@@ -18,12 +18,12 @@
 ## 技术栈
 
 - Next.js 16 / React 19 / TypeScript 7
-- Tailwind CSS 4 / shadcn/ui / Radix UI / Motion
+- Tailwind CSS 4 / shadcn/ui / Base UI / Motion
 - Better Auth / Viem / SIWE
 - Drizzle ORM / PostgreSQL / node-postgres
 - TanStack Query / TanStack Table / Zustand
-- UploadThing / Shiki / Unified / Remark / Rehype
-- Biome / Husky / Commitizen
+- UploadThing / Unified / Remark / Rehype / rehype-highlight
+- Biome / Lefthook / lint-staged / Commitlint / czg
 
 ## 截图展示
 
@@ -38,8 +38,8 @@
 确保你已安装：
 
 - Git
-- pnpm
-- Node.js >= 20
+- Node.js 22.22.1 或更高版本。应用依赖要求 Node.js 22，提交钩子使用的 `lint-staged` 将本地最低版本提高到 22.22.1。
+- pnpm 9.13.2，与 `package.json` 的 `packageManager` 一致
 - PostgreSQL 数据库，使用本地数据库、Neon 或 Vercel Storage 都可以
 
 ### 获取项目代码
@@ -162,6 +162,7 @@ pnpm knip
 
 推荐部署到 Vercel。部署前确认：
 
+- Vercel 项目的 Node.js 版本满足依赖要求，建议使用 26.x 并与本地开发环境保持一致
 - Vercel 环境变量已按 `.env.example` 配置完整
 - 线上数据库已经执行过对应的 Drizzle migration
 - GitHub / Google OAuth callback URL 已改成线上域名
